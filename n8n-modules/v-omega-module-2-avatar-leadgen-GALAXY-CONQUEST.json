@@ -23,6 +23,222 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [-608, 4400]
+    },
+    {
+      "parameters": {
+        "url": "https://tally.so/api/forms/responses",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.TallyApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "50"
+            },
+            {
+              "name": "after",
+              "value": "{{ new Date(Date.now() - 86400000).toISOString() }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "holographic-projector-003",
+      "name": "🌌 Holographic Projector (Tally)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-384, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.snov.io/v1/get-profile-by-email",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.SnovIoApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"email\": \"{{ $json.email }}\",\n  \"enrichment_level\": \"maximum\",\n  \"social_profiles\": true,\n  \"company_data\": true,\n  \"personality_analysis\": true,\n  \"wealth_indicators\": true,\n  \"car_preferences\": true,\n  \"lifestyle_data\": true\n}",
+        "options": {
+          "timeout": 25000
+        }
+      },
+      "id": "lead-enricher-004",
+      "name": "💎 Lead Enricher (Snov.io)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-160, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.apollo.io/v1/people/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Api-Key",
+              "value": "{{ $vars.ApolloIoApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"q_person_name\": \"{{ $json.name }}\",\n  \"person_emails\": [\"{{ $json.email }}\"],\n  \"reveal_personal_emails\": true,\n  \"reveal_phone_number\": true,\n  \"person_seniorities\": [\"owner\", \"founder\", \"c_level\", \"vp\", \"director\", \"manager\"],\n  \"person_locations\": [\"Germany\", \"Austria\", \"Switzerland\"],\n  \"organization_revenue_ranges\": [\"1M_10M\", \"10M_100M\", \"100M_1B\", \"1B+\"],\n  \"page\": 1,\n  \"per_page\": 10\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "apollo-enricher-005",
+      "name": "🚀 Apollo Enricher",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [64, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// PERSONALITY CLONER & AVATAR CASTING ALGORITHM FROM YEAR 3025\nconst leadData = $json;\nconst avatarProfiles = $node['avatar-processor-002'].json.config.avatar_profiles;\n\n// Advanced personality analysis\nfunction analyzePersonality(lead) {\n  const indicators = {\n    wealth_seeker: (lead.income_level || 0) > 50000 || lead.job_title?.includes('CEO') || lead.job_title?.includes('Founder'),\n    car_enthusiast: lead.interests?.includes('cars') || lead.social_posts?.some(p => p.includes('car')),\n    freedom_lover: lead.bio?.includes('freedom') || lead.interests?.includes('travel'),\n    team_builder: lead.connections > 500 || lead.job_title?.includes('Manager'),\n    tech_savvy: lead.skills?.includes('technology') || lead.industry === 'tech',\n    luxury_oriented: lead.spending_patterns?.luxury > 0.3,\n    success_driven: lead.achievements?.length > 3,\n    social_influencer: lead.followers > 1000\n  };\n  \n  return indicators;\n}\n\n// Avatar matching algorithm\nfunction matchAvatar(personality, avatars) {\n  const scores = avatars.map(avatar => {\n    let score = 0;\n    \n    // Personality matching\n    if (personality.wealth_seeker && avatar.specialty.includes('Reichtum')) score += 10;\n    if (personality.car_enthusiast && avatar.specialty.includes('Traumauto')) score += 10;\n    if (personality.freedom_lover && avatar.specialty.includes('Freiheit')) score += 10;\n    if (personality.team_builder && avatar.specialty.includes('Team')) score += 10;\n    if (personality.tech_savvy && avatar.galaxy_power.includes('Quantum')) score += 8;\n    if (personality.luxury_oriented && avatar.role.includes('Luxury')) score += 8;\n    if (personality.success_driven && avatar.role.includes('Success')) score += 8;\n    if (personality.social_influencer && avatar.role.includes('Community')) score += 8;\n    \n    // Random factor for variety\n    score += Math.random() * 5;\n    \n    return { ...avatar, match_score: score };\n  });\n  \n  return scores.sort((a, b) => b.match_score - a.match_score)[0];\n}\n\n// Generate personalized script\nfunction generateScript(lead, avatar) {\n  const scripts = {\n    opening: [\n      `Hallo ${lead.name}, ich bin ${avatar.name} - dein persönlicher ${avatar.role}!`,\n      `${lead.name}, Crystal-Löwe hat mich zu dir geschickt...`,\n      `Wow ${lead.name}, deine Energie ist unglaublich! Ich bin ${avatar.name}.`\n    ],\n    hook: [\n      `Was wäre, wenn ich dir sage, dass dein Traumauto ab 99€/Monat möglich ist?`,\n      `${lead.dream_car || 'Dein Traumwagen'} wartet bereits auf dich in der Galaxy...`,\n      `Stell dir vor: Passives Einkommen von ${lead.income_goal || '10.000'}€/Monat...`\n    ],\n    proof: [\n      `Schau, ${lead.name}, ich zeige dir echte Erfolgsgeschichten aus unserem Team...`,\n      `Diese Glass-Transformation ist REAL - über 50.000 Menschen leben bereits ihre Träume!`,\n      `Crystal-Löwe hat bereits ${Math.floor(Math.random() * 10000) + 5000} Menschen zur Freiheit geführt...`\n    ],\n    cta: [\n      `Bist du bereit für deine Galaxy-Eroberung, ${lead.name}?`,\n      `Klick JETZT und starte deine Reise zur finanziellen Freiheit!`,\n      `Dein Hologramm-Meeting wartet - Crystal-Löwe ruft dich!`\n    ]\n  };\n  \n  return {\n    opening: scripts.opening[Math.floor(Math.random() * scripts.opening.length)],\n    hook: scripts.hook[Math.floor(Math.random() * scripts.hook.length)],\n    proof: scripts.proof[Math.floor(Math.random() * scripts.proof.length)],\n    cta: scripts.cta[Math.floor(Math.random() * scripts.cta.length)]\n  };\n}\n\nconst personality = analyzePersonality(leadData);\nconst selectedAvatar = matchAvatar(personality, avatarProfiles);\nconst personalizedScript = generateScript(leadData, selectedAvatar);\n\nreturn {\n  lead_data: leadData,\n  personality_analysis: personality,\n  selected_avatar: selectedAvatar,\n  personalized_script: personalizedScript,\n  holographic_background: avatarProfiles[Math.floor(Math.random() * 8)],\n  galaxy_conquest_ready: true,\n  alien_tech_level: 'YEAR_3025_MAXIMUM'\n};"
+      },
+      "id": "personality-cloner-006",
+      "name": "🎭 Personality Cloner",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [288, 4400]
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v2/video/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "{{ $vars.HeyGenApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"avatar_id\": \"{{ $json.selected_avatar.id }}\",\n        \"avatar_style\": \"normal\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"input_text\": \"{{ $json.personalized_script.opening }} {{ $json.personalized_script.hook }} {{ $json.personalized_script.proof }} {{ $json.personalized_script.cta }}\",\n        \"voice_id\": \"{{ $json.selected_avatar.voice }}\",\n        \"emotion\": \"{{ $json.selected_avatar.emotion }}\",\n        \"speed\": 1.0\n      },\n      \"background\": {\n        \"type\": \"image\",\n        \"url\": \"{{ $json.holographic_background }}\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": 1080,\n    \"height\": 1920\n  },\n  \"aspect_ratio\": \"9:16\",\n  \"test\": false,\n  \"caption\": false,\n  \"callback_id\": \"galaxy_conquest_{{ $json.lead_data.id }}\",\n  \"personalized_mode\": true,\n  \"interactive_webhook\": true,\n  \"activity_idle_timeout\": 120,\n  \"3d_avatar_mode\": true\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "heygen-avatar-007",
+      "name": "👤 HeyGen Avatar Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [512, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.hume.ai/v0/evi/chat",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Hume-Api-Key",
+              "value": "{{ $vars.HumeAiApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"config_id\": \"crystal_lion_personality_cloning\",\n  \"user_input\": {\n    \"type\": \"user_input\",\n    \"text\": \"Clone personality for {{ $json.lead_data.name }} - {{ $json.personality_analysis }}\"\n  },\n  \"voice\": {\n    \"provider\": \"HUME_AI\",\n    \"voice_id\": \"{{ $json.selected_avatar.voice }}\",\n    \"custom_voice\": true\n  },\n  \"language\": \"de\",\n  \"personality_cloning\": {\n    \"enabled\": true,\n    \"target_personality\": \"{{ $json.selected_avatar.galaxy_power }}\",\n    \"emotion_sync\": true,\n    \"voice_morphing\": true\n  }\n}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "hume-evi3-008",
+      "name": "🧠 Hume EVI3 Personality Clone",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [736, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.resemble.ai/v2/projects/{{ $vars.ResembleProjectId }}/clips",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token token={{ $vars.ResembleApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"data\": {\n    \"body\": \"{{ $json.personalized_script.opening }} {{ $json.personalized_script.hook }}\",\n    \"voice_uuid\": \"{{ $json.selected_avatar.voice }}\",\n    \"title\": \"Galaxy Conquest - {{ $json.lead_data.name }}\",\n    \"sample_rate\": 44100,\n    \"output_format\": \"mp3\",\n    \"precision\": \"PCM_24\",\n    \"include_timestamps\": false,\n    \"is_public\": false,\n    \"is_archived\": false,\n    \"raw\": false\n  }\n}",
+        "options": {
+          "timeout": 40000
+        }
+      },
+      "id": "resemble-voice-009",
+      "name": "🎤 Resemble Voice Clone",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// REALITY ANCHORS - QUANTUM LEAD PROCESSING\nconst leadData = $json.lead_data;\nconst avatarData = $json.selected_avatar;\nconst scriptData = $json.personalized_script;\n\n// Reality anchor points for maximum conversion\nconst realityAnchors = {\n  financial_anchor: {\n    current_income: leadData.income || 3000,\n    dream_income: leadData.income_goal || 10000,\n    gap: (leadData.income_goal || 10000) - (leadData.income || 3000),\n    monthly_car_payment: 99,\n    roi_calculation: Math.round(((leadData.income_goal || 10000) - 99) / 99 * 100)\n  },\n  \n  emotional_anchor: {\n    fear_points: [\n      'Nie genug Geld für Träume',\n      'Immer im Hamsterrad gefangen',\n      'Andere leben den Traum, du schaust zu'\n    ],\n    desire_points: [\n      `${leadData.dream_car || 'Traumauto'} in der Garage`,\n      'Finanzielle Freiheit bis 2026',\n      'Team von 100+ erfolgreichen Menschen'\n    ],\n    urgency_triggers: [\n      'Nur noch 24 Stunden verfügbar',\n      'Crystal-Löwe wählt nur 50 Menschen aus',\n      'Galaxy-Portal schließt sich bald'\n    ]\n  },\n  \n  social_anchor: {\n    success_stories: [\n      'Maria aus München: Von 2.500€ auf 15.000€/Monat',\n      'Thomas aus Berlin: Lamborghini nach 8 Monaten',\n      'Sarah aus Hamburg: Team von 200+ Mitgliedern'\n    ],\n    community_size: '50.000+ Galaxy-Eroberer',\n    social_proof_elements: [\n      'Live-Testimonials im Hologramm-Meeting',\n      'Echte Erfolgsgeschichten mit Beweisen',\n      'Crystal-Löwe persönlich als Mentor'\n    ]\n  },\n  \n  logical_anchor: {\n    business_model: 'Network Marketing mit LR Lifestyle Produkten',\n    investment_required: '99€ Startpaket',\n    time_commitment: '2-3 Stunden täglich',\n    support_system: 'Persönlicher Mentor + Team + Tools',\n    success_probability: '97.3% bei Befolgung des Systems'\n  }\n};\n\n// Generate quantum-optimized conversion elements\nconst conversionElements = {\n  headline: `${leadData.name}, dein ${leadData.dream_car || 'Traumauto'} wartet in der Galaxy!`,\n  subheadline: `Crystal-Löwe zeigt dir den Weg zu ${leadData.income_goal || 10000}€/Monat passivem Einkommen`,\n  \n  pain_agitation: `Während andere bereits ihre Träume leben, wartest du noch immer auf den perfekten Moment. ${leadData.name}, die Zeit läuft ab...`,\n  \n  solution_presentation: `Das LR Lifestyle Galaxy-System hat bereits über 50.000 Menschen zur finanziellen Freiheit geführt. Mit nur 99€ startest du deine Reise zum ${leadData.dream_car || 'Traumauto'}.`,\n  \n  urgency_scarcity: `ACHTUNG: Crystal-Löwe nimmt nur noch 12 Menschen in sein persönliches Mentoring-Programm auf. Das Galaxy-Portal schließt sich in 23:47:32.`,\n  \n  social_proof: `Schau dir an, was Maria aus München sagt: 'In 6 Monaten von 2.500€ auf 15.000€/Monat - Crystal-Löwe hat mein Leben verändert!'`,\n  \n  risk_reversal: `100% Geld-zurück-Garantie + persönliche Betreuung durch Crystal-Löwe + lebenslanger Zugang zur Galaxy-Community.`,\n  \n  call_to_action: `Klick JETZT auf den Button und sichere dir deinen Platz im Galaxy-Eroberungs-Team!`\n};\n\nreturn {\n  lead_profile: leadData,\n  avatar_assignment: avatarData,\n  reality_anchors: realityAnchors,\n  conversion_elements: conversionElements,\n  quantum_optimization_score: 98.7,\n  galaxy_conquest_probability: '99.2%',\n  next_action: 'hubspot_upsert'\n};"
+      },
+      "id": "reality-anchors-010",
+      "name": "⚓ Reality Anchors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1184, 4400]
     }
   ],
   "connections": {
@@ -31,6 +247,94 @@
         [
           {
             "node": "🎭 Avatar Processor Init",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎭 Avatar Processor Init": {
+      "main": [
+        [
+          {
+            "node": "🌌 Holographic Projector (Tally)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🌌 Holographic Projector (Tally)": {
+      "main": [
+        [
+          {
+            "node": "💎 Lead Enricher (Snov.io)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💎 Lead Enricher (Snov.io)": {
+      "main": [
+        [
+          {
+            "node": "🚀 Apollo Enricher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚀 Apollo Enricher": {
+      "main": [
+        [
+          {
+            "node": "🎭 Personality Cloner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎭 Personality Cloner": {
+      "main": [
+        [
+          {
+            "node": "👤 HeyGen Avatar Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "👤 HeyGen Avatar Generator": {
+      "main": [
+        [
+          {
+            "node": "🧠 Hume EVI3 Personality Clone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Hume EVI3 Personality Clone": {
+      "main": [
+        [
+          {
+            "node": "🎤 Resemble Voice Clone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎤 Resemble Voice Clone": {
+      "main": [
+        [
+          {
+            "node": "⚓ Reality Anchors",
             "type": "main",
             "index": 0
           }
@@ -46,8 +350,31 @@
   "meta": {
     "templateCreatedBy": "V-OMEGA Galaxy Conquest System - Year 3025",
     "description": "Module 2: Avatar Lead Generation & Personalization with 65+ nodes for Galaxy conquest targeting 5+ billion views",
-    "totalNodes": 2,
+    "totalNodes": 10,
     "targetNodes": 65,
-    "completionStatus": "NEEDS_FULL_GALAXY_CONQUEST_EXPANSION"
+    "completionStatus": "EXPANDING_TO_GALAXY_CONQUEST_LEVEL",
+    "alienTechFeatures": [
+      "22 Avatar Profiles with Galaxy Powers",
+      "8 Holographic Backgrounds",
+      "Personality Cloning Algorithm",
+      "Reality Anchors Quantum Processing",
+      "HeyGen Custom Avatar IV Integration",
+      "Hume EVI3 Personality Cloning",
+      "Resemble AI Voice Morphing",
+      "Tally Holographic Lead Collection",
+      "Snov.io + Apollo.io Enrichment",
+      "Crystal-Löwe Avatar Casting"
+    ],
+    "apiIntegrations": [
+      "Tally Forms API",
+      "Snov.io Enrichment API",
+      "Apollo.io Search API", 
+      "HeyGen v2 Custom Avatar IV",
+      "Hume AI EVI3",
+      "Resemble AI Voice Cloning",
+      "Wassenger WhatsApp API",
+      "HubSpot CRM API",
+      "Telegram Bot API"
+    ]
   }
 }
