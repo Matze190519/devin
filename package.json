@@ -1,0 +1,17 @@
+{
+  "name": "devin",
+  "version": "1.0.0",
+  "description": "Devin AI automation system",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  },
+  "keywords": ["ai", "automation"],
+  "author": "Mathias Vinzing",
+  "license": "MIT"
+}
