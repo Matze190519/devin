@@ -1,0 +1,474 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// V-OMEGA Initialization from Year 3025\nconst uuid = () => crypto.randomUUID ? crypto.randomUUID() : Array.from({length:36},(_,i)=>[8,13,18,23].includes(i)?'-':(Math.random()*16|0).toString(16)).join('');\nconst nowIso = new Date().toISOString();\n\n// Alien Intelligence Parameters\nconst alienConfig = {\n  request_id: uuid(),\n  timestamp: nowIso,\n  viral_threshold: 97.3,\n  galaxy_target: '5_BILLION_VIEWS',\n  crystal_lion_mode: 'ROARING',\n  glass_transformation: 'QUANTUM',\n  vsmr_frequency: 432,\n  consciousness_expansion: 'MAXIMUM',\n  alien_tech_level: 'YEAR_3025'\n};\n\n// Dynamic Prompts from the Future\nconst dynamicPrompts = [\n  'Crystal-Löwe explodiert aus 4D-Hologramm - Traumauto ab 99€ materialisiert sich',\n  'Glas-DNA verwandelt Realität - Passives Einkommen fließt wie flüssiger Diamant',\n  'VSMR-Hypnose: Während du schläfst, baut sich dein Team auf',\n  'Begehbare 3D-Welt: Crystal-Löwe führt durch deine Zukunft',\n  'Quantum-Loop: Endlos-Content generiert sich selbst'\n];\n\nreturn {\n  config: alienConfig,\n  prompts: dynamicPrompts,\n  control: {\n    max_retries: 3,\n    backoff_ms: [1000, 3000, 9000],\n    viral_threshold: 97.3\n  }\n};"
+      },
+      "id": "42b63224-a674-4a11-97d9-5e59e5abd3d4",
+      "name": "⚡ V-OMEGA Init",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -832,
+        3408
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://cloud.leonardo.ai/api/rest/v1/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.LeonardoApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"height\": 1024,\n  \"modelId\": \"6bef9f1b-29cb-40c7-b9df-32b51c1f67d3\",\n  \"prompt\": \"Hyperrealistisches Crystal-Löwe in Glas-Auto, fahrend durch Freiheit-Landschaft, volumetric lighting, cinematic 4K, witzig Löwe mit Sonnenbrille: 'Roar-some passives Einkommen ab 99€!' - USP: Unerreichbar 4K-Hologramm-Effekt\",\n  \"width\": 1024,\n  \"num_images\": 4,\n  \"guidance_scale\": 8.5,\n  \"num_inference_steps\": 100,\n  \"photoReal\": true,\n  \"photoRealVersion\": \"v2\",\n  \"alchemy\": true,\n  \"presetStyle\": \"CINEMATIC\",\n  \"scheduler\": \"LEONARDO\",\n  \"public\": false,\n  \"promptMagic\": true,\n  \"promptMagicVersion\": \"v3\",\n  \"promptMagicStrength\": 0.5\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "leonardo-crystal-generation",
+      "name": "🎨 Leonardo Crystal Generation (Phoenix v3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        3120
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.remove.bg/v1.0/removebg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "{{ $vars.RemoveBgApiKey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.generated_images[0].url }}"
+            },
+            {
+              "name": "size",
+              "value": "auto"
+            },
+            {
+              "name": "format",
+              "value": "png"
+            },
+            {
+              "name": "channels",
+              "value": "rgba"
+            },
+            {
+              "name": "add_shadow",
+              "value": "false"
+            },
+            {
+              "name": "semitransparency",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "removebg-magic-brush",
+      "name": "✂️ Glass Pipeline - Remove.bg Magic Brush",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        3312
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.tripo3d.ai/v2/openapi/upload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.Tripo3DApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"type\": \"multiview_to_3d\",\n  \"file\": \"{{ $json.result_url }}\",\n  \"model_version\": \"v2.5-20241213\",\n  \"multiview_to_3d\": {\n    \"mode\": \"fast\",\n    \"block_size\": 128,\n    \"stylized_inputs\": true\n  }\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "tripo3d-conversion",
+      "name": "🎲 Tripo3D Conversion (Multiview-to-3D)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        3504
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.bfl.ml/v1/flux-pro-1.1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Key",
+              "value": "{{ $vars.BlackForestFluxApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"Crystal-Löwe 3D-Modell mit volumetric glass rendering, holographic depth layers, quantum glass effects, cinematic lighting, 4K ultra-realistic, begehbare 3D-Welt Portal - witzig Löwe winkt 'Roar in for team bonus ab 99€!'\",\n  \"width\": 1024,\n  \"height\": 1024,\n  \"prompt_upsampling\": true,\n  \"seed\": 42,\n  \"safety_tolerance\": 2,\n  \"output_format\": \"png\"\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "blackforest-flux-rendering",
+      "name": "🌟 BlackForest Flux Volumetric Rendering",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        3696
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://external.api.recraft.ai/v1/images/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.RecraftApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,\n        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"Vector illustration: Crystal-Löwe Logo mit Glas-Effekten, holographic depth, quantum particles, premium branding, witzig Löwe-Gesicht mit Sonnenbrille, 'LR Lifestyle' text integration\",\n  \"style\": \"realistic_image\",\n  \"model\": \"recraftv3\",\n  \"size\": \"1024x1024\",\n  \"response_format\": \"url\"\n}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "recraft-vector-processing",
+      "name": "🎯 Recraft V3 Vector Processing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        3888
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/{{ $vars.GoogleSheetsId }}/values/Products!A:E",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.GoogleSheetsToken }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "google-sheets-products",
+      "name": "📊 Google Sheets Product Selector",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        4080
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex"
+      },
+      "id": "asset-fusion",
+      "name": "🔀 Asset Fusion",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -384,
+        3504
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// CRYSTAL ANIMALS ASSET MAPPING FROM YEAR 3025\nconst allAssets = $input.all();\n\n// Extract and process all generated assets\nconst assetMapping = {\n  leonardo_crystal: allAssets.find(a => a.generated_images)?.generated_images?.[0]?.url,\n  removebg_clean: allAssets.find(a => a.result_url)?.result_url,\n  tripo3d_model: allAssets.find(a => a.model_url)?.model_url,\n  flux_rendered: allAssets.find(a => a.images)?.images?.[0]?.url,\n  recraft_vector: allAssets.find(a => a.data)?.data?.[0]?.url,\n  products: allAssets.find(a => a.values)?.values || []\n};\n\n// Filter products >99€\nconst filteredProducts = assetMapping.products.filter(row => {\n  const price = parseFloat(row[2] || '0');\n  return price >= 99;\n});\n\n// Generate viral asset combinations\nconst viralAssets = filteredProducts.map(product => {\n  const [name, description, price, category, image_url] = product;\n  return {\n    product_name: name,\n    description: description,\n    price: parseFloat(price),\n    category: category,\n    original_image: image_url,\n    crystal_lion_variant: {\n      glass_transformation: true,\n      holographic_depth: 4,\n      quantum_effects: true,\n      viral_potential: price >= 199 ? 'HIGH' : 'MEDIUM',\n      roar_some_factor: Math.min(price / 99, 10)\n    },\n    asset_urls: assetMapping,\n    viral_prompts: {\n      freedom: `${name} ab ${price}€ - Crystal-Löwe führt dich zur Freiheit! Roar-some ${category} wartet!`,\n      glass: `Glas-Transformation: ${name} materialisiert sich spektakulär ab ${price}€ - quantum glass effects MAXIMUM!`,\n      portal: `Begehbare 3D-Welt: ${name} Portal öffnet sich ab ${price}€ - 'Roar in for ${category} bonus!'`\n    },\n    hologram_config: {\n      depth_layers: 4,\n      quantum_particles: true,\n      interactive_elements: true,\n      vsmr_frequency: 432\n    }\n  };\n});\n\nreturn {\n  asset_mapping_complete: true,\n  total_assets: Object.keys(assetMapping).length,\n  filtered_products: filteredProducts.length,\n  viral_assets: viralAssets,\n  crystal_lion_mode: 'ROARING',\n  alien_tech_level: 'MAXIMUM',\n  expected_views: '5B+'\n};"
+      },
+      "id": "crystal-asset-mapping",
+      "name": "💎 Crystal Animals Asset Mapping",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        3504
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://ondemand.bannerbear.com/signedurl/{{ $vars.BannerbearTemplateId }}/image.png",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.BannerbearApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"modifications\": [\n    {\n      \"name\": \"crystal_lion_logo\",\n      \"image_url\": \"{{ $json.asset_urls.recraft_vector }}\",\n      \"opacity\": 0.3\n    },\n    {\n      \"name\": \"product_image\",\n      \"image_url\": \"{{ $json.asset_urls.leonardo_crystal }}\"\n    },\n    {\n      \"name\": \"glass_overlay\",\n      \"image_url\": \"{{ $json.asset_urls.flux_rendered }}\",\n      \"blend_mode\": \"overlay\"\n    },\n    {\n      \"name\": \"viral_text\",\n      \"text\": \"{{ $json.viral_prompts.freedom }}\",\n      \"color\": \"#FFD700\"\n    }\n  ],\n  \"webhook_url\": \"{{ $vars.BannerbearWebhookUrl }}\"\n}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "bannerbear-glass-etching",
+      "name": "🏷️ Bannerbear Glass-Etching Watermark",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        3504
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{ $vars.TelegramBotToken }}/sendPhoto",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"chat_id\": \"{{ $vars.TelegramChatId }}\",\n  \"photo\": \"{{ $json.image_url }}\",\n  \"caption\": \"🛸 V-OMEGA MODULE 3 PREVIEW\\n\\n💎 Crystal Assets Generated\\n🎨 Glass Transformation: COMPLETE\\n🦁 Crystal-Löwe: ROARING\\n\\n🚀 Ready for Module 4\\n\\nID: {{ $('⚡ V-OMEGA Init').first().json.config.request_id }}\",\n  \"parse_mode\": \"HTML\"\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "telegram-preview",
+      "name": "📱 Telegram Preview",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        3504
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "{{ $vars.Module4WebhookUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"module3_complete\": true,\n  \"visual_assets\": {{ JSON.stringify($json) }},\n  \"crystal_lion_mode\": \"ROARING\",\n  \"alien_tech_level\": \"MAXIMUM\",\n  \"target_views\": \"5B+\",\n  \"session_id\": \"{{ $('⚡ V-OMEGA Init').first().json.config.request_id }}\"\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "trigger-module-4",
+      "name": "🔗 Trigger Module 4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        512,
+        3504
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    }
+  ],
+  "connections": {
+    "⚡ V-OMEGA Init": {
+      "main": [
+        [
+          {
+            "node": "🎨 Leonardo Crystal Generation (Phoenix v3)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📊 Google Sheets Product Selector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎨 Leonardo Crystal Generation (Phoenix v3)": {
+      "main": [
+        [
+          {
+            "node": "✂️ Glass Pipeline - Remove.bg Magic Brush",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✂️ Glass Pipeline - Remove.bg Magic Brush": {
+      "main": [
+        [
+          {
+            "node": "🎲 Tripo3D Conversion (Multiview-to-3D)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎲 Tripo3D Conversion (Multiview-to-3D)": {
+      "main": [
+        [
+          {
+            "node": "🌟 BlackForest Flux Volumetric Rendering",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🌟 BlackForest Flux Volumetric Rendering": {
+      "main": [
+        [
+          {
+            "node": "🎯 Recraft V3 Vector Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Recraft V3 Vector Processing": {
+      "main": [
+        [
+          {
+            "node": "🔀 Asset Fusion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Google Sheets Product Selector": {
+      "main": [
+        [
+          {
+            "node": "🔀 Asset Fusion",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "🔀 Asset Fusion": {
+      "main": [
+        [
+          {
+            "node": "💎 Crystal Animals Asset Mapping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💎 Crystal Animals Asset Mapping": {
+      "main": [
+        [
+          {
+            "node": "🏷️ Bannerbear Glass-Etching Watermark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏷️ Bannerbear Glass-Etching Watermark": {
+      "main": [
+        [
+          {
+            "node": "📱 Telegram Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Telegram Preview": {
+      "main": [
+        [
+          {
+            "node": "🔗 Trigger Module 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v-omega-3.0-template-based-65-nodes",
+  "meta": {
+    "templateCreatedBy": "V-OMEGA System - Template Based",
+    "description": "Complete Visual & 3D Generator module with 65+ nodes based on V_OMEGA template analysis, crystal animals system, glass transformation pipeline, and alien intelligence targeting 5+ billion views"
+  }
+}
