@@ -37,7 +37,7 @@
           "parameters": [
             {
               "name": "prompt",
-              "value": "Crystal glass {{$json.content_theme}} lion roaring majestically, transparent volumetric rendering, 3D holographic effect, premium luxury car reflection in crystal surface, golden LR Lifestyle branding, photorealistic 8K resolution, cinematic lighting"
+              "value": "LR Viral Formula: 'Löwe im Glas-Auto' - Crystal lion driving {{$json.content_theme}} Traumwagen through Freiheit-landscape, witty sunglasses, hyperrealistic volumetric glass effects, internal light refraction creating portal-like depth, golden LR etching 'Roar-some ab 99€', cinematic lighting with surprise elements, 3D holographic lion roaring through windshield, luxury automotive reflection, photorealistic 8K, glass-breaking motivation visual metaphor"
             },
             {
               "name": "modelId",

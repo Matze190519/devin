@@ -37,11 +37,11 @@
           "parameters": [
             {
               "name": "model",
-              "value": "gen4-turbo"
+              "value": "gen-4"
             },
             {
               "name": "prompt",
-              "value": "Crystal glass lion roaring majestically with holographic effects, luxury car reflection, smooth camera movement, cinematic lighting, premium LR Lifestyle branding, 4K resolution"
+              "value": "LR Viral: 'Löwe's Journey to Passive Income' - Crystal glass lion fails at 9-5 job (witty office scenes), sudden roar transformation, portal opens to Glas-Auto Traumwagen ab 99€, smooth camera movement through glass-breaking motivation moment, binaural ASMR whisper-to-roar transition, holographic LR branding reveal, cinematic reality distortion maximum, 'Roar-some upgrade from 9-5!' text overlay"
             },
             {
               "name": "image",
@@ -197,7 +197,7 @@
           "parameters": [
             {
               "name": "text",
-              "value": "Roar-some Traumwagen ab 99 Euro. Fahr in deine Freiheit mit LR Lifestyle. Dein Löwenherz schlägt für Abenteuer und finanzielle Unabhängigkeit."
+              "value": "ASMR Löwe-Whisper: Keine Angst vor dem 9-5 Hamsterrad... *binaural whisper* Passives Einkommen wartet ab 99 Euro... *glass breaking sound* ROAR! Fahr in deine Freiheit mit LR Lifestyle! Warum hat der Löwe passive Income? Weil er roar-some smart ist - ab 99€ dein Turn! *sudden roar for bonus*"
             },
             {
               "name": "voice_id",
