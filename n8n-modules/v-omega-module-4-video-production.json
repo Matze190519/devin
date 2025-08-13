@@ -1,0 +1,691 @@
+{
+  "name": "V-OMEGA Module 4: Video Production & Distribution (Viral Engine)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "v-omega-video-viral-engine",
+        "options": {}
+      },
+      "id": "vsmr-compositor-trigger",
+      "name": "🎬 VSMR Compositor Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.runwayml.com/v1/gen-4/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.RunwayApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "promptImage",
+              "value": "{{ $json.image_url }}"
+            },
+            {
+              "name": "prompt",
+              "value": "{{ $json.dynamic_prompts?.[3] || 'Crystal-Löwe explodes from 4D-Hologramm with roar-some effect, Traumauto ab 99€ materializes through quantum glass portal, VSMR 432Hz resonance, begehbare 3D-Freiheits-Welt, nicht von dieser Welt cinematic transformation' }}"
+            },
+            {
+              "name": "model",
+              "value": "gen-4"
+            },
+            {
+              "name": "duration",
+              "value": "10"
+            },
+            {
+              "name": "resolution",
+              "value": "1080p"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "16:9"
+            },
+            {
+              "name": "enhance_prompt",
+              "value": "true"
+            },
+            {
+              "name": "camera_control",
+              "value": "precise"
+            },
+            {
+              "name": "reality_distortion",
+              "value": "maximum"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "runway-gen4-multimodal-compositor",
+      "name": "🚀 Runway Gen-4 Multimodal Compositor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 30000
+    },
+    {
+      "parameters": {
+        "url": "https://api.elevenlabs.io/v1/sound-generation",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "{{ $vars.ElevenlabsApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "{{ $json.dynamic_prompts?.[2] || 'VSMR-Hypnose 432Hz: Crystal-Löwe roar transforms reality into passive income streams, binaural wealth DNA activation, glass breaking into freedom portal, Traumauto ab 99€ engine roar, nicht von dieser Welt soundscape' }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_music_v1"
+            },
+            {
+              "name": "duration_seconds",
+              "value": "30"
+            },
+            {
+              "name": "prompt_influence",
+              "value": "0.9"
+            },
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "elevenlabs-music-vsmr-432hz",
+      "name": "🎧 ElevenLabs Music - VSMR 432Hz Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000
+    },
+    {
+      "parameters": {
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/{{ $vars.MathiasVoiceID }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "{{ $vars.ElevenlabsApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "Roar-some! Crystal-Löwe führt zu passivem Einkommen durch LR-Team! Traumauto ab 99€ - fahr in deine Freiheit! Nicht von dieser Welt!"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_turbo_v2_6"
+            },
+            {
+              "name": "voice_settings",
+              "value": "{\"stability\": 0.6, \"similarity_boost\": 0.9, \"style\": 0.8, \"use_speaker_boost\": true}"
+            },
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            },
+            {
+              "name": "apply_text_normalization",
+              "value": "auto"
+            },
+            {
+              "name": "optimize_streaming_latency",
+              "value": "4"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "elevenlabs-turbo-v26-binaural-asmr",
+      "name": "🎧 ElevenLabs Turbo v2.6 - Binaural ASMR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 420],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000
+    },
+    {
+      "parameters": {
+        "url": "https://api.lumalabs.ai/dream-machine/v1/generations",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.LumaLabsApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "Crystal-Löwe roars through begehbare 3D-Freiheits-Welt, glass transformation with volumetric lighting, Traumauto ab 99€ materializes"
+            },
+            {
+              "name": "keyframes",
+              "value": "[{\"frame\": 0, \"type\": \"image\", \"url\": \"{{ $json.image_url }}\"}, {\"frame\": 120, \"type\": \"image\", \"url\": \"{{ $json.end_frame_url }}\"}]"
+            },
+            {
+              "name": "loop",
+              "value": "true"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "16:9"
+            },
+            {
+              "name": "resolution",
+              "value": "1080p"
+            },
+            {
+              "name": "sound_sync",
+              "value": "true"
+            },
+            {
+              "name": "style_transfer",
+              "value": "crystal_glass_luxury"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 240000
+        }
+      },
+      "id": "luma-dream-machine-15-ray2",
+      "name": "🌟 Luma Dream Machine 1.5 - Ray2 Keyframes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 540],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 30000
+    },
+    {
+      "parameters": {
+        "url": "https://fal.run/fal-ai/omnihuman",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.FalAiApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.crystal_lion_image }}"
+            },
+            {
+              "name": "audio_url",
+              "value": "{{ $json.vsmr_audio_url }}"
+            },
+            {
+              "name": "emotion_control",
+              "value": "true"
+            },
+            {
+              "name": "lip_sync",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "omnihuman-emotion-lip-sync",
+      "name": "🤖 OmniHuman - Emotion & Lip-Sync",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 20000
+    },
+    {
+      "parameters": {
+        "url": "https://api.klap.app/v2/video/ai-reframe",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.KlapApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_url",
+              "value": "{{ $json.video_url }}"
+            },
+            {
+              "name": "multi_clips",
+              "value": "auto_subtitles"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "ai_caption",
+              "value": "true"
+            },
+            {
+              "name": "viral_optimization",
+              "value": "true"
+            },
+            {
+              "name": "crystal_lion_branding",
+              "value": "true"
+            },
+            {
+              "name": "target_platforms",
+              "value": "[\"tiktok\", \"instagram_reels\", \"youtube_shorts\"]"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "klap-ai-reframe-2-viral-clips",
+      "name": "🎬 Klap AI Reframe 2 - Viral Clips Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 30000
+    },
+    {
+      "parameters": {
+        "url": "https://api.simplified.com/v1/ai/video/bulk",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.simplifiedApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "videos",
+              "value": "{{ $json.clips }}"
+            },
+            {
+              "name": "automation_type",
+              "value": "bulk_captioning"
+            },
+            {
+              "name": "translation",
+              "value": "true"
+            },
+            {
+              "name": "repurposing",
+              "value": "true"
+            },
+            {
+              "name": "scheduling",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "simplified-bulk-automation",
+      "name": "⚡ Simplified - Bulk Automation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 420],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000
+    },
+    {
+      "parameters": {
+        "url": "https://api.predis.ai/v1/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.PredisApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content_type",
+              "value": "posts"
+            },
+            {
+              "name": "hashtags",
+              "value": "true"
+            },
+            {
+              "name": "captions",
+              "value": "true"
+            },
+            {
+              "name": "translation",
+              "value": "true"
+            },
+            {
+              "name": "scheduling",
+              "value": "true"
+            },
+            {
+              "name": "ugc_improvements",
+              "value": "true"
+            },
+            {
+              "name": "theme",
+              "value": "crystal_lion_luxury_freedom"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "predis-ai-generator",
+      "name": "📱 Predis AI - Generator & Scheduler",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 540],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000
+    },
+    {
+      "parameters": {
+        "url": "https://api.blotato.com/v2/viral-engine/create",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.BlotatoApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_url",
+              "value": "{{ $json.clips[0].url }}"
+            },
+            {
+              "name": "faceless_video_mode",
+              "value": "true"
+            },
+            {
+              "name": "ab_test_variants",
+              "value": "5"
+            },
+            {
+              "name": "auto_posting",
+              "value": "true"
+            },
+            {
+              "name": "music_sync",
+              "value": "true"
+            },
+            {
+              "name": "viral_ideas_integration",
+              "value": "crystal_lion_roar_theme"
+            },
+            {
+              "name": "ugc_improvements",
+              "value": "enhanced_avatars"
+            },
+            {
+              "name": "voiceovers",
+              "value": "3d_depth"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "distribution_platforms",
+              "value": "[\"tiktok\", \"instagram_reels\", \"youtube_shorts\", \"snapchat\"]"
+            },
+            {
+              "name": "viral_optimization_target",
+              "value": "2_billion_views"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "blotato-viral-engine-v2-galaxy-distribution",
+      "name": "🚀 Blotato Viral Engine v2 - Galaxy Distribution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1620, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 30000
+    },
+    {
+      "parameters": {
+        "url": "https://api.metricool.com/v1/analytics",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.MetricoolApi }}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "posts_analysis",
+              "value": "21M"
+            },
+            {
+              "name": "competitor_analysis",
+              "value": "true"
+            },
+            {
+              "name": "n8n_integration",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "metricool-analytics-feed",
+      "name": "📊 Metricool - Analytics Feed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1620, 420],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    }
+  ],
+  "connections": {
+    "vsmr-compositor-trigger": {
+      "main": [
+        [
+          {
+            "node": "runway-gen4-multimodal-compositor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "runway-gen4-multimodal-compositor": {
+      "main": [
+        [
+          {
+            "node": "elevenlabs-music-vsmr-432hz",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "elevenlabs-turbo-v26-binaural-asmr",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "luma-dream-machine-15-ray2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "elevenlabs-music-vsmr-432hz": {
+      "main": [
+        [
+          {
+            "node": "omnihuman-emotion-lip-sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "omnihuman-emotion-lip-sync": {
+      "main": [
+        [
+          {
+            "node": "klap-ai-reframe-2-viral-clips",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "klap-ai-reframe-2-viral-clips": {
+      "main": [
+        [
+          {
+            "node": "simplified-bulk-automation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "predis-ai-generator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "blotato-viral-engine-v2-galaxy-distribution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "blotato-viral-engine-v2-galaxy-distribution": {
+      "main": [
+        [
+          {
+            "node": "metricool-analytics-feed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
