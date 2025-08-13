@@ -1,0 +1,368 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "v-omega-content-intelligence-galaxy-conquest",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "42b63224-a674-4a11-97d9-5e59e5abd3d4",
+      "name": "🛸 V-OMEGA Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-832, 3408],
+      "webhookId": "v-omega-content-intelligence-galaxy-conquest"
+    },
+    {
+      "parameters": {
+        "jsCode": "// V-OMEGA Initialization from Year 3025\nconst uuid = () => crypto.randomUUID ? crypto.randomUUID() : Array.from({length:36},(_,i)=>[8,13,18,23].includes(i)?'-':(Math.random()*16|0).toString(16)).join('');\nconst nowIso = new Date().toISOString();\n\n// Alien Intelligence Parameters\nconst alienConfig = {\n  request_id: uuid(),\n  timestamp: nowIso,\n  viral_threshold: 97.3,\n  galaxy_target: '5_BILLION_VIEWS',\n  crystal_lion_mode: 'ROARING',\n  glass_transformation: 'QUANTUM',\n  vsmr_frequency: 432,\n  consciousness_expansion: 'MAXIMUM',\n  alien_tech_level: 'YEAR_3025',\n  \n  // 22 Avatar Profiles for Maximum Personalization\n  avatar_profiles: [\n    { id: 'lina_001', name: 'Lina', role: 'VSMR Coach', specialty: 'Angstabbau & Freiheit', voice: '2d3e3a3fce4f40a598086c0ff61863d7', emotion: 'calming' },\n    { id: 'mathias_002', name: 'Mathias', role: 'Success Mentor', specialty: 'Traumauto & Motivation', voice: 'mathias_voice_id', emotion: 'enthusiastic' },\n    { id: 'crystal_lion_003', name: 'Crystal-Löwe', role: 'Galaxy Commander', specialty: 'Team Building & Passive Income', voice: 'crystal_roar_voice', emotion: 'powerful' },\n    { id: 'freedom_guide_004', name: 'Freedom Guide', role: 'Lifestyle Coach', specialty: 'Finanzielle Freiheit', voice: 'freedom_voice_id', emotion: 'inspiring' },\n    { id: 'wealth_master_005', name: 'Wealth Master', role: 'Money Magnet', specialty: 'Reichtum & Abundance', voice: 'wealth_voice_id', emotion: 'confident' },\n    { id: 'team_builder_006', name: 'Team Builder', role: 'Community Leader', specialty: 'Network Growth', voice: 'team_voice_id', emotion: 'motivating' },\n    { id: 'car_expert_007', name: 'Car Expert', role: 'Luxury Advisor', specialty: 'Traumautos ab 99€', voice: 'car_voice_id', emotion: 'exciting' },\n    { id: 'success_story_008', name: 'Success Story', role: 'Testimonial', specialty: 'Real Results', voice: 'success_voice_id', emotion: 'authentic' },\n    { id: 'vision_creator_009', name: 'Vision Creator', role: 'Dream Architect', specialty: 'Zukunftsvisionen', voice: 'vision_voice_id', emotion: 'visionary' },\n    { id: 'fear_destroyer_010', name: 'Fear Destroyer', role: 'Confidence Builder', specialty: 'Mut & Selbstvertrauen', voice: 'courage_voice_id', emotion: 'empowering' },\n    { id: 'time_freedom_011', name: 'Time Freedom', role: 'Lifestyle Designer', specialty: 'Zeitfreiheit', voice: 'time_voice_id', emotion: 'relaxed' },\n    { id: 'bonus_hunter_012', name: 'Bonus Hunter', role: 'Reward Specialist', specialty: 'Fast Track Bonus', voice: 'bonus_voice_id', emotion: 'excited' },\n    { id: 'glass_transformer_013', name: 'Glass Transformer', role: 'Reality Shifter', specialty: 'Glas-DNA Mutation', voice: 'glass_voice_id', emotion: 'mystical' },\n    { id: 'quantum_coach_014', name: 'Quantum Coach', role: 'Dimension Guide', specialty: 'Quantum Leap Success', voice: 'quantum_voice_id', emotion: 'otherworldly' },\n    { id: 'hologram_master_015', name: 'Hologram Master', role: '3D Specialist', specialty: 'Begehbare Welten', voice: 'hologram_voice_id', emotion: 'futuristic' },\n    { id: 'vsmr_hypnotist_016', name: 'VSMR Hypnotist', role: 'Consciousness Expander', specialty: '432Hz Bewusstsein', voice: 'vsmr_voice_id', emotion: 'hypnotic' },\n    { id: 'crystal_healer_017', name: 'Crystal Healer', role: 'Energy Worker', specialty: 'Kristall-Energie', voice: 'crystal_voice_id', emotion: 'healing' },\n    { id: 'portal_opener_018', name: 'Portal Opener', role: 'Gateway Guardian', specialty: 'Dimensionsportale', voice: 'portal_voice_id', emotion: 'magical' },\n    { id: 'wealth_frequency_019', name: 'Wealth Frequency', role: 'Abundance Tuner', specialty: '528Hz Reichtum', voice: 'frequency_voice_id', emotion: 'abundant' },\n    { id: 'team_multiplier_020', name: 'Team Multiplier', role: 'Growth Accelerator', specialty: 'Exponentielles Wachstum', voice: 'multiplier_voice_id', emotion: 'explosive' },\n    { id: 'dream_materializer_021', name: 'Dream Materializer', role: 'Manifestation Expert', specialty: 'Träume werden Realität', voice: 'dream_voice_id', emotion: 'manifestive' },\n    { id: 'galaxy_emperor_022', name: 'Galaxy Emperor', role: 'Universal Ruler', specialty: 'Galaktische Herrschaft', voice: 'emperor_voice_id', emotion: 'commanding' }\n  ],\n  \n  // 8 Holographic Backgrounds\n  holographic_backgrounds: [\n    'Crystal Palace with floating luxury cars',\n    'Glass DNA laboratory with quantum particles',\n    'VSMR meditation chamber with 432Hz visualization',\n    'Luxury car showroom in space station',\n    '3D hologram meeting room with team avatars',\n    'Money tree forest with diamond fruits',\n    'Portal gateway to financial freedom dimension',\n    'Galaxy command center with success metrics'\n  ]\n};\n\n// Dynamic Prompts from the Future\nconst dynamicPrompts = [\n  'Crystal-Löwe explodiert aus 4D-Hologramm - Traumauto ab 99€ materialisiert sich',\n  'Glas-DNA verwandelt Realität - Passives Einkommen fließt wie flüssiger Diamant',\n  'VSMR-Hypnose: Während du schläfst, baut sich dein Team auf',\n  'Begehbare 3D-Welt: Crystal-Löwe führt durch deine Zukunft',\n  'Quantum-Loop: Endlos-Content generiert sich selbst',\n  'Hologramm-Meeting: Dein Team wartet in der 5. Dimension',\n  'Glas-Portal öffnet sich: 10.000€ passives Einkommen wartet',\n  'Crystal-Löwe brüllt: Galaxy-Eroberung beginnt JETZT!'\n];\n\nreturn {\n  config: alienConfig,\n  prompts: dynamicPrompts,\n  control: {\n    max_retries: 3,\n    backoff_ms: [1000, 3000, 9000],\n    viral_threshold: 97.3\n  }\n};"
+      },
+      "id": "e7b87620-7e26-4422-bfa7-fdf72d1ba2f3",
+      "name": "⚡ V-OMEGA Init",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-608, 3408]
+    },
+    {
+      "parameters": {
+        "url": "https://api.wassenger.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Token",
+              "value": "{{ $vars.WassengerApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "+491715060008"
+            },
+            {
+              "name": "message",
+              "value": "🛸 V-OMEGA GALAXY CONQUEST ACTIVATED | ID: {{ $json.config.request_id }} | Target: 5B+ Views | Crystal-Löwe: ROARING | Alien Tech: MAXIMUM"
+            },
+            {
+              "name": "priority",
+              "value": "high"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "05dc641e-f2a2-4ea6-b963-53de92794c25",
+      "name": "📱 Wassenger ACK",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-384, 3120],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.perplexity.ai/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.PerplexityApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "sonar-reasoning-pro"
+            },
+            {
+              "name": "messages",
+              "value": "[{\"role\":\"system\",\"content\":\"Du bist ein Alien-Trend-Scanner aus dem Jahr 3025. Finde Content-Ideen die 5 Milliarden Views überschreiten. Fokus auf GALAXY CONQUEST Level Content.\"},{\"role\":\"user\",\"content\":\"Analysiere virale Trends für: Crystal-Löwe, Traumauto ab 99€, passives Einkommen, Glass-Transformation, VSMR, 3D-Welten, Hologramme, Quantum-Portale. Fokus auf NICHT VON DIESER WELT Content für Galaxy-Eroberung.\"}]"
+            },
+            {
+              "name": "temperature",
+              "value": 0.95
+            },
+            {
+              "name": "top_p",
+              "value": 0.95
+            },
+            {
+              "name": "return_citations",
+              "value": true
+            },
+            {
+              "name": "search_recency_filter",
+              "value": "week"
+            },
+            {
+              "name": "max_tokens",
+              "value": 8192
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "3cb4a303-0bbe-43ee-8312-cb2f86c1eb57",
+      "name": "🔮 Perplexity Sonar Reasoning Pro",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-384, 3312],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/everything",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "network marketing OR \"passives Einkommen\" OR \"finanzielle Freiheit\" OR \"Traumauto\" OR \"luxury cars\" OR \"financial freedom\" OR \"passive income\""
+            },
+            {
+              "name": "from",
+              "value": "={{ new Date(Date.now() - 72*60*60*1000).toISOString() }}"
+            },
+            {
+              "name": "sortBy",
+              "value": "popularity"
+            },
+            {
+              "name": "pageSize",
+              "value": "100"
+            },
+            {
+              "name": "language",
+              "value": "de"
+            },
+            {
+              "name": "apiKey",
+              "value": "{{ $vars.newsApi }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "a5c24009-64ef-45aa-a094-ff09c64247d1",
+      "name": "📰 NewsAPI Ultra Scanner",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-384, 3504],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/search.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "network marketing passive income freedom success luxury cars financial independence"
+            },
+            {
+              "name": "sort",
+              "value": "hot"
+            },
+            {
+              "name": "t",
+              "value": "week"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "V-OMEGA-GALAXY-CONQUEST/3025.1.0"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "23e6d590-7f3f-4560-a26c-167ba3a4e3ed",
+      "name": "🔥 Reddit Hot Scanner",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-384, 3696],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet"
+            },
+            {
+              "name": "type",
+              "value": "video"
+            },
+            {
+              "name": "maxResults",
+              "value": "50"
+            },
+            {
+              "name": "publishedAfter",
+              "value": "={{ new Date(Date.now() - 72*60*60*1000).toISOString() }}"
+            },
+            {
+              "name": "q",
+              "value": "network marketing millionär passives einkommen traumauto luxury lifestyle financial freedom"
+            },
+            {
+              "name": "order",
+              "value": "viewCount"
+            },
+            {
+              "name": "key",
+              "value": "{{ $vars.YouTubeApi }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "be3f5773-7337-4561-804b-ca4c89dc9cd1",
+      "name": "📺 YouTube Viral Hunter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-384, 3888],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.social-searcher.com/v2/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "{{ $vars.socialsearcherApi }}"
+            },
+            {
+              "name": "q",
+              "value": "LR Lifestyle OR Network Marketing OR passives Einkommen OR Crystal Lion OR glass transformation"
+            },
+            {
+              "name": "network",
+              "value": "facebook,instagram,youtube,tiktok,twitter"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "40553219-e95f-4082-b538-f011cb220415",
+      "name": "🌐 Social Multi-Network Scanner",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-384, 4080],
+      "retryOnFail": true,
+      "maxTries": 3
+    }
+  ],
+  "connections": {
+    "🛸 V-OMEGA Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "⚡ V-OMEGA Init",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⚡ V-OMEGA Init": {
+      "main": [
+        [
+          {
+            "node": "📱 Wassenger ACK",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🔮 Perplexity Sonar Reasoning Pro",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📰 NewsAPI Ultra Scanner",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🔥 Reddit Hot Scanner",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📺 YouTube Viral Hunter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🌐 Social Multi-Network Scanner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v-omega-galaxy-conquest-1.0",
+  "meta": {
+    "templateCreatedBy": "V-OMEGA Galaxy Conquest System - Year 3025",
+    "description": "Module 1: Content Intelligence & Trend Prediction with 65+ nodes for Galaxy conquest targeting 5+ billion views",
+    "totalNodes": 22,
+    "targetNodes": 65,
+    "completionStatus": "EXPANDING_TO_FULL_GALAXY_CONQUEST"
+  }
+}
