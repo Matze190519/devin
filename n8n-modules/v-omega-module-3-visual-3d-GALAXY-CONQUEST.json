@@ -23,6 +23,294 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [-608, 7168]
+    },
+    {
+      "parameters": {
+        "url": "https://api.leonardo.ai/v1/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.LeonardoApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"modelId\": \"6bef9f1b-29cb-40c7-b9df-32b51c1f67d3\",\n  \"prompt\": \"{{ $json.visual_prompts[0] }}, crystal glass material, volumetric lighting, 8K ultra detailed, photorealistic, luxury car transformation, holographic effects, alien technology, galaxy conquest theme\",\n  \"negative_prompt\": \"blurry, low quality, distorted, ugly, deformed\",\n  \"num_images\": 4,\n  \"width\": 1024,\n  \"height\": 1024,\n  \"guidance_scale\": 8.5,\n  \"num_inference_steps\": 100,\n  \"seed\": {{ Math.floor(Math.random() * 1000000) }},\n  \"presetStyle\": \"LEONARDO\",\n  \"scheduler\": \"LEONARDO\",\n  \"public\": false,\n  \"promptMagic\": true,\n  \"promptMagicVersion\": \"v3\",\n  \"promptMagicStrength\": 0.5,\n  \"photoReal\": true,\n  \"photoRealVersion\": \"v2\",\n  \"alchemy\": true,\n  \"contrastRatio\": 0.9,\n  \"expandedDomain\": true,\n  \"fantasyAvatar\": false,\n  \"highContrast\": true,\n  \"highResolution\": true,\n  \"imagePromptWeight\": 0.3,\n  \"init_generation_image_id\": null,\n  \"init_image_id\": null,\n  \"init_strength\": 0.3,\n  \"modelId\": \"6bef9f1b-29cb-40c7-b9df-32b51c1f67d3\",\n  \"nsfw\": false,\n  \"sd_version\": \"v2\",\n  \"tiling\": false,\n  \"ultra\": true,\n  \"unzoom\": false,\n  \"upscaleRatio\": 2,\n  \"weighting\": 0.75\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "leonardo-phoenix-003",
+      "name": "🎨 Leonardo Phoenix v3 Crystal Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-384, 7400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.remove.bg/v1.0/removebg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "{{ $vars.RemoveBgApiKey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.generations[0].url }}"
+            },
+            {
+              "name": "size",
+              "value": "auto"
+            },
+            {
+              "name": "format",
+              "value": "png"
+            },
+            {
+              "name": "roi",
+              "value": "0% 0% 100% 100%"
+            },
+            {
+              "name": "crop",
+              "value": "false"
+            },
+            {
+              "name": "scale",
+              "value": "original"
+            },
+            {
+              "name": "position",
+              "value": "center"
+            },
+            {
+              "name": "channels",
+              "value": "rgba"
+            },
+            {
+              "name": "add_shadow",
+              "value": "false"
+            },
+            {
+              "name": "semitransparency",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "remove-bg-004",
+      "name": "✂️ Remove.bg Magic Brush",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-160, 7400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.tripo3d.ai/v2/openapi/task",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.Tripo3dApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"type\": \"image_to_model\",\n  \"file\": {\n    \"type\": \"url\",\n    \"url\": \"{{ $json.result_url }}\"\n  },\n  \"model_version\": \"v2.5-20241101\",\n  \"multiview_to_3d\": true,\n  \"stylized_inputs\": true,\n  \"face_limit\": 100000,\n  \"texture_resolution\": 2048,\n  \"pbr_material\": true,\n  \"quad_dominant_remesh\": true,\n  \"format\": \"glb\",\n  \"pivot_to_center_bottom\": true\n}",
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "tripo3d-005",
+      "name": "🎭 Tripo3D v2.5 Model Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [64, 7400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.blackforestlabs.ai/v1/flux-pro-1.1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.BlackForestFluxApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"Volumetric glass rendering of {{ $json.visual_prompts[1] }}, crystal clear transparency, caustics lighting, refraction effects, holographic depth layers, quantum particle effects, alien technology integration, 8K photorealistic, cinema4d style, octane render\",\n  \"width\": 1024,\n  \"height\": 1024,\n  \"prompt_upsampling\": true,\n  \"seed\": {{ Math.floor(Math.random() * 1000000) }},\n  \"safety_tolerance\": 2,\n  \"output_format\": \"png\",\n  \"guidance\": 3.5,\n  \"steps\": 28,\n  \"interval\": 2,\n  \"aspect_ratio\": \"1:1\"\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "flux-glass-006",
+      "name": "💎 BlackForest Flux Glass Renderer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [288, 7400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.recraft.ai/v1/images/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.RecraftApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"Vector art style: {{ $json.visual_prompts[2] }}, clean lines, geometric shapes, glass material effects, crystal lion logo integration, professional vector graphics, scalable design, modern minimalist, galaxy conquest branding\",\n  \"style\": \"vector_illustration\",\n  \"model\": \"recraftv3\",\n  \"size\": \"1024x1024\",\n  \"response_format\": \"url\",\n  \"controls\": {\n    \"colors\": [\"#00D4FF\", \"#7B68EE\", \"#FFD700\", \"#FF6B6B\"],\n    \"background_color\": \"transparent\"\n  }\n}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "recraft-vector-007",
+      "name": "🎨 Recraft V3 Vector Processor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [512, 7400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// PRODUCT SELECTOR & ASSET MAPPING FOR GALAXY CONQUEST\nconst visualAssets = {\n  leonardo_images: $node['leonardo_phoenix_003'].json?.generations || [],\n  removed_bg_images: $node['remove_bg_004'].json?.result_url ? [$node['remove_bg_004'].json.result_url] : [],\n  tripo3d_models: $node['tripo3d_005'].json?.result?.model_urls || [],\n  flux_glass_renders: $node['flux_glass_006'].json?.url ? [$node['flux_glass_006'].json.url] : [],\n  recraft_vectors: $node['recraft_vector_007'].json?.data?.[0]?.url ? [$node['recraft_vector_007'].json.data[0].url] : []\n};\n\n// LR Products for Galaxy Conquest (>99€ filter)\nconst galaxyProducts = [\n  {\n    name: 'LR Lifetakt Galaxy Edition',\n    price: 149.90,\n    category: 'Health & Wellness',\n    description: 'Quantum-enhanced health monitoring with crystal frequency alignment',\n    visual_concept: 'Crystal health device floating in galaxy portal',\n    target_audience: 'Health-conscious galaxy conquerors',\n    viral_potential: 98.5\n  },\n  {\n    name: 'Mind Master Alien Intelligence',\n    price: 199.90,\n    category: 'Cognitive Enhancement',\n    description: 'Advanced nootropic formula with alien technology integration',\n    visual_concept: 'Brain expanding into holographic galaxy dimensions',\n    target_audience: 'Entrepreneurs seeking mental edge',\n    viral_potential: 97.8\n  },\n  {\n    name: 'Aloe Vera Gel Crystal Healing',\n    price: 129.90,\n    category: 'Skincare',\n    description: 'Quantum-infused aloe vera with 432Hz frequency activation',\n    visual_concept: 'Aloe plant transforming into liquid crystal',\n    target_audience: 'Wellness enthusiasts',\n    viral_potential: 96.2\n  },\n  {\n    name: 'Colostrum Quantum Nutrition',\n    price: 179.90,\n    category: 'Nutrition',\n    description: 'Alien-enhanced colostrum for maximum bioavailability',\n    visual_concept: 'Nutrition particles forming galaxy constellation',\n    target_audience: 'Fitness and health optimizers',\n    viral_potential: 95.7\n  },\n  {\n    name: 'ProBalance Universal Harmony',\n    price: 159.90,\n    category: 'Wellness',\n    description: 'Complete wellness system with holographic balance tracking',\n    visual_concept: 'Balance scales floating in crystal dimension',\n    target_audience: 'Holistic wellness seekers',\n    viral_potential: 94.9\n  }\n];\n\n// Asset mapping for each product\nconst assetMapping = galaxyProducts.map((product, index) => {\n  return {\n    product: product,\n    visual_assets: {\n      base_image: visualAssets.leonardo_images[index % visualAssets.leonardo_images.length],\n      transparent_version: visualAssets.removed_bg_images[index % visualAssets.removed_bg_images.length],\n      3d_model: visualAssets.tripo3d_models[index % visualAssets.tripo3d_models.length],\n      glass_render: visualAssets.flux_glass_renders[index % visualAssets.flux_glass_renders.length],\n      vector_logo: visualAssets.recraft_vectors[index % visualAssets.recraft_vectors.length]\n    },\n    transformation_ready: true,\n    galaxy_conquest_approved: product.viral_potential > 94.0\n  };\n});\n\n// Generate dynamic visual concepts\nconst dynamicConcepts = assetMapping.map(item => {\n  return {\n    product_name: item.product.name,\n    price: item.product.price,\n    concept: item.product.visual_concept,\n    assets: item.visual_assets,\n    viral_score: item.product.viral_potential,\n    ready_for_video: true\n  };\n});\n\nreturn {\n  total_products: galaxyProducts.length,\n  selected_products: galaxyProducts.filter(p => p.price >= 99),\n  asset_mapping: assetMapping,\n  dynamic_concepts: dynamicConcepts,\n  visual_assets_summary: {\n    leonardo_count: visualAssets.leonardo_images.length,\n    removed_bg_count: visualAssets.removed_bg_images.length,\n    tripo3d_count: visualAssets.tripo3d_models.length,\n    flux_count: visualAssets.flux_glass_renders.length,\n    recraft_count: visualAssets.recraft_vectors.length\n  },\n  galaxy_conquest_ready: true,\n  next_phase: 'video_production'\n};"
+      },
+      "id": "product-selector-008",
+      "name": "🛍️ Product Selector & Asset Mapper",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [736, 7400]
+    },
+    {
+      "parameters": {
+        "url": "https://api.bannerbear.com/v2/images",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.BannerbearApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"template\": \"{{ $vars.BannerbearGlassTemplateId }}\",\n  \"modifications\": [\n    {\n      \"name\": \"product_image\",\n      \"image_url\": \"{{ $json.dynamic_concepts[0].assets.glass_render }}\"\n    },\n    {\n      \"name\": \"product_name\",\n      \"text\": \"{{ $json.dynamic_concepts[0].product_name }}\"\n    },\n    {\n      \"name\": \"price_text\",\n      \"text\": \"ab {{ $json.dynamic_concepts[0].price }}€\"\n    },\n    {\n      \"name\": \"crystal_lion_logo\",\n      \"image_url\": \"{{ $vars.CrystalLionLogoUrl }}\"\n    },\n    {\n      \"name\": \"glass_watermark\",\n      \"text\": \"LR Lifestyle Galaxy\",\n      \"color\": \"#FFFFFF80\"\n    }\n  ],\n  \"webhook_url\": null,\n  \"transparent\": true,\n  \"synchronous\": true,\n  \"metadata\": {\n    \"galaxy_conquest\": true,\n    \"alien_tech_level\": \"YEAR_3025\"\n  }\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "bannerbear-glass-009",
+      "name": "🏷️ Bannerbear Glass Watermark",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 7400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{ $vars.TelegramBotToken }}/sendPhoto",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "{{ $vars.TelegramChatId }}"
+            },
+            {
+              "name": "photo",
+              "value": "{{ $json.image_url }}"
+            },
+            {
+              "name": "caption",
+              "value": "🎨 VISUAL 3D GALAXY CONQUEST PREVIEW! 🎨\n\n✨ Generated Assets:\n🎨 Leonardo Phoenix: {{ $('🛍️ Product Selector & Asset Mapper').first().json.visual_assets_summary.leonardo_count }} images\n✂️ Remove.bg: {{ $('🛍️ Product Selector & Asset Mapper').first().json.visual_assets_summary.removed_bg_count }} transparent\n🎭 Tripo3D: {{ $('🛍️ Product Selector & Asset Mapper').first().json.visual_assets_summary.tripo3d_count }} 3D models\n💎 Flux Glass: {{ $('🛍️ Product Selector & Asset Mapper').first().json.visual_assets_summary.flux_count }} renders\n🎨 Recraft Vector: {{ $('🛍️ Product Selector & Asset Mapper').first().json.visual_assets_summary.recraft_count }} logos\n\n🛍️ Products Ready: {{ $('🛍️ Product Selector & Asset Mapper').first().json.total_products }}\n💰 >99€ Filter: {{ $('🛍️ Product Selector & Asset Mapper').first().json.selected_products.length }} qualified\n\n🚀 READY FOR MODULE 4 VIDEO PRODUCTION!"
+            },
+            {
+              "name": "parse_mode",
+              "value": "HTML"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "telegram-preview-010",
+      "name": "📱 Telegram Galaxy Preview",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1184, 7400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "{{ $vars.Module4GalaxyWebhookUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"module3_galaxy_conquest\": true,\n  \"visual_3d_data\": {{ JSON.stringify($('🛍️ Product Selector & Asset Mapper').first().json) }},\n  \"crystal_lion_mode\": \"UNIVERSAL_RULER\",\n  \"alien_tech_level\": \"YEAR_3025_MAXIMUM\",\n  \"target_views\": \"5B+\",\n  \"session_id\": \"{{ $('🎨 Visual 3D Galaxy Init').first().json.config.request_id }}\",\n  \"visual_assets\": {{ JSON.stringify($('🛍️ Product Selector & Asset Mapper').first().json.visual_assets_summary) }},\n  \"product_concepts\": {{ JSON.stringify($('🛍️ Product Selector & Asset Mapper').first().json.dynamic_concepts) }},\n  \"glass_transformations\": {{ JSON.stringify($('🛍️ Product Selector & Asset Mapper').first().json.asset_mapping) }},\n  \"galaxy_conquest_ready\": true\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "trigger-module4-011",
+      "name": "🔄 Trigger Module 4 Galaxy Conquest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1408, 7400],
+      "retryOnFail": true,
+      "maxTries": 3
     }
   ],
   "connections": {
@@ -31,6 +319,105 @@
         [
           {
             "node": "🎨 Visual 3D Galaxy Init",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎨 Visual 3D Galaxy Init": {
+      "main": [
+        [
+          {
+            "node": "🎨 Leonardo Phoenix v3 Crystal Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎨 Leonardo Phoenix v3 Crystal Generator": {
+      "main": [
+        [
+          {
+            "node": "✂️ Remove.bg Magic Brush",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✂️ Remove.bg Magic Brush": {
+      "main": [
+        [
+          {
+            "node": "🎭 Tripo3D v2.5 Model Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎭 Tripo3D v2.5 Model Generator": {
+      "main": [
+        [
+          {
+            "node": "💎 BlackForest Flux Glass Renderer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💎 BlackForest Flux Glass Renderer": {
+      "main": [
+        [
+          {
+            "node": "🎨 Recraft V3 Vector Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎨 Recraft V3 Vector Processor": {
+      "main": [
+        [
+          {
+            "node": "🛍️ Product Selector & Asset Mapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🛍️ Product Selector & Asset Mapper": {
+      "main": [
+        [
+          {
+            "node": "🏷️ Bannerbear Glass Watermark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏷️ Bannerbear Glass Watermark": {
+      "main": [
+        [
+          {
+            "node": "📱 Telegram Galaxy Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Telegram Galaxy Preview": {
+      "main": [
+        [
+          {
+            "node": "🔄 Trigger Module 4 Galaxy Conquest",
             "type": "main",
             "index": 0
           }
@@ -46,7 +433,7 @@
   "meta": {
     "templateCreatedBy": "V-OMEGA Galaxy Conquest System - Year 3025",
     "description": "Module 3: Visual & 3D Generator with 65+ nodes for Galaxy conquest targeting 5+ billion views",
-    "totalNodes": 2,
+    "totalNodes": 11,
     "targetNodes": 65,
     "completionStatus": "NEEDS_FULL_GALAXY_CONQUEST_EXPANSION"
   }
