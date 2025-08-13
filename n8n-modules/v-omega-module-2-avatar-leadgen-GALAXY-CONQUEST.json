@@ -239,6 +239,137 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [1184, 4400]
+    },
+    {
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.HubSpotApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"properties\": {\n    \"email\": \"{{ $json.lead_profile.email }}\",\n    \"firstname\": \"{{ $json.lead_profile.name.split(' ')[0] }}\",\n    \"lastname\": \"{{ $json.lead_profile.name.split(' ')[1] || '' }}\",\n    \"phone\": \"{{ $json.lead_profile.phone }}\",\n    \"company\": \"{{ $json.lead_profile.company }}\",\n    \"jobtitle\": \"{{ $json.lead_profile.job_title }}\",\n    \"lifecyclestage\": \"lead\",\n    \"lead_status\": \"new\",\n    \"hs_lead_status\": \"NEW\",\n    \"crystal_lion_avatar\": \"{{ $json.avatar_assignment.name }}\",\n    \"galaxy_conquest_score\": \"{{ $json.quantum_optimization_score }}\",\n    \"dream_car\": \"{{ $json.lead_profile.dream_car || 'Not specified' }}\",\n    \"income_goal\": \"{{ $json.lead_profile.income_goal || 10000 }}\",\n    \"personality_type\": \"{{ JSON.stringify($json.reality_anchors.emotional_anchor) }}\",\n    \"conversion_probability\": \"{{ $json.galaxy_conquest_probability }}\",\n    \"holographic_background\": \"{{ $json.holographic_background }}\",\n    \"alien_tech_level\": \"YEAR_3025_MAXIMUM\"\n  }\n}",
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxAttempts": 3,
+            "waitBetween": 2000
+          }
+        }
+      },
+      "id": "hubspot-upsert-011",
+      "name": "🏢 HubSpot Galaxy Upsert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1408, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.wassenger.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Token",
+              "value": "{{ $vars.WassengerApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "{{ $json.lead_profile.phone || '+491715060008' }}"
+            },
+            {
+              "name": "message",
+              "value": "🛸 GALAXY CONQUEST AVATAR READY! 🛸\n\n👋 Hallo {{ $json.lead_profile.name }}!\n\n🦁 Crystal-Löwe hat dich ausgewählt!\n🎭 Dein Avatar: {{ $json.avatar_assignment.name }}\n💎 Galaxy Power: {{ $json.avatar_assignment.galaxy_power }}\n🌌 Hologramm-Hintergrund: {{ $json.holographic_background }}\n\n{{ $json.conversion_elements.headline }}\n\n{{ $json.conversion_elements.solution_presentation }}\n\n{{ $json.conversion_elements.urgency_scarcity }}\n\n🚀 Bereit für deine Galaxy-Eroberung?\n\n{{ $json.conversion_elements.call_to_action }}"
+            },
+            {
+              "name": "media_url",
+              "value": "{{ $json.heygen_video_url || '' }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "wassenger-media-012",
+      "name": "📱 Wassenger Media Distribution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1632, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{ $vars.TelegramBotToken }}/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "{{ $vars.TelegramChatId }}"
+            },
+            {
+              "name": "text",
+              "value": "🎭 AVATAR GALAXY CONQUEST COMPLETE! 🎭\n\n👤 Lead: {{ $json.lead_profile.name }}\n📧 Email: {{ $json.lead_profile.email }}\n🎭 Avatar: {{ $json.avatar_assignment.name }} ({{ $json.avatar_assignment.galaxy_power }})\n📊 Quantum Score: {{ $json.quantum_optimization_score }}%\n🎯 Conversion Probability: {{ $json.galaxy_conquest_probability }}\n🌌 Background: {{ $json.holographic_background }}\n\n💎 Reality Anchors:\n- Financial Gap: {{ $json.reality_anchors.financial_anchor.gap }}€\n- ROI: {{ $json.reality_anchors.financial_anchor.roi_calculation }}%\n- Dream Car: {{ $json.lead_profile.dream_car || 'Traumauto' }}\n\n🚀 HubSpot: {{ $json.hubspot_success ? '✅ Updated' : '❌ Failed' }}\n📱 WhatsApp: {{ $json.wassenger_success ? '✅ Sent' : '❌ Failed' }}\n\n✅ READY FOR MODULE 3 GALAXY CONQUEST"
+            },
+            {
+              "name": "parse_mode",
+              "value": "HTML"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "telegram-alert-013",
+      "name": "📱 Telegram Galaxy Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1856, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "{{ $vars.Module3GalaxyWebhookUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"module2_galaxy_conquest\": true,\n  \"avatar_lead_data\": {{ JSON.stringify($json) }},\n  \"crystal_lion_mode\": \"UNIVERSAL_RULER\",\n  \"alien_tech_level\": \"YEAR_3025_MAXIMUM\",\n  \"target_views\": \"5B+\",\n  \"session_id\": \"{{ $('🎭 Avatar Processor Init').first().json.config.request_id }}\",\n  \"lead_profile\": {{ JSON.stringify($json.lead_profile) }},\n  \"avatar_assignment\": {{ JSON.stringify($json.avatar_assignment) }},\n  \"reality_anchors\": {{ JSON.stringify($json.reality_anchors) }},\n  \"conversion_elements\": {{ JSON.stringify($json.conversion_elements) }},\n  \"quantum_optimization_score\": {{ $json.quantum_optimization_score }},\n  \"galaxy_conquest_probability\": \"{{ $json.galaxy_conquest_probability }}\"\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "trigger-module3-014",
+      "name": "🔄 Trigger Module 3 Galaxy Conquest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2080, 4400],
+      "retryOnFail": true,
+      "maxTries": 3
     }
   ],
   "connections": {
@@ -340,6 +471,50 @@
           }
         ]
       ]
+    },
+    "⚓ Reality Anchors": {
+      "main": [
+        [
+          {
+            "node": "🏢 HubSpot Galaxy Upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏢 HubSpot Galaxy Upsert": {
+      "main": [
+        [
+          {
+            "node": "📱 Wassenger Media Distribution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Wassenger Media Distribution": {
+      "main": [
+        [
+          {
+            "node": "📱 Telegram Galaxy Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Telegram Galaxy Alert": {
+      "main": [
+        [
+          {
+            "node": "🔄 Trigger Module 3 Galaxy Conquest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -350,7 +525,7 @@
   "meta": {
     "templateCreatedBy": "V-OMEGA Galaxy Conquest System - Year 3025",
     "description": "Module 2: Avatar Lead Generation & Personalization with 65+ nodes for Galaxy conquest targeting 5+ billion views",
-    "totalNodes": 10,
+    "totalNodes": 14,
     "targetNodes": 65,
     "completionStatus": "EXPANDING_TO_GALAXY_CONQUEST_LEVEL",
     "alienTechFeatures": [
