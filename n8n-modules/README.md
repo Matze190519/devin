@@ -31,7 +31,7 @@ This directory contains 4 n8n workflow modules for viral content generation targ
 - Tripo3D, Remove.bg, Bria AI
 - Recraft V3, Bannerbear, Klap
 - Simplified, Predis.ai, Blotato
-- Metricool, SocialSearcher, HubSpot
+- Metricool, ScrapeCreators, HubSpot
 - And 40+ more cutting-edge APIs
 
 ## Content Themes

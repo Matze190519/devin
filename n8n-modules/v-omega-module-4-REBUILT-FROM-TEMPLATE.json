@@ -470,11 +470,11 @@
         "queryParameters": {
           "parameters": [
             {
-              "name": "key",
-              "value": "{{ $vars.socialsearcherApi }}"
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.scrapeCreatorsApi }}"
             },
             {
-              "name": "q",
+              "name": "platform",
               "value": "Crystal-Löwe OR LR Lifestyle OR passives Einkommen"
             },
             {
@@ -495,8 +495,8 @@
           "timeout": 20000
         }
       },
-      "id": "socialsearcher-mentions",
-      "name": "🔍 SocialSearcher Mentions Tracking",
+      "id": "scrapecreators-trending",
+      "name": "📱 ScrapeCreators Trending Analysis",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -753,7 +753,7 @@
             "index": 0
           },
           {
-            "node": "🔍 SocialSearcher Mentions Tracking",
+            "node": "📱 ScrapeCreators Trending Analysis",
             "type": "main",
             "index": 0
           },
@@ -787,7 +787,7 @@
         ]
       ]
     },
-    "🔍 SocialSearcher Mentions Tracking": {
+    "📱 ScrapeCreators Trending Analysis": {
       "main": [
         [
           {

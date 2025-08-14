@@ -419,7 +419,7 @@
     },
     {
       "parameters": {
-        "url": "https://api.socialsearcher.com/v2/search",
+        "url": "https://api.scrapecreators.com/v1/trending",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -450,7 +450,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer {{ $vars.SocialSearcherApiKey }}"
+              "value": "Bearer {{ $vars.scrapeCreatorsApi }}"
             }
           ]
         },
@@ -459,7 +459,7 @@
         }
       },
       "id": "social-mentions-016",
-      "name": "🔍 SocialSearcher Mentions Tracker",
+      "name": "📱 ScrapeCreators Trending Tracker",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [2528, 1000],
@@ -1621,14 +1621,14 @@
       "main": [
         [
           {
-            "node": "🔍 SocialSearcher Mentions Tracker",
+            "node": "📱 ScrapeCreators Trending Tracker",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "🔍 SocialSearcher Mentions Tracker": {
+    "📱 ScrapeCreators Trending Tracker": {
       "main": [
         [
           {
@@ -2344,7 +2344,7 @@
       "PREDIS_AI_AUTO_POSTS",
       "BLOTATO_VIRAL_ENGINE_V2",
       "METRICOOL_ANALYTICS_ENGINE",
-      "SOCIALSEARCHER_MENTIONS_TRACKER",
+      "SCRAPECREATORS_TRENDING_TRACKER",
       "HUBSPOT_LEAD_INTEGRATION",
       "TELEGRAM_GALAXY_REPORT",
       "SENDGRID_EMAIL_GALAXY"

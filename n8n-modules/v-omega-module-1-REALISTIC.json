@@ -475,14 +475,14 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://api.socialsearcher.com/v2/search",
+        "method": "GET",
+        "url": "https://api.scrapecreators.com/v1/trending",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer $vars.socialSearcherApi"
+              "value": "Bearer $vars.scrapeCreatorsApi"
             }
           ]
         },
@@ -490,16 +490,16 @@
         "queryParameters": {
           "parameters": [
             {
-              "name": "q",
-              "value": "LR Health Beauty OR network marketing success OR passive income 2025"
+              "name": "platform",
+              "value": "tiktok"
             },
             {
-              "name": "type",
-              "value": "all"
+              "name": "category",
+              "value": "lifestyle"
             },
             {
-              "name": "lang",
-              "value": "de"
+              "name": "keywords",
+              "value": "network marketing,passive income,luxury cars"
             },
             {
               "name": "limit",
@@ -509,7 +509,7 @@
         }
       },
       "id": "social-mention-monitoring",
-      "name": "👂 Social Mention Monitoring",
+      "name": "👂 ScrapeCreators Trending Monitoring",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [400, 700],

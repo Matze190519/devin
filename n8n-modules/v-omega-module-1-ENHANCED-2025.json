@@ -195,21 +195,30 @@
     },
     {
       "parameters": {
-        "url": "https://api.social-searcher.com/v2/search",
+        "url": "https://api.scrapecreators.com/v1/trending",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.scrapeCreatorsApi }}"
+            }
+          ]
+        },
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
             {
-              "name": "key",
-              "value": "{{ $vars.socialsearcherApi }}"
+              "name": "platform",
+              "value": "tiktok"
             },
             {
-              "name": "q",
-              "value": "LR Lifestyle OR Network Marketing OR Crystal Lion OR Glass Transformation OR ASMR viral"
+              "name": "category",
+              "value": "lifestyle"
             },
             {
-              "name": "network",
-              "value": "facebook,instagram,youtube,tiktok,twitter"
+              "name": "keywords",
+              "value": "LR Lifestyle,Network Marketing,Crystal Lion,Glass Transformation,ASMR viral"
             },
             {
               "name": "limit",
@@ -221,8 +230,8 @@
           "timeout": 20000
         }
       },
-      "id": "social-searcher-007",
-      "name": "🌐 Social Multi-Network",
+      "id": "scrapecreators-trending-007",
+      "name": "📱 ScrapeCreators Trending",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [600, 800],

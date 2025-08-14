@@ -269,25 +269,42 @@
     },
     {
       "parameters": {
-        "url": "https://api.social-searcher.com/v2/search",
+        "url": "https://api.scrapecreators.com/v1/trending",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.scrapeCreatorsApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
             {
-              "name": "key",
-              "value": "{{ $vars.socialsearcherApi }}"
+              "name": "platform",
+              "value": "tiktok"
             },
             {
-              "name": "q",
-              "value": "LR Lifestyle OR Network Marketing OR passives Einkommen OR Crystal Lion OR glass transformation"
+              "name": "category",
+              "value": "automotive"
             },
             {
-              "name": "network",
-              "value": "facebook,instagram,youtube,tiktok,twitter"
+              "name": "keywords",
+              "value": "LR Lifestyle,Network Marketing,passives Einkommen,Crystal Lion,glass transformation"
             },
             {
               "name": "limit",
               "value": "100"
+            },
+            {
+              "name": "timeframe",
+              "value": "7d"
             }
           ]
         },
@@ -296,7 +313,7 @@
         }
       },
       "id": "40553219-e95f-4082-b538-f011cb220415",
-      "name": "🌐 Social Multi-Network Scanner",
+      "name": "🌐 ScrapeCreators Trending Scanner",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [-384, 4080],

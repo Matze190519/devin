@@ -313,13 +313,13 @@
     {
       "parameters": {
         "method": "GET",
-        "url": "https://api.socialsearcher.com/v2/search",
+        "url": "https://api.scrapecreators.com/v1/trending",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer {{ $vars.socialsearcherApi }}"
+              "value": "Bearer {{ $vars.scrapeCreatorsApi }}"
             }
           ]
         },
@@ -327,16 +327,16 @@
         "queryParameters": {
           "parameters": [
             {
-              "name": "q",
+              "name": "platform",
+              "value": "tiktok"
+            },
+            {
+              "name": "category",
+              "value": "business"
+            },
+            {
+              "name": "keywords",
               "value": "network marketing success stories 2025"
-            },
-            {
-              "name": "type",
-              "value": "all"
-            },
-            {
-              "name": "lang",
-              "value": "de"
             },
             {
               "name": "limit",
@@ -348,8 +348,8 @@
           "timeout": 20000
         }
       },
-      "id": "social-searcher-harvester",
-      "name": "🌐 Social Searcher Harvester",
+      "id": "scrape-creators-trending-harvester",
+      "name": "📱 ScrapeCreators Trending Harvester",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [800, 500],
@@ -553,7 +553,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Advanced Content Intelligence Fusion Engine 2025\n// Combines all harvested data into viral-optimized content strategy\n\nconst perplexityData = $input.first()?.json || {};\nconst claudeContent = $input.all().find(item => item.json?.content)?.json || {};\nconst viralScores = $input.all().find(item => item.json?.viral_score)?.json || {};\nconst redditTrends = $input.all().find(item => item.json?.data?.children)?.json?.data?.children || [];\nconst youtubeTrends = $input.all().find(item => item.json?.items)?.json?.items || [];\nconst socialSearcher = $input.all().find(item => item.json?.posts)?.json?.posts || [];\nconst instagramData = $input.all().find(item => item.json?.data?.posts)?.json?.data?.posts || [];\nconst newsData = $input.all().find(item => item.json?.articles)?.json?.articles || [];\n\n// Advanced Trend Analysis\nconst trendingKeywords = [];\nconst viralPatterns = [];\nconst contentOpportunities = [];\n\n// Extract trending keywords from all sources\nredditTrends.forEach(post => {\n  if (post.data?.title) {\n    const keywords = post.data.title.toLowerCase().match(/\\b\\w{4,}\\b/g) || [];\n    trendingKeywords.push(...keywords);\n  }\n});\n\nyoutubeTrends.forEach(video => {\n  if (video.snippet?.title) {\n    const keywords = video.snippet.title.toLowerCase().match(/\\b\\w{4,}\\b/g) || [];\n    trendingKeywords.push(...keywords);\n  }\n});\n\n// Keyword frequency analysis\nconst keywordFreq = {};\ntrendingKeywords.forEach(keyword => {\n  keywordFreq[keyword] = (keywordFreq[keyword] || 0) + 1;\n});\n\nconst topKeywords = Object.entries(keywordFreq)\n  .sort(([,a], [,b]) => b - a)\n  .slice(0, 20)\n  .map(([keyword]) => keyword);\n\n// Generate viral content recommendations\nconst viralContentStrategy = {\n  timestamp: new Date().toISOString(),\n  trend_analysis: {\n    top_keywords: topKeywords,\n    trending_topics: [\n      \"passive income automation\",\n      \"network marketing success stories\",\n      \"financial freedom journey\",\n      \"dream car achievement\",\n      \"community building\"\n    ],\n    viral_patterns: [\n      \"authentic storytelling\",\n      \"before/after transformations\",\n      \"behind-the-scenes content\",\n      \"community celebrations\",\n      \"educational value\"\n    ]\n  },\n  content_recommendations: [\n    {\n      concept: \"Traumauto ab 99€ - Real Success Story\",\n      hook: \"Wie ich mit 99€ mein Traumauto finanziert habe\",\n      viral_potential: 8.7,\n      platform_optimization: {\n        tiktok: \"15-30s, vertical, trending audio\",\n        instagram: \"Carousel + Reel combo\",\n        youtube: \"60s Short with strong CTA\"\n      },\n      hashtags: [\"#traumauto\", \"#passiveincome\", \"#freiheit\", \"#networkmarketing\", \"#erfolg\"]\n    },\n    {\n      concept: \"LR Community Power - Team Building\",\n      hook: \"Warum mein LR Team wie eine Familie ist\",\n      viral_potential: 8.2,\n      platform_optimization: {\n        tiktok: \"Community moments, authentic\",\n        instagram: \"Stories + Reel series\",\n        youtube: \"Longer form storytelling\"\n      },\n      hashtags: [\"#lrteam\", \"#community\", \"#teamwork\", \"#zusammenhalt\", \"#erfolg\"]\n    },\n    {\n      concept: \"Finanzielle Freiheit Journey\",\n      hook: \"Von 0 auf finanzielle Freiheit in 12 Monaten\",\n      viral_potential: 9.1,\n      platform_optimization: {\n        tiktok: \"Timeline transformation\",\n        instagram: \"Progress tracking series\",\n        youtube: \"Detailed journey breakdown\"\n      },\n      hashtags: [\"#finanziellfreiheit\", \"#passiveincome\", \"#transformation\", \"#motivation\", \"#erfolgsgeschichte\"]\n    }\n  ],\n  mobile_optimization: {\n    aspect_ratio: \"9:16\",\n    resolution: \"1080x1920\",\n    file_size_limit: \"650MB (Instagram), 2GB (TikTok)\",\n    loading_speed: \"<3 seconds\",\n    touch_optimization: true\n  },\n  viral_score_threshold: 7.5,\n  next_module_trigger: \"avatar-leadgen-2025\"\n};\n\nreturn [viralContentStrategy];"
+        "jsCode": "// Advanced Content Intelligence Fusion Engine 2025\n// Combines all harvested data into viral-optimized content strategy\n\nconst perplexityData = $input.first()?.json || {};\nconst claudeContent = $input.all().find(item => item.json?.content)?.json || {};\nconst viralScores = $input.all().find(item => item.json?.viral_score)?.json || {};\nconst redditTrends = $input.all().find(item => item.json?.data?.children)?.json?.data?.children || [];\nconst youtubeTrends = $input.all().find(item => item.json?.items)?.json?.items || [];\nconst scrapeCreatorsTrending = $input.all().find(item => item.json?.trending_posts)?.json?.trending_posts || []; [];\nconst instagramData = $input.all().find(item => item.json?.data?.posts)?.json?.data?.posts || [];\nconst newsData = $input.all().find(item => item.json?.articles)?.json?.articles || [];\n\n// Advanced Trend Analysis\nconst trendingKeywords = [];\nconst viralPatterns = [];\nconst contentOpportunities = [];\n\n// Extract trending keywords from all sources\nredditTrends.forEach(post => {\n  if (post.data?.title) {\n    const keywords = post.data.title.toLowerCase().match(/\\b\\w{4,}\\b/g) || [];\n    trendingKeywords.push(...keywords);\n  }\n});\n\nyoutubeTrends.forEach(video => {\n  if (video.snippet?.title) {\n    const keywords = video.snippet.title.toLowerCase().match(/\\b\\w{4,}\\b/g) || [];\n    trendingKeywords.push(...keywords);\n  }\n});\n\n// Keyword frequency analysis\nconst keywordFreq = {};\ntrendingKeywords.forEach(keyword => {\n  keywordFreq[keyword] = (keywordFreq[keyword] || 0) + 1;\n});\n\nconst topKeywords = Object.entries(keywordFreq)\n  .sort(([,a], [,b]) => b - a)\n  .slice(0, 20)\n  .map(([keyword]) => keyword);\n\n// Generate viral content recommendations\nconst viralContentStrategy = {\n  timestamp: new Date().toISOString(),\n  trend_analysis: {\n    top_keywords: topKeywords,\n    trending_topics: [\n      \"passive income automation\",\n      \"network marketing success stories\",\n      \"financial freedom journey\",\n      \"dream car achievement\",\n      \"community building\"\n    ],\n    viral_patterns: [\n      \"authentic storytelling\",\n      \"before/after transformations\",\n      \"behind-the-scenes content\",\n      \"community celebrations\",\n      \"educational value\"\n    ]\n  },\n  content_recommendations: [\n    {\n      concept: \"Traumauto ab 99€ - Real Success Story\",\n      hook: \"Wie ich mit 99€ mein Traumauto finanziert habe\",\n      viral_potential: 8.7,\n      platform_optimization: {\n        tiktok: \"15-30s, vertical, trending audio\",\n        instagram: \"Carousel + Reel combo\",\n        youtube: \"60s Short with strong CTA\"\n      },\n      hashtags: [\"#traumauto\", \"#passiveincome\", \"#freiheit\", \"#networkmarketing\", \"#erfolg\"]\n    },\n    {\n      concept: \"LR Community Power - Team Building\",\n      hook: \"Warum mein LR Team wie eine Familie ist\",\n      viral_potential: 8.2,\n      platform_optimization: {\n        tiktok: \"Community moments, authentic\",\n        instagram: \"Stories + Reel series\",\n        youtube: \"Longer form storytelling\"\n      },\n      hashtags: [\"#lrteam\", \"#community\", \"#teamwork\", \"#zusammenhalt\", \"#erfolg\"]\n    },\n    {\n      concept: \"Finanzielle Freiheit Journey\",\n      hook: \"Von 0 auf finanzielle Freiheit in 12 Monaten\",\n      viral_potential: 9.1,\n      platform_optimization: {\n        tiktok: \"Timeline transformation\",\n        instagram: \"Progress tracking series\",\n        youtube: \"Detailed journey breakdown\"\n      },\n      hashtags: [\"#finanziellfreiheit\", \"#passiveincome\", \"#transformation\", \"#motivation\", \"#erfolgsgeschichte\"]\n    }\n  ],\n  mobile_optimization: {\n    aspect_ratio: \"9:16\",\n    resolution: \"1080x1920\",\n    file_size_limit: \"650MB (Instagram), 2GB (TikTok)\",\n    loading_speed: \"<3 seconds\",\n    touch_optimization: true\n  },\n  viral_score_threshold: 7.5,\n  next_module_trigger: \"avatar-leadgen-2025\"\n};\n\nreturn [viralContentStrategy];"
       },
       "id": "content-intelligence-fusion",
       "name": "🧠 Advanced Content Intelligence Fusion",

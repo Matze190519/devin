@@ -861,14 +861,14 @@
     },
     {
       "parameters": {
-        "url": "https://api.socialsearcher.com/v2/search",
+        "url": "https://api.scrapecreators.com/v1/trending",
         "authentication": "headerAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer $vars.socialSearcherApi"
+              "value": "Bearer $vars.scrapeCreatorsApi"
             },
             {
               "name": "Content-Type",
@@ -918,8 +918,8 @@
           }
         }
       },
-      "id": "socialsearcher-mentions",
-      "name": "SocialSearcher Mentions",
+      "id": "scrapecreators-mentions",
+      "name": "ScrapeCreators Mentions",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [3320, 300],
@@ -958,7 +958,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Final Analytics Computer - Calculate comprehensive metrics\nconst allData = {\n  metricool: $('Metricool Analytics').first().json,\n  socialSearcher: $('SocialSearcher Mentions').first().json,\n  hubspot: $('HubSpot Leads Upsert').first().json,\n  abTesting: $('A/B Testing Manager').first().json\n};\n\ntry {\n  const finalMetrics = {\n    // Core performance metrics\n    total_engagement: allData.metricool?.total_engagement || 0,\n    total_reach: allData.metricool?.total_reach || 0,\n    total_impressions: allData.metricool?.total_impressions || 0,\n    \n    // Viral performance\n    viral_score: Math.max(\n      allData.abTesting?.target_metrics?.min_viral_score || 0,\n      (allData.metricool?.engagement_rate || 0) * 5\n    ),\n    \n    // LR specific metrics\n    lr_brand_mentions: allData.socialSearcher?.mentions?.length || 0,\n    lr_sentiment_score: allData.socialSearcher?.sentiment_average || 0,\n    lr_leads_generated: allData.hubspot?.contacts_created || 0,\n    \n    // Content performance\n    video_completion_rate: allData.metricool?.video_metrics?.completion_rate || 0,\n    share_rate: allData.metricool?.shares / allData.metricool?.impressions || 0,\n    save_rate: allData.metricool?.saves / allData.metricool?.impressions || 0,\n    \n    // Platform breakdown\n    platform_performance: {\n      tiktok: {\n        views: allData.metricool?.tiktok_views || 0,\n        engagement: allData.metricool?.tiktok_engagement || 0\n      },\n      instagram: {\n        views: allData.metricool?.instagram_views || 0,\n        engagement: allData.metricool?.instagram_engagement || 0\n      },\n      youtube: {\n        views: allData.metricool?.youtube_views || 0,\n        engagement: allData.metricool?.youtube_engagement || 0\n      }\n    },\n    \n    // Goal tracking\n    progress_to_2_billion: {\n      current_views: (allData.metricool?.total_views || 0),\n      target_views: 2000000000,\n      percentage_complete: ((allData.metricool?.total_views || 0) / 2000000000) * 100\n    },\n    \n    // Quality indicators\n    glass_effect_performance: allData.abTesting?.lr_kpis?.glass_effect_engagement || 0,\n    lion_branding_recognition: allData.abTesting?.lr_kpis?.lion_brand_recognition || 0,\n    freedom_message_resonance: allData.abTesting?.lr_kpis?.freedom_message_resonance || 0,\n    \n    // Next cycle preparation\n    optimization_recommendations: [\n      allData.viral_score > 97.3 ? 'Scale successful content' : 'Optimize for viral threshold',\n      allData.lr_leads_generated > 100 ? 'Expand lead nurturing' : 'Improve lead generation',\n      'Continue glass transformation focus',\n      'Enhance lion branding elements'\n    ],\n    \n    // System status\n    processing_complete: true,\n    ready_for_next_cycle: allData.viral_score > 90,\n    timestamp: new Date().toISOString(),\n    \n    // Trigger data for Module 1\n    next_cycle_data: {\n      performance_insights: allData,\n      viral_score: allData.viral_score,\n      trending_topics: allData.socialSearcher?.trending || [],\n      successful_content_themes: ['glass_effects', 'lion_branding', 'freedom_message']\n    }\n  };\n  \n  return [{ json: finalMetrics }];\n  \n} catch (error) {\n  console.error('Error in final analytics computation:', error);\n  return [{\n    json: {\n      error: error.message,\n      timestamp: new Date().toISOString(),\n      processing_complete: false\n    }\n  }];\n}"
+        "jsCode": "// Final Analytics Computer - Calculate comprehensive metrics\nconst allData = {\n  metricool: $('Metricool Analytics').first().json,\n  scrapeCreators: $('ScrapeCreators Mentions').first().json,\n  hubspot: $('HubSpot Leads Upsert').first().json,\n  abTesting: $('A/B Testing Manager').first().json\n};\n\ntry {\n  const finalMetrics = {\n    // Core performance metrics\n    total_engagement: allData.metricool?.total_engagement || 0,\n    total_reach: allData.metricool?.total_reach || 0,\n    total_impressions: allData.metricool?.total_impressions || 0,\n    \n    // Viral performance\n    viral_score: Math.max(\n      allData.abTesting?.target_metrics?.min_viral_score || 0,\n      (allData.metricool?.engagement_rate || 0) * 5\n    ),\n    \n    // LR specific metrics\n    lr_brand_mentions: allData.socialSearcher?.mentions?.length || 0,\n    lr_sentiment_score: allData.socialSearcher?.sentiment_average || 0,\n    lr_leads_generated: allData.hubspot?.contacts_created || 0,\n    \n    // Content performance\n    video_completion_rate: allData.metricool?.video_metrics?.completion_rate || 0,\n    share_rate: allData.metricool?.shares / allData.metricool?.impressions || 0,\n    save_rate: allData.metricool?.saves / allData.metricool?.impressions || 0,\n    \n    // Platform breakdown\n    platform_performance: {\n      tiktok: {\n        views: allData.metricool?.tiktok_views || 0,\n        engagement: allData.metricool?.tiktok_engagement || 0\n      },\n      instagram: {\n        views: allData.metricool?.instagram_views || 0,\n        engagement: allData.metricool?.instagram_engagement || 0\n      },\n      youtube: {\n        views: allData.metricool?.youtube_views || 0,\n        engagement: allData.metricool?.youtube_engagement || 0\n      }\n    },\n    \n    // Goal tracking\n    progress_to_2_billion: {\n      current_views: (allData.metricool?.total_views || 0),\n      target_views: 2000000000,\n      percentage_complete: ((allData.metricool?.total_views || 0) / 2000000000) * 100\n    },\n    \n    // Quality indicators\n    glass_effect_performance: allData.abTesting?.lr_kpis?.glass_effect_engagement || 0,\n    lion_branding_recognition: allData.abTesting?.lr_kpis?.lion_brand_recognition || 0,\n    freedom_message_resonance: allData.abTesting?.lr_kpis?.freedom_message_resonance || 0,\n    \n    // Next cycle preparation\n    optimization_recommendations: [\n      allData.viral_score > 97.3 ? 'Scale successful content' : 'Optimize for viral threshold',\n      allData.lr_leads_generated > 100 ? 'Expand lead nurturing' : 'Improve lead generation',\n      'Continue glass transformation focus',\n      'Enhance lion branding elements'\n    ],\n    \n    // System status\n    processing_complete: true,\n    ready_for_next_cycle: allData.viral_score > 90,\n    timestamp: new Date().toISOString(),\n    \n    // Trigger data for Module 1\n    next_cycle_data: {\n      performance_insights: allData,\n      viral_score: allData.viral_score,\n      trending_topics: allData.scrapeCreators?.trending || [],\n      successful_content_themes: ['glass_effects', 'lion_branding', 'freedom_message']\n    }\n  };\n  \n  return [{ json: finalMetrics }];\n  \n} catch (error) {\n  console.error('Error in final analytics computation:', error);\n  return [{\n    json: {\n      error: error.message,\n      timestamp: new Date().toISOString(),\n      processing_complete: false\n    }\n  }];\n}"
       },
       "id": "final-analytics-computer",
       "name": "Final Analytics Computer",
@@ -1251,14 +1251,14 @@
       "main": [
         [
           {
-            "node": "SocialSearcher Mentions",
+            "node": "ScrapeCreators Mentions",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "SocialSearcher Mentions": {
+    "ScrapeCreators Mentions": {
       "main": [
         [
           {

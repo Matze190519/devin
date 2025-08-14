@@ -50,7 +50,7 @@
 - ✅ ZylaLabs Viral Comment Engine (20 comments, roar-some tone)
 - ✅ Claude Opus 4.1 (August 5, 2025 release)
 - ✅ DeepSeek R1-0528 (May 29, 2025 release)
-- ✅ ScrapeCreators, Phantombuster, SocialSearcher integration
+- ✅ ScrapeCreators, Phantombuster integration (SocialSearcher API removed - non-functional 2025)
 - ✅ Reddit Quantum, YouTube Galactic, Google Omniscient harvesting
 
 ### Module 2: Avatar Lead Gen & Personalization (V-OMEGA Enhanced)

@@ -662,14 +662,14 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://api.socialsearcher.com/v2/mentions",
+        "method": "GET",
+        "url": "https://api.scrapecreators.com/v1/trending",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer $vars.socialsearcherApi"
+              "value": "Bearer $vars.scrapeCreatorsApi"
             }
           ]
         },
