@@ -34,7 +34,7 @@
         "sendBody": true,
         "contentType": "json",
         "body": {
-          "prompt": "Epische Transformation: Kristall-Löwe erwacht zum Leben, Glas-Effekte schimmern, volumetrisches Licht, Traumauto materialisiert sich, Erfolgs-Energie, Premium-Lifestyle, mobile-optimiert 9:16",
+          "prompt": "🎬 ROAR-SOME Endless Löwe-Hologramm-Challenge-Loop: Löwe brüllt binaural 'Keine Angst vor Freiheit!', Glas-Transformation Crystal-Auto appears through portal, ASMR whisper 'Baue Team ab 99€ – Löwe-Power aktiviert!', Interactive Challenge 'Roar your dream!' user engagement, Viral Loop Cliffhanger 'Was bei Km 99?', witzig Sound Glas-brechen to freedom-portal, sudden Löwe roar for engagement spike, repetition 'Roar-some ab 99€' catchphrase, humor Löwe fails job roars to LR success, emotion Freedom journey storytelling, mobile 9:16 targeting 1M+ TikTok views",
           "image": "{{ $json.visualAssets.finalComposite }}",
           "model": "gen-4",
           "resolution": "720:1280",

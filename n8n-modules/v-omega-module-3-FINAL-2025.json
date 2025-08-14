@@ -34,7 +34,7 @@
         "sendBody": true,
         "contentType": "json",
         "body": {
-          "prompt": "Luxuriöser Kristall-Löwe mit Glas-Effekten, volumetrisches Licht, Ray-Tracing, ultra-realistisch, 3D-Rendering, Diamant-Textur, holographische Reflexionen, Premium-Lifestyle, Erfolg-Symbol, mobile-optimiert 9:16 Format",
+          "prompt": "🦁 ROAR-SOME Crystal-Löwe Glas-Auto Series: Hyperrealistisches Crystal-Löwe in Glas-Auto, fahrend durch Freiheit-Landschaft, volumetric lighting steps=100 guidance=8.5, loRA=crystal_glass_v2, witzig Löwe mit Sonnenbrille 'Roar-some passives Einkommen ab 99€!', 4K-Hologramm-Effekt optical illusion, Glas-Warp transformations, begehbare 3D-Welt appearance, Crystal-Transformation sequences, Löwe winkt witzig, Traumwagen integration ab 99€, mobile-optimized 1080x1920, unerreichbar impressive",
           "image_url": "{{ $vars.lrLogoUrl }}",
           "aspect_ratio": "9:16",
           "model": "V_3_TURBO",
