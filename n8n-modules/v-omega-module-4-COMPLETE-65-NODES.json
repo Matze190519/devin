@@ -413,17 +413,111 @@
       "main": [
         [
           {
+            "node": "klap-ai-reframe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "klap-ai-reframe": {
+      "main": [
+        [
+          {
+            "node": "predis-auto-posting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "predis-auto-posting": {
+      "main": [
+        [
+          {
             "node": "🚀 Blotato Viral Engine v2",
             "type": "main",
             "index": 0
-          },
+          }
+        ]
+      ]
+    },
+    "🚀 Blotato Viral Engine v2": {
+      "main": [
+        [
           {
-            "node": "📢 Telegram Viral Notification",
+            "node": "simplified-ugc-automation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "simplified-ugc-automation": {
+      "main": [
+        [
+          {
+            "node": "metricool-analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "metricool-analytics": {
+      "main": [
+        [
+          {
+            "node": "vsmr-production-final-assembly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vsmr-production-final-assembly": {
+      "main": [
+        [
+          {
+            "node": "galaxy-domination-filter",
             "type": "main",
             "index": 0
           },
           {
-            "node": "🧬 DNA Evolution Trigger",
+            "node": "telegram-system-complete-notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "galaxy-domination-filter": {
+      "main": [
+        [
+          {
+            "node": "trigger-galaxy-domination-loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📢 Telegram Viral Notification": {
+      "main": [
+        [
+          {
+            "node": "vsmr-production-final-assembly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧬 DNA Evolution Trigger": {
+      "main": [
+        [
+          {
+            "node": "vsmr-production-final-assembly",
             "type": "main",
             "index": 0
           }
