@@ -221,13 +221,13 @@
     },
     {
       "parameters": {
-        "url": "https://api.predis.ai/v1/posts",
+        "url": "https://api.blotato.com/v1/upload",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
-              "name": "Authorization",
-              "value": "Bearer {{ $vars.predisApi }}"
+              "name": "blotato-api-key",
+              "value": "{{ $vars.blotatoApi }}"
             },
             {
               "name": "Content-Type",
@@ -237,13 +237,13 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"video_url\": \"{{ $json.final_video_url }}\",\n  \"platforms\": [\"tiktok\", \"instagram\", \"youtube\"],\n  \"caption\": \"🦁 Crystal-Löwe Transformation! {{ $json.viral_caption || 'Traumauto ab 99€ - Link in Bio!' }}\\n\\n#crystallion #glasstransformation #passiveseinkommen #traumauto #asmr #lrlifestyle #networkmarketing #erfolg #freiheit #vsmr\",\n  \"schedule_time\": \"{{ new Date(Date.now() + 5*60*1000).toISOString() }}\",\n  \"auto_hashtags\": true,\n  \"aspect_ratio\": \"9:16\",\n  \"ugc_improvements\": true\n}",
+        "jsonBody": "{\n  \"video_url\": \"{{ $json.final_video_url }}\",\n  \"platforms\": {\n    \"tiktok\": {\n      \"enabled\": true,\n      \"caption\": \"🦁 Crystal-Löwe explodiert aus 4D-Hologramm! Traumauto ab 99€ materialisiert sich ✨ #crystallion #glasstransformation #passiveseinkommen #traumauto #asmr #lrlifestyle\",\n      \"hashtags\": [\"#crystallion\", \"#glasstransformation\", \"#passiveseinkommen\", \"#traumauto\", \"#asmr\", \"#lrlifestyle\", \"#networkmarketing\", \"#erfolg\", \"#freiheit\", \"#vsmr\"],\n      \"auto_publish\": true,\n      \"faceless_video\": true,\n      \"aspect_ratio\": \"9:16\",\n      \"enhanced_avatars\": true,\n      \"voiceovers\": true,\n      \"3d_depth\": true\n    },\n    \"instagram\": {\n      \"enabled\": true,\n      \"reels\": true,\n      \"stories\": true,\n      \"caption\": \"🦁 Glas-DNA verwandelt Realität - Passives Einkommen fließt wie flüssiger Diamant 💎 #lrlifestyle #networkmarketing #erfolg #freiheit #crystallion\",\n      \"auto_publish\": true,\n      \"ugc_improvements\": true\n    },\n    \"youtube\": {\n      \"enabled\": true,\n      \"shorts\": true,\n      \"title\": \"Crystal-Löwe Transformation: Traumauto ab 99€ - Passives Einkommen System\",\n      \"description\": \"VSMR-Hypnose: Während du schläfst, baut sich dein Team auf. Begehbare 3D-Welt: Crystal-Löwe führt durch deine Zukunft.\",\n      \"tags\": [\"passives einkommen\", \"network marketing\", \"crystal lion\", \"glass transformation\", \"lr lifestyle\"],\n      \"auto_publish\": true\n    },\n    \"facebook\": {\n      \"enabled\": true,\n      \"caption\": \"🦁 Quantum-Loop: Endlos-Content generiert sich selbst! Reality-Warp: Büro löst sich auf, Villa materialisiert sich 🏰\",\n      \"auto_publish\": true\n    },\n    \"linkedin\": {\n      \"enabled\": true,\n      \"caption\": \"Professional Success Transformation: Crystal-Lion Business System für finanzielle Freiheit 💼\",\n      \"auto_publish\": true\n    },\n    \"twitter\": {\n      \"enabled\": true,\n      \"caption\": \"🦁 Crystal-Löwe roars: Traumauto ab 99€! Glass-DNA aktiviert Abundance-Mindset ✨ #CrystalLion #PassivesEinkommen\",\n      \"auto_publish\": true\n    }\n  },\n  \"schedule_time\": \"{{ new Date(Date.now() + 5*60*1000).toISOString() }}\",\n  \"viral_engine_v2\": true,\n  \"ab_tests\": true,\n  \"auto_posting\": true,\n  \"music_sync\": true,\n  \"ideas_generation\": true\n}",
         "options": {
-          "timeout": 30000
+          "timeout": 60000
         }
       },
-      "id": "predis-distribution-410",
-      "name": "📡 Predis.ai Distribution",
+      "id": "blotato-viral-engine-410",
+      "name": "🚀 Blotato Viral Engine v2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [1800, 200],
@@ -413,7 +413,7 @@
       "main": [
         [
           {
-            "node": "📡 Predis.ai Distribution",
+            "node": "🚀 Blotato Viral Engine v2",
             "type": "main",
             "index": 0
           },

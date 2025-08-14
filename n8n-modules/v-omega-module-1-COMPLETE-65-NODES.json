@@ -150,6 +150,139 @@
     },
     {
       "parameters": {
+        "url": "https://api.zylalabs.com/api/social-media-comment-generator/v1/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.zylaLabsApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"topic\": \"{{ $json.trend_topic }}\",\n  \"style\": \"engaging\",\n  \"keywords\": [\"crystal lion\", \"glass transformation\", \"passive income\", \"freedom\", \"success\"],\n  \"count\": 20,\n  \"platform\": \"multi\"\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "zylalabs-social-scanner-105",
+      "name": "🌐 ZylaLabs Social Scanner",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 500],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://phantombuster.com/api/v2/agents/{{ $vars.phantombusterAgentId }}/launch",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Phantombuster-Key",
+              "value": "{{ $vars.phantombusterApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"argument\": {\n    \"searches\": [\"crystal lion transformation\", \"glass breaking motivation\", \"passive income success\"],\n    \"numberOfResultsPerSearch\": 50,\n    \"csvName\": \"viral-trends-{{ new Date().toISOString().split('T')[0] }}\"\n  }\n}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "phantombuster-scraper-106",
+      "name": "👻 Phantombuster Scraper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 600],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.scrapecreators.com/v1/social/trending",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.scrapeCreatorsApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"platforms\": [\"tiktok\", \"instagram\", \"youtube\"],\n  \"keywords\": [\"motivation\", \"success\", \"transformation\", \"wealth\", \"freedom\"],\n  \"limit\": 100,\n  \"real_time\": true\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "scrapecreators-engine-107",
+      "name": "🔎 ScrapeCreators Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 700],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/customsearch/v1",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "{{ $vars.googleCustomSearchApi }}"
+            },
+            {
+              "name": "cx",
+              "value": "{{ $vars.googleSearchEngineId }}"
+            },
+            {
+              "name": "q",
+              "value": "crystal lion transformation viral content 2025"
+            },
+            {
+              "name": "num",
+              "value": "10"
+            },
+            {
+              "name": "sort",
+              "value": "date"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "google-custom-search-108",
+      "name": "🔍 Google Custom Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 800],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
         "url": "https://www.reddit.com/search.json",
         "sendQuery": true,
         "queryParameters": {
@@ -247,6 +380,285 @@
         },
         "sendBody": true,
         "specifyBody": "json",
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/flux-pro/v1.1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"{{ $json.viral_prompt }} - Crystal-Löwe explodiert aus 4D-Hologramm, hyperrealistisches Glas-Auto mit volumetric lighting, cinematic 4K, witzig Löwe mit Sonnenbrille winkt\",\n  \"image_size\": \"landscape_4_3\",\n  \"num_inference_steps\": 28,\n  \"guidance_scale\": 3.5,\n  \"num_images\": 1,\n  \"enable_safety_checker\": false,\n  \"output_format\": \"jpeg\",\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "fal-ai-flux-pro-content-109",
+      "name": "🎨 fal.ai Flux Pro Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 300],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/kling-video/v1.5/pro/text-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"{{ $json.viral_prompt }} - Crystal-Löwe DNA Mutation: Glas-Portal öffnet sich, begehbare Freiheit-Welt, holographic depth layers, quantum glass effects, 432Hz frequency resonance\",\n  \"aspect_ratio\": \"9:16\",\n  \"duration\": \"10\",\n  \"camera_movement\": \"dynamic\",\n  \"creativity\": 0.8,\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "fal-ai-kling-video-preview-110",
+      "name": "🎭 fal.ai Kling Video Preview",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 300],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/wonder3d",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"image_url\": \"{{ $json.flux_image_url }}\",\n  \"remove_background\": true,\n  \"foreground_ratio\": 0.85,\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "fal-ai-wonder3d-enhancement-111",
+      "name": "🎪 fal.ai Wonder3D Enhancement",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 300],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/echomimic-v2",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"audio_url\": \"{{ $json.preview_audio_url || 'https://example.com/crystal-lion-roar.mp3' }}\",\n  \"image_url\": \"{{ $json.wonder3d_image_url }}\",\n  \"pose_weight\": 1.0,\n  \"face_weight\": 1.0,\n  \"lip_weight\": 1.0,\n  \"face_expand_ratio\": 1.2,\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "fal-ai-echomimic-voice-112",
+      "name": "🎵 fal.ai EchoMimic Voice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1600, 300],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/stable-video-diffusion",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"image_url\": \"{{ $json.echomimic_image_url }}\",\n  \"motion_bucket_id\": 127,\n  \"cond_aug\": 0.02,\n  \"steps\": 25,\n  \"fps\": 6,\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "fal-ai-stable-video-113",
+      "name": "🎬 fal.ai Stable Video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1800, 300],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/triposr",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"image_url\": \"{{ $json.stable_video_thumbnail }}\",\n  \"remove_background\": true,\n  \"foreground_ratio\": 0.85,\n  \"output_format\": \"glb\",\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "fal-ai-triposr-3d-114",
+      "name": "🎯 fal.ai TripoSR 3D",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 300],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/ideogram-v2-turbo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"Crystal-Löwe Character Design: Roar-some Traumwagen ab 99€ - fahr in deine Freiheit! Typography integration, glass effects, holographic depth\",\n  \"aspect_ratio\": \"9:16\",\n  \"model\": \"V_2_TURBO\",\n  \"magic_prompt_option\": \"AUTO\",\n  \"seed\": {{ Math.floor(Math.random() * 1000000) }},\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "fal-ai-ideogram-character-115",
+      "name": "🎨 fal.ai Ideogram Character",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2200, 300],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/stable-avatar",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"image_url\": \"{{ $json.ideogram_character_url }}\",\n  \"audio_url\": \"{{ $json.preview_audio_url || 'https://example.com/crystal-lion-roar.mp3' }}\",\n  \"bbox_shift\": 0,\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "fal-ai-stable-avatar-116",
+      "name": "🎭 fal.ai Stable Avatar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2400, 300],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/fal-ai/veo-3",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.falAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"prompt\": \"{{ $json.viral_prompt }} - Quantum-Loop: Endlos-Content generiert sich selbst! Reality-Warp: Büro löst sich auf, Villa materialisiert sich\",\n  \"aspect_ratio\": \"9:16\",\n  \"duration\": 8,\n  \"loop\": true,\n  \"sync_mode\": true\n}",
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "fal-ai-veo3-generator-117",
+      "name": "🎪 fal.ai Veo3 Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2600, 300],
+      "retryOnFail": true,
+      "maxTries": 3
         "jsonBody": "{\n  \"query\": {\n    \"and\": [\n      {\n        \"operation\": \"IN\",\n        \"field_name\": \"hashtag_name\",\n        \"field_values\": [\"networkmarketing\", \"passiveincome\", \"crystallion\", \"glasstransformation\", \"asmr\", \"viral\"]\n      },\n      {\n        \"operation\": \"GTE\",\n        \"field_name\": \"create_date\",\n        \"field_values\": [\"{{ new Date(Date.now() - 72*60*60*1000).toISOString().split('T')[0] }}\"]\n      }\n    ]\n  },\n  \"max_count\": 100,\n  \"cursor\": 0\n}",
         "options": {
           "timeout": 30000
