@@ -1,0 +1,310 @@
+{
+  "name": "V-OMEGA Module 1: Advanced Content Intelligence & Viral Prediction",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "content-intelligence",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Content Intelligence Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "content-intelligence-v-omega"
+    },
+    {
+      "parameters": {
+        "model": "sonar-deep-research",
+        "messages": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "Du bist der ultimative Trend-Predictor für LR Social Media. Analysiere aktuelle Trends in Network Marketing, Lifestyle, Luxusautos, finanzielle Freiheit und passive Einkommen. Fokus auf TikTok, Instagram Reels, YouTube Shorts. Identifiziere viral-potenzielle Themen mit Löwe-Branding-Potential. Zielgruppe: 25-45 Jahre, Lifestyle-orientiert, Erfolg-motiviert."
+            },
+            {
+              "role": "user", 
+              "content": "Recherchiere die TOP 10 viral trends für LR Network Marketing Content heute ({{ new Date().toISOString().split('T')[0] }}). Fokus: Traumautos ab 99€, finanzielle Freiheit, passive Einkommen, Lifestyle. Analysiere Hashtags, Engagement-Raten, und Content-Formate. Gib konkrete Content-Ideen mit viral-Potenzial zurück."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 4000
+        }
+      },
+      "id": "perplexity-trend-analysis",
+      "name": "Perplexity Deep Research",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [460, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "perplexityApi",
+          "name": "$vars.perplexityApi"
+        }
+      },
+      "requestOptions": {
+        "url": "https://api.perplexity.ai/chat/completions",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {{ $vars.perplexityApi }}"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "claude-opus-4-1-20250805",
+        "messages": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "Du bist der kreative Mastermind für LR viral content. Verwende Extended Thinking für tiefe Analyse. Erstelle 'Roar-some' Content-Ideen die authentisch, emotional und viral-optimiert sind. Fokus auf Storytelling + visuelle Effekte. Zielgruppe liebt Erfolgsgeschichten, Luxus-Lifestyle, finanzielle Transformation. Jede Idee muss mobile-first (9:16) und platform-spezifisch optimiert sein."
+            },
+            {
+              "role": "user",
+              "content": "Basierend auf diesen Trend-Daten: {{ $json.choices[0].message.content }}\n\nErstelle 5 konkrete viral Content-Konzepte für LR. Jedes Konzept braucht:\n1. Hook (erste 3 Sekunden)\n2. Story-Arc (emotional journey)\n3. Visual-Konzept (Glas/Kristall-Effekte)\n4. Call-to-Action (Lead-Generation)\n5. Platform-Optimierung (TikTok/Instagram/YouTube)\n\nFokus: 'Traumwagen ab 99€ - fahr in deine Freiheit!' Theme mit authentischen Erfolgsgeschichten."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 4096,
+          "thinking": "extended"
+        }
+      },
+      "id": "claude-content-ideation",
+      "name": "Claude Opus 4.1 Content Creation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "anthropicApi",
+          "name": "$vars.anthropicApi"
+        }
+      },
+      "requestOptions": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {{ $vars.anthropicApi }}",
+          "anthropic-version": "2023-06-01"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek-reasoner",
+        "messages": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "Du bist der Viral-Score-Algorithmus für LR Content. Verwende Chain of Thought Reasoning für präzise Bewertung. Analysiere Content-Konzepte auf viral-Potenzial basierend auf: Emotional Impact (0-10), Visual Appeal (0-10), Authenticity (0-10), Platform Fit (0-10), Timing (0-10). Gesamtscore: 0-50. Threshold für Produktion: 35+. Gib detaillierte Begründung für jeden Score."
+            },
+            {
+              "role": "user",
+              "content": "Bewerte diese Content-Konzepte auf viral-Potenzial:\n\n{{ $json.content[0].text }}\n\nFür jedes Konzept:\n1. Emotional Impact Score (0-10)\n2. Visual Appeal Score (0-10) \n3. Authenticity Score (0-10)\n4. Platform Fit Score (0-10)\n5. Timing Score (0-10)\n6. Gesamtscore (0-50)\n7. Viral-Wahrscheinlichkeit (%)\n8. Optimierungsvorschläge\n\nNur Konzepte mit Score 35+ für Produktion freigeben."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.3,
+          "maxTokens": 4096
+        }
+      },
+      "id": "deepseek-viral-scoring",
+      "name": "DeepSeek R1 Viral Scoring",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "deepseekApi", 
+          "name": "$vars.deepseekApi"
+        }
+      },
+      "requestOptions": {
+        "url": "https://api.deepseek.com/chat/completions",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer {{ $vars.deepseekApi }}"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "operation": "largerEqual",
+            "rightValue": ""
+          },
+          "conditions": [
+            {
+              "leftValue": "{{ $json.reasoning_content.match(/Gesamtscore[:\\s]*(\\d+)/)?.[1] || 0 }}",
+              "rightValue": "35",
+              "operation": "largerEqual"
+            }
+          ],
+          "combineOperation": "any"
+        }
+      },
+      "id": "viral-threshold-filter",
+      "name": "Viral Threshold Filter (35+)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{ $vars.telegramBotToken }}/sendMessage",
+        "sendQuery": false,
+        "sendHeaders": false,
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "chat_id": "{{ $vars.telegramChatId }}",
+          "text": "🦁 V-OMEGA Module 1 SUCCESS!\n\n✅ Viral Content Approved (Score: {{ $json.reasoning_content.match(/Gesamtscore[:\\s]*(\\d+)/)?.[1] || 'N/A' }})\n\n📊 Trend Analysis: COMPLETE\n🎯 Content Concepts: GENERATED\n🔥 Viral Potential: HIGH\n\n🚀 Triggering Module 2: Avatar Lead Generation\n\nTime: {{ new Date().toLocaleString('de-DE') }}",
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "telegram-success-notification",
+      "name": "Success Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 240]
+    },
+    {
+      "parameters": {
+        "url": "{{ $vars.webhookUrlModule2 }}",
+        "sendQuery": false,
+        "sendHeaders": false,
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "trigger": "module-1-success",
+          "trendData": "{{ $node['Perplexity Deep Research'].json.choices[0].message.content }}",
+          "contentConcepts": "{{ $node['Claude Opus 4.1 Content Creation'].json.content[0].text }}",
+          "viralScore": "{{ $json.reasoning_content.match(/Gesamtscore[:\\s]*(\\d+)/)?.[1] || 0 }}",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "moduleStatus": "completed"
+        }
+      },
+      "id": "trigger-module-2",
+      "name": "Trigger Module 2",
+      "type": "n8n-nodes-base.httpRequest", 
+      "typeVersion": 4.1,
+      "position": [1340, 360]
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{ $vars.telegramBotToken }}/sendMessage",
+        "sendQuery": false,
+        "sendHeaders": false,
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "chat_id": "{{ $vars.telegramChatId }}",
+          "text": "⚠️ V-OMEGA Module 1 - Content Below Threshold\n\n❌ Viral Score: {{ $json.reasoning_content.match(/Gesamtscore[:\\s]*(\\d+)/)?.[1] || 'N/A' }} (Required: 35+)\n\n🔄 Optimization needed\n📈 Retrying with enhanced prompts\n\nTime: {{ new Date().toLocaleString('de-DE') }}",
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "telegram-optimization-needed",
+      "name": "Optimization Needed Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 480]
+    }
+  ],
+  "connections": {
+    "Content Intelligence Trigger": {
+      "main": [
+        [
+          {
+            "node": "Perplexity Deep Research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity Deep Research": {
+      "main": [
+        [
+          {
+            "node": "Claude Opus 4.1 Content Creation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Opus 4.1 Content Creation": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek R1 Viral Scoring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek R1 Viral Scoring": {
+      "main": [
+        [
+          {
+            "node": "Viral Threshold Filter (35+)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Viral Threshold Filter (35+)": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Trigger Module 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Optimization Needed Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v-omega-1-final-2025",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "lr-social-media-system"
+  },
+  "id": "v-omega-module-1-final-2025",
+  "tags": [
+    {
+      "createdAt": "2025-08-14T10:17:24.000Z",
+      "updatedAt": "2025-08-14T10:17:24.000Z",
+      "id": "lr-viral-system",
+      "name": "LR Viral System"
+    }
+  ]
+}
