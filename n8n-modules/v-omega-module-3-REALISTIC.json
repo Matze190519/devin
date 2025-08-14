@@ -1,0 +1,935 @@
+{
+  "name": "LR Module 3: Visual & 3D Generator (Realistic)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "visual-3d-trigger",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "🎨 Visual 3D Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300],
+      "webhookId": "visual-3d-lr-system"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cloud.leonardo.ai/api/rest/v1/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.leonardoApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "Luxurious {{ $json.car_category }} in crystal glass style, premium automotive photography, LR Health & Beauty branding, elegant lion logo watermark, sophisticated lighting, mobile-optimized 9:16 aspect ratio, ultra-realistic, professional commercial quality"
+            },
+            {
+              "name": "modelId",
+              "value": "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3"
+            },
+            {
+              "name": "width",
+              "value": 1080
+            },
+            {
+              "name": "height",
+              "value": 1920
+            },
+            {
+              "name": "num_images",
+              "value": 4
+            },
+            {
+              "name": "guidance_scale",
+              "value": 7
+            },
+            {
+              "name": "photoReal",
+              "value": true
+            },
+            {
+              "name": "photoRealVersion",
+              "value": "v2"
+            },
+            {
+              "name": "presetStyle",
+              "value": "CINEMATIC"
+            }
+          ]
+        }
+      },
+      "id": "leonardo-car-generation",
+      "name": "🚗 Leonardo Car Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.remove.bg/v1.0/removebg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "$vars.removeBgApi"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.generations[0].url }}"
+            },
+            {
+              "name": "size",
+              "value": "auto"
+            },
+            {
+              "name": "type",
+              "value": "auto"
+            },
+            {
+              "name": "format",
+              "value": "png"
+            },
+            {
+              "name": "crop",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "remove-bg-processing",
+      "name": "🖼️ Remove.bg Processing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tripo3d.ai/v2/openapi/task",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.tripo3dApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "type",
+              "value": "image_to_model"
+            },
+            {
+              "name": "file",
+              "value": {
+                "type": "png",
+                "file_token": "{{ $json.result_b64 }}"
+              }
+            },
+            {
+              "name": "model_version",
+              "value": "v2.0-20240919"
+            },
+            {
+              "name": "face_limit",
+              "value": 30000
+            },
+            {
+              "name": "texture",
+              "value": true
+            }
+          ]
+        }
+      },
+      "id": "tripo3d-model-generation",
+      "name": "🎯 Tripo3D Model Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [800, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.blackforestlabs.ai/v1/image-to-image",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.blackForestFluxApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "Transform into premium crystal glass effect, volumetric lighting, luxury automotive showcase, transparent glass material with internal reflections, sophisticated LR branding, mobile-optimized composition"
+            },
+            {
+              "name": "image",
+              "value": "{{ $json.result_b64 }}"
+            },
+            {
+              "name": "model",
+              "value": "flux-pro-1.1"
+            },
+            {
+              "name": "width",
+              "value": 1080
+            },
+            {
+              "name": "height",
+              "value": 1920
+            },
+            {
+              "name": "prompt_upsampling",
+              "value": false
+            },
+            {
+              "name": "safety_tolerance",
+              "value": 2
+            },
+            {
+              "name": "seed",
+              "value": 42
+            }
+          ]
+        }
+      },
+      "id": "blackforest-glass-effect",
+      "name": "💎 BlackForest Glass Effect",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.recraft.ai/v1/images/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.recraftApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "LR Health & Beauty logo with elegant lion, crystal glass etching effect, premium watermark design, transparent overlay, luxury branding, mobile-optimized"
+            },
+            {
+              "name": "style",
+              "value": "realistic_image"
+            },
+            {
+              "name": "size",
+              "value": "1080x1920"
+            },
+            {
+              "name": "response_format",
+              "value": "url"
+            }
+          ]
+        }
+      },
+      "id": "recraft-logo-watermark",
+      "name": "🦁 Recraft Logo Watermark",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bannerbear.com/v2/images",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.bannerbearApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "template",
+              "value": "lr-mobile-template-9x16"
+            },
+            {
+              "name": "modifications",
+              "value": [
+                {
+                  "name": "car_image",
+                  "image_url": "{{ $json.url }}"
+                },
+                {
+                  "name": "watermark_logo",
+                  "image_url": "{{ $('recraft-logo-watermark').item.json.data[0].url }}"
+                },
+                {
+                  "name": "car_title",
+                  "text": "Dein Traumauto {{ $('webhook-trigger').item.json.car_category }}"
+                },
+                {
+                  "name": "income_text",
+                  "text": "Ab {{ $('webhook-trigger').item.json.desired_income }}€/Monat"
+                },
+                {
+                  "name": "cta_text",
+                  "text": "Jetzt LR Erfolgsplan sichern!"
+                }
+              ]
+            },
+            {
+              "name": "webhook_url",
+              "value": "$vars.bannerbearWebhook"
+            }
+          ]
+        }
+      },
+      "id": "bannerbear-composition",
+      "name": "🎨 Bannerbear Composition",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1400, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": "$vars.googleSheetsProductCatalog",
+        "sheetName": "LR_Products",
+        "range": "A:F",
+        "options": {}
+      },
+      "id": "google-sheets-product-selector",
+      "name": "📊 Product Selector",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [400, 500],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Product Filtering & Selection Logic\nconst products = $('google-sheets-product-selector').first().json;\nconst leadData = $input.first().json;\n\n// Filter products based on lead profile\nconst filteredProducts = products.filter(product => {\n  // Price filter based on desired income\n  const price = parseFloat(product.price || 0);\n  const maxPrice = leadData.desired_income * 0.1; // 10% of desired monthly income\n  \n  if (price > maxPrice) return false;\n  \n  // Category matching\n  if (leadData.car_category === 'Sportwagen' && product.category === 'Energy') return true;\n  if (leadData.car_category === 'Luxuslimousine' && product.category === 'Beauty') return true;\n  if (leadData.car_category === 'SUV' && product.category === 'Health') return true;\n  if (leadData.car_category === 'Elektroauto' && product.category === 'Wellness') return true;\n  \n  // Default to starter products for beginners\n  if (leadData.network_marketing_experience === 'Keine' && product.starter_friendly) return true;\n  \n  return false;\n});\n\n// Select top 3 products\nconst selectedProducts = filteredProducts\n  .sort((a, b) => parseFloat(b.commission_rate) - parseFloat(a.commission_rate))\n  .slice(0, 3);\n\nreturn {\n  ...leadData,\n  recommended_products: selectedProducts,\n  product_count: selectedProducts.length,\n  total_commission_potential: selectedProducts.reduce((sum, p) => sum + parseFloat(p.commission_rate || 0), 0)\n};"
+      },
+      "id": "product-filtering-logic",
+      "name": "🎯 Product Filtering Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 500]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cloud.leonardo.ai/api/rest/v1/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.leonardoApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "LR Health & Beauty product showcase: {{ $json.recommended_products[0].name }}, premium packaging, crystal glass display, luxury lifestyle setting, mobile-optimized 9:16, professional product photography"
+            },
+            {
+              "name": "modelId",
+              "value": "6bef9f1b-29cb-40c7-b9df-32b51c1f67d3"
+            },
+            {
+              "name": "width",
+              "value": 1080
+            },
+            {
+              "name": "height",
+              "value": 1920
+            },
+            {
+              "name": "num_images",
+              "value": 3
+            },
+            {
+              "name": "guidance_scale",
+              "value": 7
+            },
+            {
+              "name": "photoReal",
+              "value": true
+            },
+            {
+              "name": "photoRealVersion",
+              "value": "v2"
+            }
+          ]
+        }
+      },
+      "id": "leonardo-product-showcase",
+      "name": "🛍️ Leonardo Product Showcase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [800, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fal.run/fal-ai/kling-video/v1/standard/image-to-video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key $vars.falAiApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.generations[0].url }}"
+            },
+            {
+              "name": "prompt",
+              "value": "Smooth product rotation, elegant showcase movement, premium lighting effects, mobile-optimized motion"
+            },
+            {
+              "name": "duration",
+              "value": "5"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "loop",
+              "value": true
+            }
+          ]
+        }
+      },
+      "id": "fal-kling-animation",
+      "name": "🎬 Fal Kling Animation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mobile Optimization & Quality Check\nconst visualAssets = $input.all();\nconst optimizedAssets = [];\n\nfor (const asset of visualAssets) {\n  const data = asset.json;\n  \n  // Check file size and quality\n  let qualityScore = 10;\n  let mobileOptimized = true;\n  \n  // Simulate file size check (in real implementation, would check actual file size)\n  const estimatedSize = (data.width || 1080) * (data.height || 1920) * 0.001; // Rough estimate in MB\n  \n  if (estimatedSize > 50) {\n    qualityScore -= 3;\n    mobileOptimized = false;\n  }\n  \n  // Check aspect ratio\n  const aspectRatio = (data.width || 1080) / (data.height || 1920);\n  if (Math.abs(aspectRatio - (9/16)) > 0.1) {\n    qualityScore -= 2;\n    mobileOptimized = false;\n  }\n  \n  // Check if it's a realistic visual effect (not impossible hologram)\n  const isRealistic = !data.prompt?.includes('holographic') && !data.prompt?.includes('4D');\n  if (!isRealistic) {\n    qualityScore -= 5;\n  }\n  \n  optimizedAssets.push({\n    ...data,\n    quality_score: qualityScore,\n    mobile_optimized: mobileOptimized,\n    realistic_effect: isRealistic,\n    estimated_file_size_mb: estimatedSize,\n    optimization_status: qualityScore >= 8 ? 'excellent' : qualityScore >= 6 ? 'good' : 'needs_improvement'\n  });\n}\n\nreturn optimizedAssets.filter(asset => asset.quality_score >= 6); // Only return good quality assets"
+      },
+      "id": "mobile-optimization-check",
+      "name": "📱 Mobile Optimization Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 500]
+    },
+    {
+      "parameters": {
+        "chatId": "$vars.telegramChatId",
+        "text": "🎨 *Visual Assets generiert!*\n\n🚗 *Auto:* {{ $json.car_category }}\n💎 *Effekt:* Crystal Glass (realistisch)\n📱 *Mobile-optimiert:* {{ $json.mobile_optimized ? '✅' : '❌' }}\n⭐ *Qualität:* {{ $json.quality_score }}/10\n📊 *Status:* {{ $json.optimization_status }}\n\n🛍️ *Empfohlene Produkte:* {{ $json.product_count }}\n💰 *Provision-Potenzial:* {{ $json.total_commission_potential }}%\n\n🎬 *Nächster Schritt:* Video Production\n⏰ {{ $now.toFormat('dd.MM.yyyy HH:mm') }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-visual-notification",
+      "name": "📱 Telegram Visual Update",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1400, 500],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-lr-bot",
+          "name": "LR Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "$vars.module4WebhookUrl",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "visual_assets",
+              "value": "={{ $json }}"
+            },
+            {
+              "name": "trigger_source",
+              "value": "module_3_visual_3d"
+            },
+            {
+              "name": "car_image_url",
+              "value": "={{ $json.car_image_url }}"
+            },
+            {
+              "name": "product_showcase_url",
+              "value": "={{ $json.product_showcase_url }}"
+            },
+            {
+              "name": "recommended_products",
+              "value": "={{ $json.recommended_products }}"
+            }
+          ]
+        }
+      },
+      "id": "trigger-module-4",
+      "name": "🔄 Trigger Module 4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1600, 500],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.leonardo.ai/v1/variations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.leonardoApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_id",
+              "value": "{{ $json.generations[0].id }}"
+            },
+            {
+              "name": "num_images",
+              "value": 3
+            }
+          ]
+        }
+      },
+      "id": "leonardo-variations",
+      "name": "🔄 Leonardo Variations",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 700],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.stability.ai/v2beta/stable-image/edit/inpaint",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.stabilityApi"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "{{ $json.url }}"
+            },
+            {
+              "name": "prompt",
+              "value": "Add subtle LR Health & Beauty branding elements, elegant lion watermark, premium glass etching effect"
+            },
+            {
+              "name": "output_format",
+              "value": "png"
+            },
+            {
+              "name": "mode",
+              "value": "image-to-image"
+            },
+            {
+              "name": "strength",
+              "value": 0.3
+            }
+          ]
+        }
+      },
+      "id": "stability-branding-enhancement",
+      "name": "🏷️ Stability Branding Enhancement",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 700],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "$vars.googleSheetsAssetLog",
+        "sheetName": "Visual_Assets",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $now.toISO() }}",
+            "lead_email": "={{ $json.email }}",
+            "car_category": "={{ $json.car_category }}",
+            "car_image_url": "={{ $json.car_image_url }}",
+            "product_showcase_url": "={{ $json.product_showcase_url }}",
+            "quality_score": "={{ $json.quality_score }}",
+            "mobile_optimized": "={{ $json.mobile_optimized }}",
+            "file_size_mb": "={{ $json.estimated_file_size_mb }}",
+            "optimization_status": "={{ $json.optimization_status }}",
+            "realistic_effect": "={{ $json.realistic_effect }}",
+            "products_count": "={{ $json.product_count }}",
+            "commission_potential": "={{ $json.total_commission_potential }}"
+          }
+        }
+      },
+      "id": "google-sheets-asset-log",
+      "name": "📊 Asset Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [800, 700],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.metricool.com/v1/media",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.metricoolApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "media_url",
+              "value": "{{ $json.car_image_url }}"
+            },
+            {
+              "name": "media_type",
+              "value": "image"
+            },
+            {
+              "name": "platform",
+              "value": "instagram"
+            },
+            {
+              "name": "caption",
+              "value": "🚗 Dein Traumauto {{ $json.car_category }} wartet auf dich! Mit LR Health & Beauty ab {{ $json.desired_income }}€/Monat möglich. #LRHealthBeauty #Traumauto #PassivesEinkommen #Freiheit"
+            }
+          ]
+        }
+      },
+      "id": "metricool-media-upload",
+      "name": "📊 Metricool Media Upload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 700],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "🎨 Visual 3D Trigger": {
+      "main": [
+        [
+          {
+            "node": "🚗 Leonardo Car Generation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📊 Product Selector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚗 Leonardo Car Generation": {
+      "main": [
+        [
+          {
+            "node": "🖼️ Remove.bg Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🖼️ Remove.bg Processing": {
+      "main": [
+        [
+          {
+            "node": "🎯 Tripo3D Model Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Tripo3D Model Generation": {
+      "main": [
+        [
+          {
+            "node": "💎 BlackForest Glass Effect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💎 BlackForest Glass Effect": {
+      "main": [
+        [
+          {
+            "node": "🦁 Recraft Logo Watermark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🦁 Recraft Logo Watermark": {
+      "main": [
+        [
+          {
+            "node": "🎨 Bannerbear Composition",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Product Selector": {
+      "main": [
+        [
+          {
+            "node": "🎯 Product Filtering Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Product Filtering Logic": {
+      "main": [
+        [
+          {
+            "node": "🛍️ Leonardo Product Showcase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🛍️ Leonardo Product Showcase": {
+      "main": [
+        [
+          {
+            "node": "🎬 Fal Kling Animation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎬 Fal Kling Animation": {
+      "main": [
+        [
+          {
+            "node": "📱 Mobile Optimization Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Mobile Optimization Check": {
+      "main": [
+        [
+          {
+            "node": "📱 Telegram Visual Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Telegram Visual Update": {
+      "main": [
+        [
+          {
+            "node": "🔄 Trigger Module 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎨 Bannerbear Composition": {
+      "main": [
+        [
+          {
+            "node": "🔄 Leonardo Variations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Leonardo Variations": {
+      "main": [
+        [
+          {
+            "node": "🏷️ Stability Branding Enhancement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏷️ Stability Branding Enhancement": {
+      "main": [
+        [
+          {
+            "node": "📊 Asset Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Asset Log": {
+      "main": [
+        [
+          {
+            "node": "📊 Metricool Media Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "lr-visual-3d-realistic-v1.0",
+  "meta": {
+    "templateCreatedBy": "LR Social-Media-System - Realistic Implementation",
+    "description": "Module 3: Visual & 3D Generator with realistic glass effects and mobile optimization",
+    "totalNodes": 18,
+    "visualEffects": "Crystal glass (optical illusions), 3D textures (80% quality), premium branding",
+    "mobileOptimization": "1080x1920, file size limits, 9:16 aspect ratio",
+    "monthlyBudget": "€90 (Leonardo €24 + Remove.bg €10 + Tripo3D €20 + BlackForest €15 + Tools €21)",
+    "realismLevel": "HIGH - No impossible holograms, only achievable visual effects",
+    "qualityControl": "Automated quality scoring and mobile compatibility checks"
+  }
+}

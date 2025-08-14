@@ -1,0 +1,928 @@
+{
+  "name": "LR Module 2: Avatar Lead Gen & Personalization (Realistic)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "avatar-leadgen-trigger",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "🎭 Avatar Lead Gen Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300],
+      "webhookId": "avatar-leadgen-lr-system"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tally.so/forms",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.tallyApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "🚗 Dein Traumauto ab 99€ - LR Opportunity Check"
+            },
+            {
+              "name": "description",
+              "value": "Entdecke, wie du mit LR Health & Beauty dein Traumauto finanzieren und finanzielle Freiheit erreichen kannst!"
+            },
+            {
+              "name": "fields",
+              "value": [
+                {
+                  "type": "text",
+                  "label": "Vorname",
+                  "required": true
+                },
+                {
+                  "type": "email",
+                  "label": "E-Mail",
+                  "required": true
+                },
+                {
+                  "type": "select",
+                  "label": "Traumauto Kategorie",
+                  "options": ["Sportwagen", "SUV", "Luxuslimousine", "Elektroauto", "Cabrio"],
+                  "required": true
+                },
+                {
+                  "type": "number",
+                  "label": "Gewünschtes monatliches Einkommen (€)",
+                  "required": true
+                },
+                {
+                  "type": "select",
+                  "label": "Erfahrung mit Network Marketing",
+                  "options": ["Keine", "Wenig", "Erfahren", "Profi"],
+                  "required": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "id": "tally-lead-capture",
+      "name": "📋 Tally Lead Capture",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.snov.io/v1/get-profile-by-email",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.snovApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            }
+          ]
+        }
+      },
+      "id": "snov-lead-enrichment",
+      "name": "🔍 Snov.io Lead Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apollo.io/v1/people/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.apolloApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "reveal_personal_emails",
+              "value": true
+            }
+          ]
+        }
+      },
+      "id": "apollo-profile-search",
+      "name": "🎯 Apollo Profile Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [800, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// Personality Analysis & Avatar Matching\nconst leadData = $input.first().json;\nconst enrichedData = $input.last().json;\n\n// Analyze personality based on form responses and enriched data\nlet personalityProfile = {\n  risk_tolerance: 'medium',\n  communication_style: 'professional',\n  motivation_type: 'achievement',\n  avatar_match: 'success_mentor'\n};\n\n// Risk tolerance analysis\nif (leadData.desired_income > 5000) {\n  personalityProfile.risk_tolerance = 'high';\n  personalityProfile.avatar_match = 'luxury_lifestyle';\n} else if (leadData.desired_income < 2000) {\n  personalityProfile.risk_tolerance = 'low';\n  personalityProfile.avatar_match = 'gentle_guide';\n}\n\n// Communication style based on car preference\nif (leadData.car_category === 'Sportwagen') {\n  personalityProfile.communication_style = 'dynamic';\n  personalityProfile.motivation_type = 'excitement';\n} else if (leadData.car_category === 'Luxuslimousine') {\n  personalityProfile.communication_style = 'sophisticated';\n  personalityProfile.motivation_type = 'status';\n}\n\n// Experience level adjustment\nif (leadData.network_marketing_experience === 'Keine') {\n  personalityProfile.avatar_match = 'beginner_friendly';\n  personalityProfile.communication_style = 'educational';\n} else if (leadData.network_marketing_experience === 'Profi') {\n  personalityProfile.avatar_match = 'peer_expert';\n  personalityProfile.communication_style = 'strategic';\n}\n\nreturn {\n  ...leadData,\n  ...enrichedData,\n  personality_profile: personalityProfile,\n  avatar_script_tone: personalityProfile.communication_style,\n  recommended_approach: personalityProfile.motivation_type\n};"
+      },
+      "id": "personality-analysis",
+      "name": "🧠 Personality Analysis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.anthropicApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "claude-3-5-sonnet-20241022"
+            },
+            {
+              "name": "max_tokens",
+              "value": 3000
+            },
+            {
+              "name": "messages",
+              "value": [
+                {
+                  "role": "user",
+                  "content": "Erstelle ein personalisiertes Avatar-Script für LR Network Marketing basierend auf:\n\nLead-Daten:\n- Name: {{ $json.first_name }}\n- Traumauto: {{ $json.car_category }}\n- Gewünschtes Einkommen: {{ $json.desired_income }}€\n- NM-Erfahrung: {{ $json.network_marketing_experience }}\n- Persönlichkeitsprofil: {{ $json.personality_profile.avatar_match }}\n- Kommunikationsstil: {{ $json.avatar_script_tone }}\n\nScript-Anforderungen:\n1. Persönliche Ansprache mit Namen\n2. Bezug auf spezifisches Traumauto\n3. Realistische Einkommensziele\n4. Authentisch und vertrauenswürdig\n5. Mobile-optimiert (60-90 Sekunden)\n6. Call-to-Action für nächsten Schritt\n\nTon: {{ $json.avatar_script_tone }}\nMotivation: {{ $json.recommended_approach }}"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "id": "claude-script-generation",
+      "name": "📝 Claude Script Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "$vars.heygenApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_inputs",
+              "value": [
+                {
+                  "character": {
+                    "type": "avatar",
+                    "avatar_id": "Lina_public_3_20240108",
+                    "avatar_style": "normal"
+                  },
+                  "voice": {
+                    "type": "text",
+                    "input_text": "{{ $json.choices[0].message.content }}",
+                    "voice_id": "de-DE-KatjaNeural",
+                    "speed": 1.0,
+                    "emotion": "friendly"
+                  },
+                  "background": {
+                    "type": "color",
+                    "value": "#f0f8ff"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "dimension",
+              "value": {
+                "width": 1080,
+                "height": 1920
+              }
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "test",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "heygen-avatar-generation",
+      "name": "🎭 HeyGen Avatar Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1400, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "$vars.elevenLabsApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "{{ $json.choices[0].message.content }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_turbo_v2_5"
+            },
+            {
+              "name": "voice_settings",
+              "value": {
+                "stability": 0.5,
+                "similarity_boost": 0.8,
+                "style": 0.2,
+                "use_speaker_boost": true
+              }
+            },
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            }
+          ]
+        }
+      },
+      "id": "elevenlabs-voice-generation",
+      "name": "🎤 ElevenLabs Voice Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1600, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hume.ai/v0/batch/jobs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Hume-Api-Key",
+              "value": "$vars.humeApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "models",
+              "value": {
+                "prosody": {
+                  "granularity": "utterance"
+                }
+              }
+            },
+            {
+              "name": "transcription",
+              "value": {
+                "language": "de"
+              }
+            },
+            {
+              "name": "urls",
+              "value": ["{{ $json.audio_url }}"]
+            }
+          ]
+        }
+      },
+      "id": "hume-emotion-analysis",
+      "name": "😊 Hume Emotion Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resemble.ai/v2/projects/voice-cloning/clips",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token $vars.resembleApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "data",
+              "value": "{{ $json.choices[0].message.content }}"
+            },
+            {
+              "name": "voice_uuid",
+              "value": "lr-brand-voice-german"
+            },
+            {
+              "name": "is_public",
+              "value": false
+            },
+            {
+              "name": "sample_rate",
+              "value": 44100
+            },
+            {
+              "name": "output_format",
+              "value": "mp3"
+            }
+          ]
+        }
+      },
+      "id": "resemble-voice-cloning",
+      "name": "🎵 Resemble Voice Cloning",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hubspot.com/crm/v3/objects/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.hubspotApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "properties",
+              "value": {
+                "email": "{{ $json.email }}",
+                "firstname": "{{ $json.first_name }}",
+                "lastname": "{{ $json.last_name || '' }}",
+                "phone": "{{ $json.phone || '' }}",
+                "lr_dream_car": "{{ $json.car_category }}",
+                "lr_desired_income": "{{ $json.desired_income }}",
+                "lr_nm_experience": "{{ $json.network_marketing_experience }}",
+                "lr_personality_type": "{{ $json.personality_profile.avatar_match }}",
+                "lr_communication_style": "{{ $json.avatar_script_tone }}",
+                "lifecyclestage": "lead",
+                "lead_status": "new",
+                "lr_avatar_video_url": "{{ $json.video_url }}",
+                "lr_lead_score": "{{ $json.lead_score || 50 }}"
+              }
+            }
+          ]
+        }
+      },
+      "id": "hubspot-contact-upsert",
+      "name": "📊 HubSpot Contact Upsert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [800, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.wassenger.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.wassengerApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "{{ $json.phone }}"
+            },
+            {
+              "name": "message",
+              "value": "Hallo {{ $json.first_name }}! 🚗 Danke für dein Interesse an deinem Traumauto {{ $json.car_category }}! Hier ist dein personalisiertes Video mit allen Infos zu deinem {{ $json.desired_income }}€ Einkommensziel. Schau es dir an und lass uns sprechen! 🎯"
+            },
+            {
+              "name": "media",
+              "value": {
+                "file": "{{ $json.video_url }}",
+                "caption": "Dein persönlicher LR Erfolgsplan für {{ $json.car_category }}"
+              }
+            }
+          ]
+        }
+      },
+      "id": "wassenger-video-delivery",
+      "name": "📱 Wassenger Video Delivery",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "chatId": "$vars.telegramChatId",
+        "text": "🎭 *Neuer Lead generiert!*\n\n👤 *Lead Details:*\n📧 E-Mail: {{ $json.email }}\n🚗 Traumauto: {{ $json.car_category }}\n💰 Ziel-Einkommen: {{ $json.desired_income }}€\n📈 NM-Erfahrung: {{ $json.network_marketing_experience }}\n🎯 Persönlichkeit: {{ $json.personality_profile.avatar_match }}\n\n🎬 *Avatar Video:* {{ $json.video_url }}\n📊 *Lead Score:* {{ $json.lead_score }}/100\n\n✅ *Status:* In HubSpot gespeichert\n⏰ {{ $now.toFormat('dd.MM.yyyy HH:mm') }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-lead-notification",
+      "name": "📱 Telegram Lead Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1200, 500],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-lr-bot",
+          "name": "LR Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "$vars.module3WebhookUrl",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead_data",
+              "value": "={{ $json }}"
+            },
+            {
+              "name": "trigger_source",
+              "value": "module_2_avatar_leadgen"
+            },
+            {
+              "name": "avatar_video_url",
+              "value": "={{ $json.video_url }}"
+            },
+            {
+              "name": "personality_profile",
+              "value": "={{ $json.personality_profile }}"
+            }
+          ]
+        }
+      },
+      "id": "trigger-module-3",
+      "name": "🔄 Trigger Module 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1400, 500],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lead Scoring Algorithm (Realistic)\nconst leadData = $input.first().json;\nlet leadScore = 0;\n\n// Income goal scoring (30% weight)\nif (leadData.desired_income >= 5000) leadScore += 30;\nelse if (leadData.desired_income >= 3000) leadScore += 25;\nelse if (leadData.desired_income >= 1500) leadScore += 20;\nelse leadScore += 10;\n\n// Experience level scoring (25% weight)\nif (leadData.network_marketing_experience === 'Profi') leadScore += 25;\nelse if (leadData.network_marketing_experience === 'Erfahren') leadScore += 20;\nelse if (leadData.network_marketing_experience === 'Wenig') leadScore += 15;\nelse leadScore += 10; // Keine Erfahrung\n\n// Car category interest (20% weight)\nif (['Sportwagen', 'Luxuslimousine'].includes(leadData.car_category)) leadScore += 20;\nelse if (['SUV', 'Elektroauto'].includes(leadData.car_category)) leadScore += 15;\nelse leadScore += 10;\n\n// Engagement indicators (15% weight)\nif (leadData.phone) leadScore += 8;\nif (leadData.company) leadScore += 7;\n\n// Data completeness (10% weight)\nconst completedFields = Object.values(leadData).filter(v => v && v !== '').length;\nleadScore += Math.min(10, completedFields);\n\n// Lead quality classification\nlet leadQuality = 'cold';\nif (leadScore >= 80) leadQuality = 'hot';\nelse if (leadScore >= 60) leadQuality = 'warm';\nelse if (leadScore >= 40) leadQuality = 'lukewarm';\n\nreturn {\n  ...leadData,\n  lead_score: leadScore,\n  lead_quality: leadQuality,\n  follow_up_priority: leadScore >= 70 ? 'high' : leadScore >= 50 ? 'medium' : 'low',\n  recommended_next_action: leadScore >= 70 ? 'immediate_call' : leadScore >= 50 ? 'email_sequence' : 'nurture_campaign'\n};"
+      },
+      "id": "lead-scoring-algorithm",
+      "name": "📈 Lead Scoring Algorithm",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 700]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.make.com/v2/scenarios/webhook",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.makeComApi"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead_data",
+              "value": "={{ $json }}"
+            },
+            {
+              "name": "automation_type",
+              "value": "lead_nurturing"
+            },
+            {
+              "name": "follow_up_sequence",
+              "value": "{{ $json.recommended_next_action }}"
+            }
+          ]
+        }
+      },
+      "id": "make-lead-automation",
+      "name": "🔄 Make Lead Automation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [800, 700],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.botpress.cloud/v1/chat/conversations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.botpressApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "Neuer {{ $json.lead_quality }} Lead: {{ $json.first_name }} ({{ $json.car_category }}, {{ $json.desired_income }}€) - Score: {{ $json.lead_score }}/100"
+            },
+            {
+              "name": "userId",
+              "value": "lr-sales-team"
+            },
+            {
+              "name": "metadata",
+              "value": {
+                "lead_id": "{{ $json.email }}",
+                "priority": "{{ $json.follow_up_priority }}",
+                "next_action": "{{ $json.recommended_next_action }}"
+              }
+            }
+          ]
+        }
+      },
+      "id": "botpress-sales-alert",
+      "name": "🤖 Botpress Sales Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 700],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "$vars.googleSheetsLeadLog",
+        "sheetName": "Leads",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $now.toISO() }}",
+            "email": "={{ $json.email }}",
+            "first_name": "={{ $json.first_name }}",
+            "car_category": "={{ $json.car_category }}",
+            "desired_income": "={{ $json.desired_income }}",
+            "nm_experience": "={{ $json.network_marketing_experience }}",
+            "personality_type": "={{ $json.personality_profile.avatar_match }}",
+            "lead_score": "={{ $json.lead_score }}",
+            "lead_quality": "={{ $json.lead_quality }}",
+            "avatar_video_url": "={{ $json.video_url }}",
+            "follow_up_priority": "={{ $json.follow_up_priority }}",
+            "status": "new_lead"
+          }
+        }
+      },
+      "id": "google-sheets-lead-log",
+      "name": "📊 Google Sheets Lead Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1200, 700],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "🎭 Avatar Lead Gen Trigger": {
+      "main": [
+        [
+          {
+            "node": "📋 Tally Lead Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Tally Lead Capture": {
+      "main": [
+        [
+          {
+            "node": "🔍 Snov.io Lead Enrichment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Snov.io Lead Enrichment": {
+      "main": [
+        [
+          {
+            "node": "🎯 Apollo Profile Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Apollo Profile Search": {
+      "main": [
+        [
+          {
+            "node": "🧠 Personality Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Personality Analysis": {
+      "main": [
+        [
+          {
+            "node": "📝 Claude Script Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Claude Script Generation": {
+      "main": [
+        [
+          {
+            "node": "🎭 HeyGen Avatar Generation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🎤 ElevenLabs Voice Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎭 HeyGen Avatar Generation": {
+      "main": [
+        [
+          {
+            "node": "😊 Hume Emotion Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎤 ElevenLabs Voice Generation": {
+      "main": [
+        [
+          {
+            "node": "🎵 Resemble Voice Cloning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "😊 Hume Emotion Analysis": {
+      "main": [
+        [
+          {
+            "node": "📊 HubSpot Contact Upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎵 Resemble Voice Cloning": {
+      "main": [
+        [
+          {
+            "node": "📈 Lead Scoring Algorithm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 HubSpot Contact Upsert": {
+      "main": [
+        [
+          {
+            "node": "📱 Wassenger Video Delivery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Wassenger Video Delivery": {
+      "main": [
+        [
+          {
+            "node": "📱 Telegram Lead Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Telegram Lead Alert": {
+      "main": [
+        [
+          {
+            "node": "🔄 Trigger Module 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📈 Lead Scoring Algorithm": {
+      "main": [
+        [
+          {
+            "node": "🔄 Make Lead Automation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Make Lead Automation": {
+      "main": [
+        [
+          {
+            "node": "🤖 Botpress Sales Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 Botpress Sales Alert": {
+      "main": [
+        [
+          {
+            "node": "📊 Google Sheets Lead Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "lr-avatar-leadgen-realistic-v1.0",
+  "meta": {
+    "templateCreatedBy": "LR Social-Media-System - Realistic Implementation",
+    "description": "Module 2: Avatar Lead Generation & Personalization with proven AI avatar technology",
+    "totalNodes": 20,
+    "leadScoringRange": "0-100 (realistic algorithm)",
+    "avatarTechnology": "HeyGen Avatar IV + ElevenLabs Turbo v2.5",
+    "monthlyBudget": "€85 (HeyGen €30 + ElevenLabs €22 + HubSpot €25 + Tools €8)",
+    "mobileOptimized": true,
+    "personalizedAvatars": true,
+    "realismLevel": "HIGH - Proven avatar technology only"
+  }
+}

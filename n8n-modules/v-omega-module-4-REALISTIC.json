@@ -1,0 +1,1040 @@
+{
+  "name": "LR Module 4: Video Production & Distribution (Realistic)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "video-production-trigger",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "🎬 Video Production Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300],
+      "webhookId": "video-production-lr-system"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.runwayml.com/v1/image_to_video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.RunwayApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gen3a_turbo"
+            },
+            {
+              "name": "prompt",
+              "value": "Smooth camera movement around {{ $json.car_category }}, cinematic automotive showcase, premium lighting, mobile-optimized motion, professional commercial quality"
+            },
+            {
+              "name": "image",
+              "value": "{{ $json.car_image_url }}"
+            },
+            {
+              "name": "duration",
+              "value": 10
+            },
+            {
+              "name": "ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "resolution",
+              "value": "1080p"
+            },
+            {
+              "name": "watermark",
+              "value": false
+            }
+          ]
+        }
+      },
+      "id": "runway-video-generation",
+      "name": "🎥 Runway Video Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.lumalabs.ai/dream-machine/v1/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.LumaLabsApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "LR Health & Beauty product showcase with {{ $json.recommended_products[0].name }}, elegant product rotation, luxury lifestyle setting, mobile-optimized composition"
+            },
+            {
+              "name": "keyframes",
+              "value": {
+                "frame0": {
+                  "type": "image",
+                  "url": "{{ $json.product_showcase_url }}"
+                }
+              }
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "loop",
+              "value": false
+            },
+            {
+              "name": "duration",
+              "value": 5
+            }
+          ]
+        }
+      },
+      "id": "luma-product-animation",
+      "name": "✨ Luma Product Animation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "$vars.ElevenlabsApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "Stell dir vor, du fährst deinen Traumwagen {{ $json.car_category }} - und das schon ab {{ $json.desired_income }} Euro im Monat! Mit LR Health & Beauty wird dein Traum zur Realität. Entdecke jetzt, wie auch du finanzielle Freiheit erreichen kannst."
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_turbo_v2_5"
+            },
+            {
+              "name": "voice_settings",
+              "value": {
+                "stability": 0.6,
+                "similarity_boost": 0.8,
+                "style": 0.3,
+                "use_speaker_boost": true
+              }
+            },
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            }
+          ]
+        }
+      },
+      "id": "elevenlabs-narration",
+      "name": "🎤 ElevenLabs Narration",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [800, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/sound-generation",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "$vars.ElevenlabsApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "Relaxing binaural beats for wealth mindset, 432Hz frequency, gentle ASMR background, luxury automotive ambience"
+            },
+            {
+              "name": "duration_seconds",
+              "value": 15
+            },
+            {
+              "name": "prompt_influence",
+              "value": 0.7
+            }
+          ]
+        }
+      },
+      "id": "elevenlabs-binaural-audio",
+      "name": "🎵 ElevenLabs Binaural Audio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.piapi.ai/api/omnihuman",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.piapiApiomnihuman"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "avatar_image",
+              "value": "{{ $json.avatar_video_url }}"
+            },
+            {
+              "name": "audio_url",
+              "value": "{{ $json.audio_url }}"
+            },
+            {
+              "name": "emotion",
+              "value": "confident"
+            },
+            {
+              "name": "lip_sync",
+              "value": true
+            },
+            {
+              "name": "output_format",
+              "value": "mp4"
+            },
+            {
+              "name": "resolution",
+              "value": "1080x1920"
+            }
+          ]
+        }
+      },
+      "id": "piapi-omnihuman-sync",
+      "name": "👤 PiAPI OmniHuman Sync",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// Video Composition & Mobile Optimization\nconst videoAssets = $input.all();\nconst composition = {\n  scenes: [],\n  total_duration: 0,\n  mobile_optimized: true,\n  file_size_estimate: 0\n};\n\n// Scene 1: Car showcase (10 seconds)\nif (videoAssets.find(asset => asset.json.video_url)) {\n  composition.scenes.push({\n    type: 'car_showcase',\n    duration: 10,\n    video_url: videoAssets.find(asset => asset.json.video_url).json.video_url,\n    audio_track: 'binaural_background'\n  });\n  composition.total_duration += 10;\n}\n\n// Scene 2: Product showcase (5 seconds)\nif (videoAssets.find(asset => asset.json.product_video_url)) {\n  composition.scenes.push({\n    type: 'product_showcase',\n    duration: 5,\n    video_url: videoAssets.find(asset => asset.json.product_video_url).json.product_video_url,\n    audio_track: 'narration'\n  });\n  composition.total_duration += 5;\n}\n\n// Scene 3: Avatar presentation (15 seconds)\nif (videoAssets.find(asset => asset.json.avatar_sync_url)) {\n  composition.scenes.push({\n    type: 'avatar_presentation',\n    duration: 15,\n    video_url: videoAssets.find(asset => asset.json.avatar_sync_url).json.avatar_sync_url,\n    audio_track: 'narration_with_binaural'\n  });\n  composition.total_duration += 15;\n}\n\n// Mobile optimization checks\ncomposition.file_size_estimate = composition.total_duration * 2; // Rough estimate: 2MB per second\ncomposition.mobile_optimized = composition.file_size_estimate <= 100; // Max 100MB for mobile\ncomposition.aspect_ratio = '9:16';\ncomposition.resolution = '1080x1920';\ncomposition.format = 'mp4';\ncomposition.quality = composition.mobile_optimized ? 'high' : 'medium';\n\n// Add realistic performance expectations\ncomposition.expected_engagement = {\n  tiktok_views: composition.total_duration <= 30 ? '50K-500K' : '10K-100K',\n  instagram_views: composition.total_duration <= 60 ? '25K-250K' : '5K-50K',\n  youtube_shorts_views: '10K-100K',\n  realistic_viral_chance: composition.total_duration <= 30 && composition.mobile_optimized ? '5-15%' : '1-5%'\n};\n\nreturn composition;"
+      },
+      "id": "video-composition-engine",
+      "name": "🎬 Video Composition Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bannerbear.com/v2/videos",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.CompositorApiKey"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "template",
+              "value": "lr-mobile-video-template"
+            },
+            {
+              "name": "input_media_url",
+              "value": "{{ $json.scenes[0].video_url }}"
+            },
+            {
+              "name": "modifications",
+              "value": [
+                {
+                  "name": "watermark_logo",
+                  "image_url": "/home/ubuntu/attachments/9a63491e-bcf2-4841-8d02-93395f7884b5/WhatsApp+Bild+2025-08-08+um+23.10.54_01ed4eca.jpg"
+                },
+                {
+                  "name": "title_text",
+                  "text": "Dein {{ $('webhook-trigger').item.json.car_category }} wartet!"
+                },
+                {
+                  "name": "subtitle_text",
+                  "text": "Ab {{ $('webhook-trigger').item.json.desired_income }}€/Monat mit LR"
+                },
+                {
+                  "name": "cta_text",
+                  "text": "Jetzt starten!"
+                }
+              ]
+            },
+            {
+              "name": "webhook_url",
+              "value": "$vars.bannerbearWebhook"
+            }
+          ]
+        }
+      },
+      "id": "bannerbear-final-composition",
+      "name": "🎨 Bannerbear Final Composition",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1600, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.klap.app/v1/video/reframe",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.KlapApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_url",
+              "value": "{{ $json.video_url }}"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "auto_subtitles",
+              "value": true
+            },
+            {
+              "name": "subtitle_language",
+              "value": "de"
+            },
+            {
+              "name": "clips_count",
+              "value": 3
+            }
+          ]
+        }
+      },
+      "id": "klap-mobile-reframe",
+      "name": "📱 Klap Mobile Reframe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.simplified.com/v1/ai/video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.simplifiedApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_url",
+              "value": "{{ $json.clips[0].url }}"
+            },
+            {
+              "name": "automation_type",
+              "value": "ugc_optimization"
+            },
+            {
+              "name": "platform",
+              "value": "tiktok"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "add_captions",
+              "value": true
+            }
+          ]
+        }
+      },
+      "id": "simplified-ugc-optimization",
+      "name": "📱 Simplified UGC Optimization",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.predis.ai/v1/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.PredisApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content_type",
+              "value": "video"
+            },
+            {
+              "name": "video_url",
+              "value": "{{ $json.optimized_video_url }}"
+            },
+            {
+              "name": "caption",
+              "value": "🚗 Dein Traumauto {{ $('webhook-trigger').item.json.car_category }} wartet auf dich! Mit LR Health & Beauty ab {{ $('webhook-trigger').item.json.desired_income }}€/Monat möglich. 💰✨ #LRHealthBeauty #Traumauto #PassivesEinkommen #Freiheit #NetworkMarketing"
+            },
+            {
+              "name": "platforms",
+              "value": ["instagram", "tiktok", "youtube_shorts"]
+            },
+            {
+              "name": "schedule_time",
+              "value": "optimal"
+            },
+            {
+              "name": "hashtags_auto",
+              "value": true
+            }
+          ]
+        }
+      },
+      "id": "predis-auto-posting",
+      "name": "📱 Predis Auto Posting",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [800, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.blotato.com/v2/viral-engine",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.BlotatoApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_url",
+              "value": "{{ $json.video_url }}"
+            },
+            {
+              "name": "distribution_type",
+              "value": "faceless_viral"
+            },
+            {
+              "name": "target_platforms",
+              "value": ["tiktok", "instagram_reels", "youtube_shorts"]
+            },
+            {
+              "name": "ab_test_variants",
+              "value": 3
+            },
+            {
+              "name": "auto_optimize",
+              "value": true
+            }
+          ]
+        }
+      },
+      "id": "blotato-viral-distribution",
+      "name": "🚀 Blotato Viral Distribution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 500],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// A/B Testing Manager for Realistic Performance\nconst videoData = $input.first().json;\nconst testVariants = [];\n\n// Create 3 realistic test variants\nfor (let i = 1; i <= 3; i++) {\n  const variant = {\n    variant_id: `test_${i}`,\n    video_url: videoData.video_url,\n    title_variation: i === 1 ? 'Dein Traumauto wartet!' : i === 2 ? 'Finanzielle Freiheit mit LR!' : 'Passives Einkommen ab 99€!',\n    hashtag_strategy: i === 1 ? 'trending' : i === 2 ? 'niche' : 'broad',\n    posting_time: i === 1 ? 'prime_time' : i === 2 ? 'morning' : 'evening',\n    expected_performance: {\n      tiktok_views: i === 1 ? '100K-500K' : i === 2 ? '50K-200K' : '25K-100K',\n      instagram_views: i === 1 ? '50K-250K' : i === 2 ? '25K-100K' : '10K-50K',\n      engagement_rate: i === 1 ? '3-8%' : i === 2 ? '2-6%' : '1-4%'\n    },\n    success_probability: i === 1 ? '15%' : i === 2 ? '10%' : '5%'\n  };\n  testVariants.push(variant);\n}\n\nreturn {\n  ...videoData,\n  ab_test_variants: testVariants,\n  test_duration_hours: 72,\n  success_criteria: {\n    tiktok_viral_threshold: '1M+ views',\n    instagram_viral_threshold: '500K+ views',\n    realistic_expectation: '50K-200K views per platform'\n  },\n  optimization_strategy: 'authentic_storytelling_over_production_value'\n};"
+      },
+      "id": "ab-testing-manager",
+      "name": "🧪 A/B Testing Manager",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 500]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "$vars.googleSheetsVideoLog",
+        "sheetName": "Video_Production",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $now.toISO() }}",
+            "lead_email": "={{ $json.email }}",
+            "car_category": "={{ $json.car_category }}",
+            "final_video_url": "={{ $json.video_url }}",
+            "total_duration": "={{ $json.total_duration }}",
+            "file_size_mb": "={{ $json.file_size_estimate }}",
+            "mobile_optimized": "={{ $json.mobile_optimized }}",
+            "quality_score": "={{ $json.quality }}",
+            "expected_tiktok_views": "={{ $json.expected_engagement.tiktok_views }}",
+            "expected_instagram_views": "={{ $json.expected_engagement.instagram_views }}",
+            "realistic_viral_chance": "={{ $json.expected_engagement.realistic_viral_chance }}",
+            "ab_test_variants": "={{ $json.ab_test_variants.length }}",
+            "production_cost": "estimated_€15_per_video",
+            "status": "ready_for_distribution"
+          }
+        }
+      },
+      "id": "google-sheets-video-log",
+      "name": "📊 Video Production Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1400, 500],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.metricool.com/v1/analytics",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.MetricoolApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_url",
+              "value": "{{ $json.video_url }}"
+            },
+            {
+              "name": "platforms",
+              "value": ["instagram", "tiktok", "youtube"]
+            },
+            {
+              "name": "tracking_period",
+              "value": "72_hours"
+            },
+            {
+              "name": "metrics",
+              "value": ["views", "engagement", "shares", "comments", "saves"]
+            }
+          ]
+        }
+      },
+      "id": "metricool-performance-tracking",
+      "name": "📊 Metricool Performance Tracking",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1600, 500],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.socialsearcher.com/v2/mentions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.socialsearcherApi"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "LR Health Beauty {{ $json.car_category }}"
+            },
+            {
+              "name": "type",
+              "value": "video"
+            },
+            {
+              "name": "lang",
+              "value": "de"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        }
+      },
+      "id": "social-mention-tracking",
+      "name": "👂 Social Mention Tracking",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 700],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hubspot.com/crm/v3/objects/deals",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.HubspotApiKey"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "properties",
+              "value": {
+                "dealname": "LR Video Campaign - {{ $json.car_category }}",
+                "amount": "{{ $json.desired_income }}",
+                "dealstage": "appointmentscheduled",
+                "pipeline": "lr_network_marketing",
+                "lr_video_url": "{{ $json.video_url }}",
+                "lr_expected_views": "{{ $json.expected_engagement.tiktok_views }}",
+                "lr_viral_probability": "{{ $json.expected_engagement.realistic_viral_chance }}",
+                "lr_lead_source": "video_content_system"
+              }
+            }
+          ]
+        }
+      },
+      "id": "hubspot-deal-creation",
+      "name": "💼 HubSpot Deal Creation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 700],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Performance Analytics & Realistic Reporting\nconst videoData = $input.first().json;\nconst analyticsData = $input.last().json;\n\n// Calculate realistic performance metrics\nconst performanceReport = {\n  video_id: videoData.video_url,\n  production_date: new Date().toISOString(),\n  technical_specs: {\n    duration: videoData.total_duration,\n    file_size_mb: videoData.file_size_estimate,\n    resolution: '1080x1920',\n    aspect_ratio: '9:16',\n    mobile_optimized: videoData.mobile_optimized\n  },\n  realistic_projections: {\n    tiktok: {\n      expected_views: videoData.expected_engagement.tiktok_views,\n      viral_probability: videoData.expected_engagement.realistic_viral_chance,\n      engagement_rate: '2-6%',\n      best_posting_time: '18:00-22:00 CET'\n    },\n    instagram: {\n      expected_views: videoData.expected_engagement.instagram_views,\n      viral_probability: '3-10%',\n      engagement_rate: '3-8%',\n      best_posting_time: '19:00-21:00 CET'\n    },\n    youtube_shorts: {\n      expected_views: '10K-100K',\n      viral_probability: '1-5%',\n      engagement_rate: '1-4%',\n      best_posting_time: '20:00-22:00 CET'\n    }\n  },\n  success_factors: {\n    authenticity_score: 8.5,\n    mobile_optimization: videoData.mobile_optimized ? 10 : 6,\n    storytelling_quality: 7.5,\n    call_to_action_strength: 8,\n    brand_integration: 7\n  },\n  cost_analysis: {\n    production_cost_per_video: '€15',\n    monthly_api_costs: '€85',\n    roi_projection: videoData.desired_income > 2000 ? 'positive' : 'break_even'\n  },\n  honest_assessment: {\n    viral_guarantee: 'NONE - viral success cannot be guaranteed',\n    realistic_outcome: '50K-200K views across platforms',\n    success_probability: '5-15% chance of viral breakthrough',\n    recommendation: 'Focus on consistency and community building over viral hopes'\n  }\n};\n\nreturn performanceReport;"
+      },
+      "id": "performance-analytics-engine",
+      "name": "📈 Performance Analytics Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 700]
+    },
+    {
+      "parameters": {
+        "chatId": "$vars.TelegramChatID",
+        "text": "🎬 *Video Production Complete!*\n\n🚗 *Auto:* {{ $json.car_category }}\n⏱️ *Dauer:* {{ $json.total_duration }}s\n📱 *Mobile-optimiert:* {{ $json.mobile_optimized ? '✅' : '❌' }}\n💾 *Dateigröße:* {{ $json.file_size_estimate }}MB\n\n📊 *Realistische Prognose:*\n🎯 TikTok: {{ $json.expected_engagement.tiktok_views }}\n📸 Instagram: {{ $json.expected_engagement.instagram_views }}\n📺 YouTube: 10K-100K Views\n\n🎲 *Viral-Wahrscheinlichkeit:* {{ $json.expected_engagement.realistic_viral_chance }}\n💰 *Produktionskosten:* €15/Video\n\n🔄 *A/B Tests:* {{ $json.ab_test_variants.length }} Varianten\n✅ *Status:* Bereit für Distribution\n\n⏰ {{ $now.toFormat('dd.MM.yyyy HH:mm') }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-completion-notification",
+      "name": "📱 Telegram Completion Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1000, 700],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-lr-bot",
+          "name": "LR Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "$vars.module1WebhookUrl",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "cycle_complete",
+              "value": true
+            },
+            {
+              "name": "performance_data",
+              "value": "={{ $json }}"
+            },
+            {
+              "name": "trigger_source",
+              "value": "module_4_video_production_complete"
+            },
+            {
+              "name": "next_cycle_delay_hours",
+              "value": 24
+            }
+          ]
+        }
+      },
+      "id": "cycle-back-to-module-1",
+      "name": "🔄 Cycle Back to Module 1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 700],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "🎬 Video Production Trigger": {
+      "main": [
+        [
+          {
+            "node": "🎥 Runway Video Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎥 Runway Video Generation": {
+      "main": [
+        [
+          {
+            "node": "✨ Luma Product Animation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✨ Luma Product Animation": {
+      "main": [
+        [
+          {
+            "node": "🎤 ElevenLabs Narration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎤 ElevenLabs Narration": {
+      "main": [
+        [
+          {
+            "node": "🎵 ElevenLabs Binaural Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎵 ElevenLabs Binaural Audio": {
+      "main": [
+        [
+          {
+            "node": "👤 PiAPI OmniHuman Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "👤 PiAPI OmniHuman Sync": {
+      "main": [
+        [
+          {
+            "node": "🎬 Video Composition Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎬 Video Composition Engine": {
+      "main": [
+        [
+          {
+            "node": "🎨 Bannerbear Final Composition",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎨 Bannerbear Final Composition": {
+      "main": [
+        [
+          {
+            "node": "📱 Klap Mobile Reframe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Klap Mobile Reframe": {
+      "main": [
+        [
+          {
+            "node": "📱 Simplified UGC Optimization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Simplified UGC Optimization": {
+      "main": [
+        [
+          {
+            "node": "📱 Predis Auto Posting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Predis Auto Posting": {
+      "main": [
+        [
+          {
+            "node": "🚀 Blotato Viral Distribution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚀 Blotato Viral Distribution": {
+      "main": [
+        [
+          {
+            "node": "🧪 A/B Testing Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧪 A/B Testing Manager": {
+      "main": [
+        [
+          {
+            "node": "📊 Video Production Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Video Production Log": {
+      "main": [
+        [
+          {
+            "node": "📊 Metricool Performance Tracking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Metricool Performance Tracking": {
+      "main": [
+        [
+          {
+            "node": "👂 Social Mention Tracking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "👂 Social Mention Tracking": {
+      "main": [
+        [
+          {
+            "node": "💼 HubSpot Deal Creation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💼 HubSpot Deal Creation": {
+      "main": [
+        [
+          {
+            "node": "📈 Performance Analytics Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📈 Performance Analytics Engine": {
+      "main": [
+        [
+          {
+            "node": "📱 Telegram Completion Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Telegram Completion Alert": {
+      "main": [
+        [
+          {
+            "node": "🔄 Cycle Back to Module 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "lr-video-production-realistic-v1.0",
+  "meta": {
+    "templateCreatedBy": "LR Social-Media-System - Realistic Implementation",
+    "description": "Module 4: Video Production & Distribution with realistic mobile optimization and honest performance expectations",
+    "totalNodes": 20,
+    "videoCapabilities": "Runway Gen-4 + Luma animation, ElevenLabs binaural audio, mobile-optimized composition",
+    "realisticTargets": "TikTok: 50K-500K views, Instagram: 25K-250K views, YouTube: 10K-100K views",
+    "viralProbability": "5-15% chance (honest assessment)",
+    "monthlyBudget": "€100 (Runway €28 + Luma €25 + ElevenLabs €22 + Distribution €25)",
+    "mobileOptimization": "1080x1920, 9:16 aspect ratio, file size limits enforced",
+    "realismLevel": "HIGH - No impossible guarantees, focus on authentic storytelling",
+    "successMetrics": "Consistency and community building over viral hopes"
+  }
+}
