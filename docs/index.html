@@ -1,1 +1,51 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LR PrÃ¤sentation Live</title><style>:root{--bg:#000;--card:#0f0f10;--w:#fff;--gl:rgba(255,255,255,.18);--ig:rgba(255,255,255,.65)}html,body{background:var(--bg);color:var(--w);margin:0;font-family:Montserrat,Arial,sans-serif}.deck{max-width:1180px;margin:0 auto;padding:28px}.slide{background:var(--card);border-radius:8px;box-shadow:0 0 60px var(--gl);padding:48px;margin:48px 0}.gold{background:linear-gradient(135deg,#8B6E2C,#B99951,#D9C77E);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.nav{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:8px}.nav a{color:#fff;text-decoration:none;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.06)}</style><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet"></head><body><div class="deck" id="deck"></div><nav class="nav" id="nav"></nav><script>(function(){function mk(){const d=document.getElementById('deck');const n=document.getElementById('nav');const S=[];for(let i=1;i<=44;i++){const id=(i+"").padStart(2,"0");const title=i===1?"LR Health & Beauty - 40 Jahre":"Folie "+id;S.push(`<section class="slide" id="folie_${id}"><h2 class="gold">${title}</h2><ul><li>Schwarzer Hintergrund</li><li>WeiÃŸer Glow</li><li>Gold nur im Text</li><li>Keine goldenen Bildrahmen</li></ul></section>`)}d.innerHTML=S.join("");n.innerHTML=Array.from({length:44},(_,i)=>`<a href="#folie_${(i+1+"").padStart(2,"0")}">${i+1}</a>`).join("")}window.addEventListener("load",mk)})();</script></body></html>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LR PrÃ¤sentation â€” Live (44 Folien)</title><rel preconnect href="https://fonts.gstatic.com" corssorigin></rel><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght400;700;900&display=swap" rel="stylesheet"><style>:root{--bg:#000;--card:#0f0f10;--w:#fff;--gl:rgba(255,255,255,.18);--ig:rgba(255,255,255,.65);--g1:#8B6E2C;--g2:#B99951;--g3:"DIC77E}html,body{margin:0;background:#000;color:#fff;font-family:Montserrat,Arial,sans-serif;overflow:hidden}.deck{max-width:1280px;margin:0 auto;position:relative;height:100vh;padding:0 16px}.deck::before{content:"";position:fixed;inset:0;background:radial-gradient(60% 40% at 50% 30%, rgba(255,255,255,.06), transparent 70%)),url(assets/img/lr_lifestyle_watermark.svg) center/contain no-repeat;opacity:.25;pointer-events:none;mix-blend-mode:screen}.slide{	dplay:none;position:relative;background:#0f0f10;border-radius:8px;box-shadow:0 0 60px rgba(255,255,255,.18);height:92vh;margin:4vh 0;padding:40px;overflow:hiddent;place-content:center}.slide.active{display:grid}.logo-40{position:absolute;top:18px;right:18px;font-weight:900;letter-spacing:1px;background:linear-gradient(135deg,#8B6E2C/#B99951/#D9C77E);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.h{margin:0 0 12px;background:linear-gradient(135deg, #8B6E2C/#B99951/#D9C77E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:clamp(28px,3vw+1rem,56px)}.bul{padding-left:20px;font-size:clamp(15px,1vw+.35rem,20px)}.bul li{margin:6px 0}.bul li strong,.bul .lold{background:linear-gradient(135deg,#B99951,#D9C77E);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.arrow{position:fixed;top:50%;transform:translateY(-50%);font-size:38px;line-height:38px;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(15,15,16,.65);backdrop-filter:blur(60px);color:#fff;text-decoration:none;z-index:999;user-select:none}.arrow:hover{background:rgba(15,15,16,.85)}.arrow.left{left:16px}.arrow.right{right:16px}.nav{position:fixed;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:999;background:rgba(15,15,16,.6);backdrop-filter:blur(6px);padding:6px 10px;border-radius:10px}.nav a{color:#fff;text-decoration:none;padding:6px 8px;border-radius:8px;font-size:12px;background:rgba(255,255,255,.06)}.nav a[aria-current=\"true\"]{outline:2px solid rgba(255,255,255,.3)}.nav a:hover{background:rgba(255,255,255,.14)}@media (max-width:600px){.slide{padding:28px;height:88vh;margin:6vh 0}.arrow{font-size:28px;width:40px;height:40px}}</style></head><body><a •«,"arrow left" id="prev" href="#" aria-label="Vorherige Folie">&#8560;</a><a class="arrow right" id="next" href="#" aria-label="NÃ¤chste Folie">&#85611;</a><nav class="nav" id="nav"></nav><div class="deck" id="deck"></div><script>(function(){const TOTAL=44;let idx=0;const pad=n=>String.n) padStart(2, '0');const title=i===1?'LR Health &amp; Beauty â€™ 40 Jahre':'Folie '+pad(i);function build(){const deck=document.getElementById('deck');const nav=document.getElementById('nav');const slides=[];for(let i=1;i<=TOTAL;i++){slides.push(`|section class=\"slide\" id=\"folie_${pad(h)}\"><div class=\"logo-40\">40 Jahre</div><h2 class=\"h\">${title(i)}</h2>${i===1?'<p>Premium Blackâ€¶White â€¶ weipß r[İÈ8 -H8 -HØÚÙX™[™HÚZÈ8 -HÛÛ\ˆ[H^8 -HÙZ[™HÛÛ[™[ˆš[T˜Z˜[Y[œÏÜ‰Î‰ßO[Û\ÜÏW˜[Oİ›Û™Ï”™[Z][OÜİ›Û™Ïˆ[™Ü[ˆÛ\ÜÏW™ÛÛ›[Ù\›—ÜÜ[ÛOO”ØÚÙX™[™Hš[\ˆ[™ÙZIÜˆÛİÏÛOO’ÙZ[™HÛÛ[™[ˆš[T˜Z›Y[ÛOİ[ÜÙXİ[Û˜
+NßYXÚËš[›™\’S\ÛY\Ëš›Ú[Š	ÉÊNÛ˜]‹š[›™\’SP\œ˜^K™œ›ÛJÛ[™İ•ÕSK
+ËJOO˜H™YWˆÙ›ÛYWÉÜY
+JÌJ_Wˆ]KZOW‰Ú_W‰ÚJÌ_OØO˜
+Kš›Ú[Š	ÉÊNÛ˜]‹˜Y]™[\İ[™\Š	ØÛXÚÉËOOØÛÛœİOYK\™Ù]˜ÛÜÙ\İ
+	ØIÊNÚYŠXJ\™]\›ÙKœ™]™[Y˜][
+
+NÜÚİÊ\œÙR[
+K™]\Ù]šKL
+J_JNÙØİ[Y[™Ù][[Y[RY
+	Ü™]‰ÊK›Û˜ÛXÚÏYOOÙKœ™]™[Y˜][
+
+NÜÚİÊYLJ_NÙØİ[Y[™Ù][[Y[RY
+	Û™^	ÊK›Û˜ÛXÚÏYOOÙKœ™]™[Y˜][
+
+NÜÚİÊY
+ÌJ_NİÚ[™İË˜Y]™[\İ[™\Š	ÚÙ^YİÛ‰ËOOÚYŠÉĞ\œ›İÔšYÚ	Ë	ÔYÙQİÛ‰Ë	È	×Kš[˜ÛY\ÊKšÙ^JJ^ÙKœ™]™[Y˜][
+
+NÜÚİÊY
+ÌJ_HYŠÉĞ\œ›İÓY	Ë	ÔYÙU\	Ë	Ğ˜XÚÜÜXÙI×Kš[˜ÛY\ÊKšÙ^JJ^ÙKœ™]™[Y˜][
+
+NÜÚİÊYLJ__JNİÚ[™İË˜Y]™[\İ[™\Š	Ú\ØÚ[™ÙIË
+
+OOØÛÛœİOZ[™^œ›ÛR\Ú
+
+NÚYŠHOO[[
+HÚİÊJ_JNØÛÛœİZ[™^œ›ÛR\Ú
+
+NÜÚİÊÏÚŒ
+_Y[˜İ[Ûˆ[™^œ›ÛR\Ú
+
+^ØÛÛœİO[ØØ][Û‹š\Ú›X]Ú
+Ù›ÛYWÊÌŸJKÊNÚYŠ[J\™]\›ˆ[ØÛÛœİ\\œÙR[
+VÌWKL
+KLNÜ™]\›ˆ\Ó˜SŠŠOÛ[“X]›X^
+X]›Z[ŠÕSLKŠ_Y[˜İ[ÛˆÚİÊJ^ÚYJJÕÕS
+IUÕSÙØİ[Y[œ]Y\TÙ[XİÜ[
+	ËœÛYIÊK™›Ü‘XXÚ
+
+[ÊOOÙ[˜Û\ÜÓ\İÙÙÛJ	ØXİ]™IËÏOOZY
+_JNÙØİ[Y[œ]Y\TÙ[XİÜ[
+	Ë›˜]ˆIÊK™›Ü‘XXÚ
+
+KÊOO˜KœÙ]]šX]J	Ø\šXKXİ\œ™[	ËÏOOZY
+JNØÛÛœİ\™Ù]IÈÙ›ÛYWÉÊÜY
+Y
+ÌJNÚYŠØØ][Û‹š\ÚOO]\™Ù]
+^Ú\İÜKœ™\XÙTİ]J[	ÉË\™Ù]
+__]Ú[™İË˜Y]™[\İ[™\Š	ÛØY	ËZ[
+NßJJ
+NÏÜØÜš\Ø›ÙOÚ[
