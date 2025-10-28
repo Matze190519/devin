@@ -1,0 +1,777 @@
+{
+  "name": "Module 1: Content Intelligence & Trend Prediction",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "start-content-intelligence",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "content-intelligence-start"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.perplexity.ai/chat/completions",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.perplexityApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"sonar-pro-128k\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Du bist der Temporal Predictor für LR Social Media System. Analysiere aktuelle Trends für viralen Content mit Fokus auf: Freiheit, passives Einkommen, Traumautos ab 99€, Löwe-Elemente. Roar-some Predictions für 2 Milliarden Views!\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Analysiere die Top 10 Trends für viralen LR Content heute. Fokus: Traumwagen ab 99€, Freiheit, passives Einkommen, witzige Löwe-Elemente. Gib viral_score (0-100) für jeden Trend.\"\n    }\n  ],\n  \"max_tokens\": 4096,\n  \"temperature\": 0.7,\n  \"stream\": false\n}"
+      },
+      "id": "temporal-predictor",
+      "name": "Temporal Predictor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://newsapi.org/v2/everything",
+        "options": {
+          "headers": {
+            "X-API-Key": "{{$vars.newsApi}}"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "qs": {
+          "q": "luxury cars OR dream car OR passive income OR financial freedom OR team building",
+          "language": "de",
+          "sortBy": "popularity",
+          "pageSize": "50",
+          "from": "{{DateTime.now().minus({days: 1}).toISODate()}}"
+        }
+      },
+      "id": "news-harvester",
+      "name": "News Harvester",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 480],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.zylalabs.com/api/social-media-trends/v1/trending",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.zylaLabsApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "qs": {
+          "keywords": "luxury cars,dream car,passive income,financial freedom,team building,lion,roar",
+          "platform": "all",
+          "limit": "100",
+          "timeframe": "24h"
+        }
+      },
+      "id": "zyla-trends",
+      "name": "ZylaLabs Trends",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 660],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://www.googleapis.com/youtube/v3/search",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.youtubeApi}}"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "qs": {
+          "part": "snippet",
+          "q": "Traumauto ab 99 Euro OR passives Einkommen OR finanzielle Freiheit OR Löwe",
+          "type": "video",
+          "order": "viewCount",
+          "publishedAfter": "{{DateTime.now().minus({days: 7}).toISO()}}",
+          "maxResults": "50",
+          "regionCode": "DE"
+        }
+      },
+      "id": "youtube-harvester",
+      "name": "YouTube Harvester",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.reddit.com/search",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.redditApi}}",
+            "User-Agent": "LR-Social-Media-System/1.0"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "qs": {
+          "q": "dream car OR luxury car OR passive income OR financial freedom",
+          "sort": "hot",
+          "limit": "100",
+          "t": "day"
+        }
+      },
+      "id": "reddit-harvester",
+      "name": "Reddit Harvester",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 480],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.phantombuster.com/api/v2/agents/launch",
+        "options": {
+          "headers": {
+            "X-Phantombuster-Key": "{{$vars.phantombusterApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 60000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 5000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"id\": \"{{$vars.phantombusterAgentId}}\",\n  \"argument\": {\n    \"searches\": \"luxury cars,dream car ab 99,passive income,financial freedom,team building,lion roar\",\n    \"numberOfResultsPerSearch\": 50\n  }\n}"
+      },
+      "id": "phantombuster-scraper",
+      "name": "Phantombuster Scraper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 660],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.scrapecreators.com/v1/social/trending",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.scrapeCreatorsApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "qs": {
+          "platforms": "tiktok,instagram,youtube",
+          "keywords": "luxury cars,dream car,passive income,financial freedom,lion",
+          "timeframe": "24h",
+          "limit": "100"
+        }
+      },
+      "id": "scrape-creators",
+      "name": "ScrapeCreators",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://www.googleapis.com/customsearch/v1",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.googleCustomSearchApi}}"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "qs": {
+          "key": "{{$vars.googleApiKey}}",
+          "cx": "{{$vars.googleSearchEngineId}}",
+          "q": "\"Traumauto ab 99 Euro\" OR \"passives Einkommen\" OR \"finanzielle Freiheit\" OR \"Löwe roar\"",
+          "num": "10",
+          "dateRestrict": "d1"
+        }
+      },
+      "id": "google-search",
+      "name": "Google Custom Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 480],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\n  const items = [];\n  \n  // Combine all harvested data\n  const perplexityData = $input.first().json;\n  const newsData = $input.all()[1].json;\n  const zylaData = $input.all()[2].json;\n  const youtubeData = $input.all()[3].json;\n  const redditData = $input.all()[4].json;\n  const phantomData = $input.all()[5].json;\n  const scrapeData = $input.all()[6].json;\n  const googleData = $input.all()[7].json;\n  \n  // Process and combine data with warp-parallel logic\n  const combinedTrends = {\n    timestamp: new Date().toISOString(),\n    perplexity_trends: perplexityData?.choices?.[0]?.message?.content || '',\n    news_articles: newsData?.articles || [],\n    zyla_trends: zylaData?.trends || [],\n    youtube_videos: youtubeData?.items || [],\n    reddit_posts: redditData?.data?.children || [],\n    phantom_results: phantomData?.data || [],\n    scrape_results: scrapeData?.results || [],\n    google_results: googleData?.items || [],\n    total_data_points: 0\n  };\n  \n  // Calculate total data points\n  combinedTrends.total_data_points = \n    (combinedTrends.news_articles?.length || 0) +\n    (combinedTrends.zyla_trends?.length || 0) +\n    (combinedTrends.youtube_videos?.length || 0) +\n    (combinedTrends.reddit_posts?.length || 0) +\n    (combinedTrends.phantom_results?.length || 0) +\n    (combinedTrends.scrape_results?.length || 0) +\n    (combinedTrends.google_results?.length || 0);\n  \n  items.push(combinedTrends);\n  \n  return items;\n} catch (error) {\n  console.error('Parallel Harvester Error:', error);\n  return [{\n    error: error.message,\n    timestamp: new Date().toISOString(),\n    status: 'failed'\n  }];\n}"
+      },
+      "id": "parallel-harvester",
+      "name": "Parallel Harvester Combiner",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 400],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.anthropic.com/v1/messages",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.anthropicApi}}",
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01"
+          },
+          "timeout": 60000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 3000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"claude-3-opus-20240229\",\n  \"max_tokens\": 4096,\n  \"temperature\": 0.8,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"DNA Mutator Analysis - LR Viral Formula Database Integration:\\n\\nTrend-Daten: {{JSON.stringify($json)}}\\n\\nApply 7-week proven viral patterns:\\n\\n**VIRAL IDEAS DATABASE:**\\n- 'Löwe im Glas-Auto' crystal effects (500M+ Views potential)\\n- 'Daily Roar' series consistency (1B+ Shares)\\n- ASMR whisper-to-roar transitions (40% growth trend)\\n- 'Epic Fail to Win' storytelling (relatable narrative)\\n- Hologramm-Challenge interactivity (2B+ AR trend)\\n- Binaural glass-breaking motivation (sensory addiction)\\n\\n**VIRAL OPTIMIZATION FORMULA:**\\nSurprise + Humor + Emotion + Shareability = Galaxy-Dominanz\\n\\n**DYNAMIC PROMPTS:**\\n- 'Roar-some Traumwagen ab 99€ – fahr in deine Freiheit!'\\n- 'Warum hat der Löwe passive Income? Weil er roar-some smart ist!'\\n- 'Roar in, cash out ab 99€!'\\n- 'Nur Löwenstarkes Team hat Zugang!'\\n\\n**CONTENT CATEGORIES (Frequency Rotation):**\\n1. Crystal Animals (12x täglich) - Glass transformations\\n2. ASMR Car Ride (6x täglich) - Binaural experiences\\n3. Portal Challenges (4x täglich) - Interactive AR\\n4. Epic Fail Stories (4x täglich) - Relatable narratives\\n5. Meme Generators (12x täglich) - Viral shareability\\n\\nAnalysiere Trends und mutiere zu 10 GALAXY-CONTENT Ideen:\\n- Viral_Score > 97.3% (Milliarden-Threshold)\\n- Glass-Effect-Potential (0-100)\\n- ASMR-Integration-Score (0-100)\\n- Löwe-Humor-Level (0-100)\\n- Freedom-Message-Strength (0-100)\\n- Multi-KI-Alien-Effects (unkopierbar)\\n\\nOutput JSON: {viral_ideas: [{title, description, viral_score, glass_effect_potential, asmr_integration, löwe_humor_score, freedom_message_strength, content_category, frequency_suggestion, api_stack}]}\\n\\nNur Ideen mit viral_score > 97.3% für 2 Milliarden Views Galaxy-Dominanz!\"\n    }\n  ]\n}"
+      },
+      "id": "fusion-claude",
+      "name": "Fusion Claude 3.5 Sonnet",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 400],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": "{{$vars.googleSheetsDocId}}",
+        "sheetName": "Content_DNA",
+        "range": "A:Z",
+        "options": {
+          "valueRenderOption": "UNFORMATTED_VALUE"
+        }
+      },
+      "id": "read-content-dna",
+      "name": "Read Content DNA Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [1340, 580],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "{{$vars.googleSheetsCredId}}",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.deepseekApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 60000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 3000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"deepseek-r1-0528\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Du bist der DNA Mutator für LR Social Media System. Analysiere Content-Ideen von Claude und DNA-Daten aus Sheets. Berechne präzise viral_scores (0-100) basierend auf: Engagement-Potential, Löwe-Faktor, LR-Relevanz, Trend-Alignment, Emotion-Trigger. Nur Content mit viral_score > 97.3% für 2 Milliarden Views freigeben!\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"CONTENT IDEAS:\\n{{$input.first().json.content[0].text}}\\n\\nDNA DATA:\\n{{JSON.stringify($input.all()[1].json)}}\\n\\nBerechne für jede Content-Idee:\\n1. Viral_Score (0-100, präzise Berechnung)\\n2. Engagement_Prediction\\n3. Löwe_Factor (0-10)\\n4. LR_Relevance (0-10)\\n5. Trend_Alignment (0-10)\\n6. Emotion_Trigger (0-10)\\n7. Mutation_Suggestions\\n\\nNur Ideen mit viral_score > 97.3% ausgeben! Roar-some Precision!\"\n    }\n  ],\n  \"max_tokens\": 4096,\n  \"temperature\": 0.3,\n  \"stream\": false\n}"
+      },
+      "id": "dna-mutator",
+      "name": "DNA Mutator (DeepSeek)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 490],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\n  const deepseekResponse = $json;\n  const contentAnalysis = deepseekResponse?.choices?.[0]?.message?.content || '';\n  \n  // Parse viral scores from DeepSeek response\n  const viralScoreRegex = /viral_score[:\\s]*(\\d+\\.?\\d*)/gi;\n  const scores = [];\n  let match;\n  \n  while ((match = viralScoreRegex.exec(contentAnalysis)) !== null) {\n    scores.push(parseFloat(match[1]));\n  }\n  \n  // Calculate average viral score\n  const avgViralScore = scores.length > 0 ? \n    scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;\n  \n  // Check if viral threshold is met\n  const viralThresholdMet = avgViralScore > 97.3;\n  \n  const result = {\n    timestamp: new Date().toISOString(),\n    viral_scores: scores,\n    average_viral_score: avgViralScore,\n    viral_threshold_met: viralThresholdMet,\n    threshold: 97.3,\n    content_analysis: contentAnalysis,\n    approved_for_production: viralThresholdMet,\n    next_action: viralThresholdMet ? 'proceed_to_module_2' : 'optimize_loop'\n  };\n  \n  return [result];\n} catch (error) {\n  console.error('Viral Score Check Error:', error);\n  return [{\n    error: error.message,\n    timestamp: new Date().toISOString(),\n    viral_threshold_met: false,\n    next_action: 'error_retry'\n  }];\n}"
+      },
+      "id": "viral-score-check",
+      "name": "Viral Score Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 490],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "viral-threshold-condition",
+              "leftValue": "={{$json.viral_threshold_met}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "viral-threshold-if",
+      "name": "IF Viral Score > 97.3%",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2000, 490]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "{{$vars.googleSheetsDocId}}",
+        "sheetName": "Content_Log",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{$json.timestamp}}",
+            "viral_score": "={{$json.average_viral_score}}",
+            "threshold_met": "={{$json.viral_threshold_met}}",
+            "content_analysis": "={{$json.content_analysis}}",
+            "next_action": "={{$json.next_action}}"
+          }
+        },
+        "options": {}
+      },
+      "id": "append-log",
+      "name": "Append to Content Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [2220, 390],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "{{$vars.googleSheetsCredId}}",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "accessToken",
+        "text": "🦁 ROAR-SOME NEWS! 🦁\\n\\nContent Intelligence Module 1 completed!\\n\\n📊 Viral Score: {{$json.average_viral_score}}%\\n✅ Threshold Met: {{$json.viral_threshold_met}}\\n🎯 Next Action: {{$json.next_action}}\\n\\n{{$json.viral_threshold_met ? '🚀 PROCEEDING TO MODULE 2! Traumauto ab 99€ - fahr in deine Freiheit!' : '🔄 OPTIMIZING LOOP - Roar harder!'}}\\n\\n#LRSocialMedia #ViralContent #RoarSome",
+        "chatId": "{{$vars.telegramChatId}}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-notify",
+      "name": "Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [2220, 590],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "telegramApi": {
+          "id": "{{$vars.telegramCredId}}",
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "{{$vars.module2WebhookUrl}}",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {{$vars.moduleAuthToken}}"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"trigger_source\": \"module_1_content_intelligence\",\n  \"viral_score\": {{$json.average_viral_score}},\n  \"content_data\": {{JSON.stringify($json)}},\n  \"timestamp\": \"{{$json.timestamp}}\",\n  \"status\": \"approved_for_module_2\"\n}"
+      },
+      "id": "trigger-module-2",
+      "name": "Trigger Module 2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2440, 390],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\n  // Optimization loop logic\n  const currentData = $json;\n  const optimizationAttempts = currentData.optimization_attempts || 0;\n  const maxAttempts = 3;\n  \n  if (optimizationAttempts >= maxAttempts) {\n    return [{\n      error: 'Max optimization attempts reached',\n      viral_score: currentData.average_viral_score,\n      final_status: 'optimization_failed',\n      timestamp: new Date().toISOString()\n    }];\n  }\n  \n  // Increment attempts and trigger re-analysis\n  const optimizedData = {\n    ...currentData,\n    optimization_attempts: optimizationAttempts + 1,\n    optimization_feedback: 'Increase Löwe-Factor, enhance emotion triggers, boost LR relevance',\n    retry_analysis: true,\n    timestamp: new Date().toISOString()\n  };\n  \n  return [optimizedData];\n} catch (error) {\n  console.error('Optimization Loop Error:', error);\n  return [{\n    error: error.message,\n    timestamp: new Date().toISOString(),\n    optimization_failed: true\n  }];\n}"
+      },
+      "id": "optimization-loop",
+      "name": "Optimization Loop",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2220, 690],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2660, 490]
+    }
+  ],
+  "connections": {
+    "webhook-trigger": {
+      "main": [
+        [
+          {
+            "node": "temporal-predictor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "news-harvester",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "zyla-trends",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "temporal-predictor": {
+      "main": [
+        [
+          {
+            "node": "youtube-harvester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "news-harvester": {
+      "main": [
+        [
+          {
+            "node": "reddit-harvester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "zyla-trends": {
+      "main": [
+        [
+          {
+            "node": "phantombuster-scraper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "youtube-harvester": {
+      "main": [
+        [
+          {
+            "node": "scrape-creators",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reddit-harvester": {
+      "main": [
+        [
+          {
+            "node": "google-search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "phantombuster-scraper": {
+      "main": [
+        [
+          {
+            "node": "parallel-harvester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "scrape-creators": {
+      "main": [
+        [
+          {
+            "node": "parallel-harvester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google-search": {
+      "main": [
+        [
+          {
+            "node": "parallel-harvester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parallel-harvester": {
+      "main": [
+        [
+          {
+            "node": "fusion-claude",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "read-content-dna",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fusion-claude": {
+      "main": [
+        [
+          {
+            "node": "dna-mutator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "read-content-dna": {
+      "main": [
+        [
+          {
+            "node": "dna-mutator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dna-mutator": {
+      "main": [
+        [
+          {
+            "node": "viral-score-check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "viral-score-check": {
+      "main": [
+        [
+          {
+            "node": "viral-threshold-if",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "viral-threshold-if": {
+      "main": [
+        [
+          {
+            "node": "append-log",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "telegram-notify",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "optimization-loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "append-log": {
+      "main": [
+        [
+          {
+            "node": "trigger-module-2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "telegram-notify": {
+      "main": [
+        [
+          {
+            "node": "webhook-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "trigger-module-2": {
+      "main": [
+        [
+          {
+            "node": "webhook-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "optimization-loop": {
+      "main": [
+        [
+          {
+            "node": "fusion-claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-08-13T20:39:42.000Z",
+      "updatedAt": "2025-08-13T20:39:42.000Z",
+      "id": "lr-social-media",
+      "name": "LR Social Media System"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-08-13T20:39:42.000Z",
+  "versionId": "1"
+}

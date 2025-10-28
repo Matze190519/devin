@@ -1,0 +1,190 @@
+{
+  "name": "Module 2: Avatar Lead Gen & Personalization",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "avatar-leadgen-start",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger-m2",
+      "name": "Module 2 Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "avatar-leadgen-start"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.tally.so/forms/{{$vars.tallyFormId}}/responses",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.tallyApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "qs": {
+          "limit": "50",
+          "status": "completed",
+          "created_after": "{{DateTime.now().minus({hours: 24}).toISO()}}"
+        }
+      },
+      "id": "tally-forms",
+      "name": "Tally Forms Collector",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.snov.io/v1/get-profile-by-email",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.snovApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"email\": \"{{$json.email}}\",\n  \"enrichment_level\": \"full\"\n}"
+      },
+      "id": "snov-enrichment",
+      "name": "Snov.io Lead Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 200],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.apollo.io/v1/people/search",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.apolloApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"q_person_emails\": [\"{{$json.email}}\"],\n  \"min_score\": 0.18,\n  \"page\": 1,\n  \"per_page\": 10\n}"
+      },
+      "id": "apollo-enrichment",
+      "name": "Apollo.io Data Enhancement",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\n  const tallyData = $input.first().json;\n  const snovData = $input.all()[1]?.json || {};\n  const apolloData = $input.all()[2]?.json || {};\n  \n  // Combine enrichment data\n  const enrichedLead = {\n    timestamp: new Date().toISOString(),\n    source: 'tally_form',\n    email: tallyData.email || '',\n    name: tallyData.name || snovData.name || apolloData.name || '',\n    company: snovData.company || apolloData.company || '',\n    position: snovData.position || apolloData.title || '',\n    linkedin: snovData.linkedin || apolloData.linkedin_url || '',\n    phone: snovData.phone || apolloData.phone || '',\n    location: snovData.location || apolloData.location || '',\n    interests: tallyData.interests || [],\n    dream_car_budget: tallyData.dream_car_budget || 'ab 99€',\n    income_goal: tallyData.income_goal || 'passives Einkommen',\n    personality_traits: [],\n    enrichment_score: (snovData.confidence || 0) + (apolloData.score || 0),\n    holographic_profile: {\n      avatar_style: 'crystal_glass_lion',\n      voice_persona: tallyData.preferred_voice || 'Lina',\n      emotion_profile: 'enthusiastic_freedom_seeker',\n      interaction_style: 'roar_some_motivational'\n    }\n  };\n  \n  // Determine personality traits based on form responses\n  if (tallyData.motivation?.includes('freedom')) {\n    enrichedLead.personality_traits.push('freedom_seeker');\n  }\n  if (tallyData.motivation?.includes('money')) {\n    enrichedLead.personality_traits.push('wealth_builder');\n  }\n  if (tallyData.motivation?.includes('time')) {\n    enrichedLead.personality_traits.push('time_optimizer');\n  }\n  if (tallyData.interests?.includes('cars')) {\n    enrichedLead.personality_traits.push('car_enthusiast');\n  }\n  \n  return [enrichedLead];\n} catch (error) {\n  console.error('Holographic Projector Error:', error);\n  return [{\n    error: error.message,\n    timestamp: new Date().toISOString(),\n    status: 'enrichment_failed'\n  }];\n}"
+      },
+      "id": "holographic-projector",
+      "name": "Holographic Projector",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.anthropic.com/v1/messages",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.anthropicApi}}",
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01"
+          },
+          "timeout": 60000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 3000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"claude-3-opus-20240229\",\n  \"max_tokens\": 4096,\n  \"temperature\": 0.8,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Personality Cloner - LR Viral Avatar System (7-Week Optimized):\\n\\nLEAD PROFILE: {{JSON.stringify($json)}}\\n\\n**VIRAL AVATAR FORMULAS:**\\n\\n**LINA PERSONA (Angstabbau-Spezialist):**\\n- Empathetic ASMR whisper: 'Keine Angst, {{$json.name}} - Löwe-Power ab 99€ wartet auf dich!'\\n- Binaural frequency integration (432/528Hz für Wealth-DNA)\\n- Glass-breaking fear metaphor: 'Deine Angst-Glas zerbricht zu Freiheit!'\\n- Whisper-to-confidence transition with sudden roar for bonus\\n- Interactive emotion-sync with Hume EVI3\\n\\n**MATHIAS PERSONA (Confident Roar-Master):**\\n- 'Roar-some upgrade from 9-5, {{$json.name}}! Traumwagen ab {{$json.dream_car_budget}} wartet!'\\n- Epic fail-to-win narrative: 'Ich war auch im Hamsterrad... bis ROAR!'\\n- Löwe-Portal visualization: 'Schritt durch das Glas-Portal zur Freiheit!'\\n- Sudden roar for bonus reveal: 'ROAR! Hier ist dein Geheimnis!'\\n- Motion avatar with glass-etching effects\\n\\n**INTERACTIVE VIRAL ELEMENTS:**\\n- Emotion-based script switching (Hume AI detection)\\n- Löwe-cameo appearances (surprise factor)\\n- Portal-challenge integration ('Roar to unlock!')\\n- VSMR glass-breaking sound effects\\n- Holographic depth with 3D avatar mode\\n\\n**PROVEN VIRAL HOOKS (7-Week Database):**\\n- 'Warum hat der Löwe passive Income? Weil er roar-some smart ist!'\\n- 'Roar in, cash out ab 99€!'\\n- 'Nur Löwenstarkes Team hat Portal-Zugang!'\\n- 'Glas-Auto Traumwagen - fahr in deine Freiheit!'\\n\\n**PERSONALIZATION MATRIX:**\\n- Dream Car Budget: {{$json.dream_car_budget}}\\n- Income Goal: {{$json.income_goal}}\\n- Personality Traits: {{$json.personality_traits}}\\n- Voice Persona: {{$json.holographic_profile.voice_persona}}\\n- Emotion Profile: {{$json.holographic_profile.emotion_profile}}\\n\\n**OUTPUT STRUCTURE:**\\n{\\n  lina_script: {intro_whisper, fear_breaking, confidence_build, roar_transition},\\n  mathias_script: {confident_opener, fail_story, portal_vision, bonus_roar},\\n  interactive_elements: {emotion_triggers, löwe_cameos, portal_challenges},\\n  viral_hooks: [personalized_hooks],\\n  asmr_cues: {binaural_frequencies, glass_breaking_sounds},\\n  conversion_optimization: {urgency_elements, social_proof, call_to_action}\\n}\\n\\nMaximale Viral-Conversion für Galaxy-Dominanz! 🦁✨\"\n    }\n  ]\n}"
+      },
+      "id": "personality-cloner-script",
+      "name": "Personality Cloner Script",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.heygenApi}}",
+            "Content-Type": "application/json"
+          },
+          "timeout": 120000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 5000,
+            "retryBackoff": "exponential"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"avatar_id\": \"{{$json.holographic_profile.voice_persona === 'Lina' ? $vars.heygenAvatarLina : $vars.heygenAvatarMathias}}\",\n        \"avatar_style\": \"crystal_glass_professional\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"input_text\": \"{{$input.first().json.content[0].text}}\",\n        \"voice_id\": \"{{$json.holographic_profile.voice_persona === 'Lina' ? $vars.heygenVoiceLina : $vars.heygenVoiceMathias}}\",\n        \"emotion\": \"enthusiastic\",\n        \"speed\": 1.1,\n        \"pitch\": 1.0\n      },\n      \"background\": {\n        \"type\": \"image\",\n        \"url\": \"{{$vars.leonardoBackgroundUrl}}\",\n        \"style\": \"luxury_car_showroom\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": 1080,\n    \"height\": 1920\n  },\n  \"aspect_ratio\": \"9:16\",\n  \"streaming\": true,\n  \"interactive\": true,\n  \"knowledge_base\": {\n    \"enabled\": true,\n    \"topics\": [\"LR team building\", \"passive income\", \"dream cars ab 99€\", \"financial freedom\"]\n  }\n}"
+      },
+      "id": "heygen-avatar-generator",
+      "name": "HeyGen Avatar Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://api.leonardo.ai/v1/generations",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$vars.leonardoApi}}",
+            "Content-Type": "application/json"
+          },\n          \"timeout\": 60000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxRetries\": 3,\n            \"retryInterval\": 3000,\n            \"retryBackoff\": \"exponential\"\n          }\n        },\n        \"sendBody\": true,\n        \"specifyBody\": \"json\",\n        \"jsonBody\": \"{\n  \\\"modelId\\\": \\\"{{$vars.leonardoPhoenixV3Model}}\\\",\n  \\\"prompt\\\": \\\"Luxury car showroom background, crystal glass environment, holographic lighting, premium automotive display, {{$json.dream_car_budget}} dream car showcase, professional lighting, 9:16 aspect ratio, ultra-realistic, cinematic quality\\\",\n  \\\"negative_prompt\\\": \\\"low quality, blurry, distorted, amateur\\\",\n  \\\"num_images\\\": 1,\n  \\\"width\\\": 1080,\n  \\\"height\\\": 1920,\n  \\\"guidance_scale\\\": 7,\n  \\\"num_inference_steps\\\": 30,\n  \\\"presetStyle\\\": \\\"CINEMATIC\\\",\n  \\\"scheduler\\\": \\\"LEONARDO\\\",\n  \\\"public\\\": false,\n  \\\"promptMagic\\\": true,\n  \\\"promptMagicVersion\\\": \\\"v3\\\",\n  \\\"photoReal\\\": true,\n  \\\"photoRealVersion\\\": \\\"v2\\\",\n  \\\"alchemy\\\": true\n}\"\n      },\n      \"id\": \"leonardo-background\",\n      \"name\": \"Leonardo Background Generator\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [1120, 500],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetweenTries\": 3000\n    },\n    {\n      \"parameters\": {\n        \"authentication\": \"headerAuth\",\n        \"url\": \"https://api.sadtalker.com/v1/generate\",\n        \"options\": {\n          \"headers\": {\n            \"Authorization\": \"Bearer {{$vars.sadtalkerApi}}\",\n            \"Content-Type\": \"application/json\"\n          },\n          \"timeout\": 120000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxRetries\": 3,\n            \"retryInterval\": 5000,\n            \"retryBackoff\": \"exponential\"\n          }\n        },\n        \"sendBody\": true,\n        \"specifyBody\": \"json\",\n        \"jsonBody\": \"{\n  \\\"source_image\\\": \\\"{{$input.all()[1].json.url}}\\\",\n  \\\"driven_audio\\\": \\\"{{$vars.tempAudioUrl}}\\\",\n  \\\"preprocess\\\": \\\"crop\\\",\n  \\\"still_mode\\\": false,\n  \\\"use_enhancer\\\": true,\n  \\\"batch_size\\\": 1,\n  \\\"size\\\": 512,\n  \\\"pose_style\\\": 0,\n  \\\"expression_scale\\\": 1.3,\n  \\\"input_yaw\\\": [0, 10, -10],\n  \\\"input_pitch\\\": [0, 5, -5],\n  \\\"input_roll\\\": [0, 3, -3]\n}\"\n      },\n      \"id\": \"sadtalker-motion\",\n      \"name\": \"SadTalker Motion Avatar\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [1560, 200],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetweenTries\": 5000\n    },\n    {\n      \"parameters\": {\n        \"authentication\": \"headerAuth\",\n        \"url\": \"https://api.hume.ai/v0/evi/chat\",\n        \"options\": {\n          \"headers\": {\n            \"Authorization\": \"Bearer {{$vars.humeEvi3Api}}\",\n            \"Content-Type\": \"application/json\"\n          },\n          \"timeout\": 60000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxRetries\": 3,\n            \"retryInterval\": 3000,\n            \"retryBackoff\": \"exponential\"\n          }\n        },\n        \"sendBody\": true,\n        \"specifyBody\": \"json\",\n        \"jsonBody\": \"{\n  \\\"config_id\\\": \\\"{{$vars.humeEvi3ConfigId}}\\\",\n  \\\"text\\\": \\\"{{$input.first().json.content[0].text}}\\\",\n  \\\"voice\\\": {\n    \\\"provider\\\": \\\"HUME_AI\\\",\n    \\\"name\\\": \\\"{{$json.holographic_profile.voice_persona}}\\\",\n    \\\"custom_voice\\\": true\n  },\n  \\\"personality\\\": {\n    \\\"traits\\\": {{JSON.stringify($json.personality_traits)}},\n    \\\"emotion_profile\\\": \\\"{{$json.holographic_profile.emotion_profile}}\\\",\n    \\\"interaction_style\\\": \\\"{{$json.holographic_profile.interaction_style}}\\\"\n  },\n  \\\"speech_to_speech\\\": true,\n  \\\"prompt_voices\\\": true,\n  \\\"voice_design\\\": true\n}\"\n      },\n      \"id\": \"hume-evi3-personality\",\n      \"name\": \"Hume EVI3 Personality\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [1560, 400],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetweenTries\": 3000\n    },\n    {\n      \"parameters\": {\n        \"authentication\": \"headerAuth\",\n        \"url\": \"https://api.resemble.ai/v2/projects/{{$vars.resembleProjectId}}/clips\",\n        \"options\": {\n          \"headers\": {\n            \"Authorization\": \"Token token={{$vars.resembleApi}}\",\n            \"Content-Type\": \"application/json\"\n          },\n          \"timeout\": 60000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxRetries\": 3,\n            \"retryInterval\": 3000,\n            \"retryBackoff\": \"exponential\"\n          }\n        },\n        \"sendBody\": true,\n        \"specifyBody\": \"json\",\n        \"jsonBody\": \"{\n  \\\"data\\\": {\n    \\\"body\\\": \\\"{{$input.first().json.content[0].text}}\\\",\n    \\\"voice_uuid\\\": \\\"{{$json.holographic_profile.voice_persona === 'Lina' ? $vars.resembleVoiceLina : $vars.resembleVoiceMathias}}\\\",\n    \\\"is_public\\\": false,\n    \\\"is_archived\\\": false,\n    \\\"raw\\\": false,\n    \\\"sample_rate\\\": 44100,\n    \\\"output_format\\\": \\\"mp3\\\",\n    \\\"precision\\\": \\\"PCM_24\\\",\n    \\\"include_timestamps\\\": true,\n    \\\"emotions\\\": [\n      {\n        \\\"name\\\": \\\"enthusiasm\\\",\n        \\\"level\\\": 0.8\n      },\n      {\n        \\\"name\\\": \\\"confidence\\\",\n        \\\"level\\\": 0.9\n      }\n    ]\n  }\n}\"\n      },\n      \"id\": \"resemble-voice-morph\",\n      \"name\": \"Resemble Voice Morph\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [1560, 600],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetweenTries\": 3000\n    },\n    {\n      \"parameters\": {\n        \"jsCode\": \"try {\n  const leadData = $input.first().json;\n  const heygenVideo = $input.all()[1]?.json || {};\n  const leonardoBackground = $input.all()[2]?.json || {};\n  const sadtalkerMotion = $input.all()[3]?.json || {};\n  const humePersonality = $input.all()[4]?.json || {};\n  const resembleVoice = $input.all()[5]?.json || {};\n  \n  // Combine all reality anchor data\n  const realityAnchors = {\n    timestamp: new Date().toISOString(),\n    lead_id: leadData.email,\n    avatar_assets: {\n      heygen_video: heygenVideo.video_url || '',\n      leonardo_background: leonardoBackground.url || '',\n      sadtalker_motion: sadtalkerMotion.result_url || '',\n      hume_personality: humePersonality.audio_url || '',\n      resemble_voice: resembleVoice.item?.audio_src || ''\n    },\n    personality_profile: {\n      traits: leadData.personality_traits,\n      voice_persona: leadData.holographic_profile.voice_persona,\n      emotion_profile: leadData.holographic_profile.emotion_profile,\n      interaction_style: leadData.holographic_profile.interaction_style\n    },\n    lead_enrichment: {\n      name: leadData.name,\n      email: leadData.email,\n      company: leadData.company,\n      dream_car_budget: leadData.dream_car_budget,\n      income_goal: leadData.income_goal,\n      enrichment_score: leadData.enrichment_score\n    },\n    ready_for_hubspot: true,\n    next_action: 'hubspot_upsert'\n  };\n  \n  return [realityAnchors];\n} catch (error) {\n  console.error('Reality Anchors Error:', error);\n  return [{\n    error: error.message,\n    timestamp: new Date().toISOString(),\n    status: 'reality_anchor_failed'\n  }];\n}\"\n      },\n      \"id\": \"reality-anchors\",\n      \"name\": \"Reality Anchors Combiner\",\n      \"type\": \"n8n-nodes-base.code\",\n      \"typeVersion\": 2,\n      \"position\": [1780, 400],\n      \"alwaysOutputData\": true\n    },\n    {\n      \"parameters\": {\n        \"resource\": \"contact\",\n        \"operation\": \"upsert\",\n        \"email\": \"={{$json.lead_enrichment.email}}\",\n        \"additionalFields\": {\n          \"firstname\": \"={{$json.lead_enrichment.name.split(' ')[0]}}\",\n          \"lastname\": \"={{$json.lead_enrichment.name.split(' ').slice(1).join(' ')}}\",\n          \"company\": \"={{$json.lead_enrichment.company}}\",\n          \"phone\": \"={{$json.lead_enrichment.phone}}\",\n          \"website\": \"={{$json.lead_enrichment.linkedin}}\",\n          \"lifecyclestage\": \"lead\",\n          \"lead_status\": \"NEW\",\n          \"hs_persona\": \"LR_Team_Builder\",\n          \"dream_car_budget\": \"={{$json.lead_enrichment.dream_car_budget}}\",\n          \"income_goal\": \"={{$json.lead_enrichment.income_goal}}\",\n          \"personality_traits\": \"={{$json.personality_profile.traits.join(', ')}}\",\n          \"voice_persona\": \"={{$json.personality_profile.voice_persona}}\",\n          \"avatar_video_url\": \"={{$json.avatar_assets.heygen_video}}\",\n          \"enrichment_score\": \"={{$json.lead_enrichment.enrichment_score}}\",\n          \"lr_source\": \"n8n_avatar_leadgen\",\n          \"roar_factor\": \"high\"\n        }\n      },\n      \"id\": \"hubspot-upsert\",\n      \"name\": \"HubSpot Lead Upsert\",\n      \"type\": \"n8n-nodes-base.hubspot\",\n      \"typeVersion\": 2,\n      \"position\": [2000, 300],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetweenTries\": 2000,\n      \"credentials\": {\n        \"hubspotOAuth2Api\": {\n          \"id\": \"{{$vars.hubspotCredId}}\",\n          \"name\": \"HubSpot OAuth2 API\"\n        }\n      }\n    },\n    {\n      \"parameters\": {\n        \"authentication\": \"headerAuth\",\n        \"url\": \"https://api.wassenger.com/v1/messages\",\n        \"options\": {\n          \"headers\": {\n            \"Authorization\": \"Bearer {{$vars.wassengerApi}}\",\n            \"Content-Type\": \"application/json\"\n          },\n          \"timeout\": 30000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxRetries\": 3,\n            \"retryInterval\": 2000,\n            \"retryBackoff\": \"exponential\"\n          }\n        },\n        \"sendBody\": true,\n        \"specifyBody\": \"json\",\n        \"jsonBody\": \"{\n  \\\"phone\\\": \\\"{{$json.lead_enrichment.phone}}\\\",\n  \\\"message\\\": \\\"🦁 ROAR-SOME! Dein personalisiertes Avatar-Video ist bereit!\\\\n\\\\n🎬 Schau dir dein Traumauto ab {{$json.lead_enrichment.dream_car_budget}} an:\\\\n{{$json.avatar_assets.heygen_video}}\\\\n\\\\n💰 Passives Einkommen wartet auf dich: {{$json.lead_enrichment.income_goal}}\\\\n\\\\n🚀 Bereit für finanzielle Freiheit? Lass uns reden!\\\\n\\\\n#LRTeam #TraumwagenAb99Euro #PassivesEinkommen\\\",\n  \\\"media\\\": {\n    \\\"type\\\": \\\"video\\\",\n    \\\"url\\\": \\\"{{$json.avatar_assets.heygen_video}}\\\",\n    \\\"caption\\\": \\\"Dein personalisiertes LR Avatar-Video - Roar-some!\\\"\n  }\n}\"\n      },\n      \"id\": \"wassenger-media\",\n      \"name\": \"Wassenger Media Send\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [2000, 500],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetweenTries\": 2000\n    },\n    {\n      \"parameters\": {\n        \"authentication\": \"accessToken\",\n        \"text\": \"🦁 AVATAR LEADGEN MODULE 2 COMPLETE! 🦁\\n\\n👤 Lead: {{$json.lead_enrichment.name}}\\n📧 Email: {{$json.lead_enrichment.email}}\\n🏢 Company: {{$json.lead_enrichment.company}}\\n🚗 Dream Car Budget: {{$json.lead_enrichment.dream_car_budget}}\\n💰 Income Goal: {{$json.lead_enrichment.income_goal}}\\n🎭 Voice Persona: {{$json.personality_profile.voice_persona}}\\n📊 Enrichment Score: {{$json.lead_enrichment.enrichment_score}}\\n\\n🎬 Avatar Assets Generated:\\n✅ HeyGen Video: {{$json.avatar_assets.heygen_video ? 'Ready' : 'Failed'}}\\n✅ Leonardo Background: {{$json.avatar_assets.leonardo_background ? 'Ready' : 'Failed'}}\\n✅ SadTalker Motion: {{$json.avatar_assets.sadtalker_motion ? 'Ready' : 'Failed'}}\\n✅ Hume Personality: {{$json.avatar_assets.hume_personality ? 'Ready' : 'Failed'}}\\n✅ Resemble Voice: {{$json.avatar_assets.resemble_voice ? 'Ready' : 'Failed'}}\\n\\n🚀 PROCEEDING TO MODULE 3! Roar-some Traumwagen ab 99€!\",\n        \"chatId\": \"{{$vars.telegramChatId}}\",\n        \"additionalFields\": {\n          \"parse_mode\": \"Markdown\"\n        }\n      },\n      \"id\": \"telegram-alert-m2\",\n      \"name\": \"Telegram Alert Module 2\",\n      \"type\": \"n8n-nodes-base.telegram\",\n      \"typeVersion\": 1.2,\n      \"position\": [2220, 400],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetweenTries\": 2000,\n      \"credentials\": {\n        \"telegramApi\": {\n          \"id\": \"{{$vars.telegramCredId}}\",\n          \"name\": \"Telegram API\"\n        }\n      }\n    },\n    {\n      \"parameters\": {\n        \"url\": \"{{$vars.module3WebhookUrl}}\",\n        \"options\": {\n          \"headers\": {\n            \"Content-Type\": \"application/json\",\n            \"Authorization\": \"Bearer {{$vars.moduleAuthToken}}\"\n          },\n          \"timeout\": 30000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxRetries\": 3,\n            \"retryInterval\": 2000,\n            \"retryBackoff\": \"exponential\"\n          }\n        },\n        \"sendBody\": true,\n        \"specifyBody\": \"json\",\n        \"jsonBody\": \"{\n  \\\"trigger_source\\\": \\\"module_2_avatar_leadgen\\\",\n  \\\"lead_data\\\": {{JSON.stringify($json)}},\n  \\\"timestamp\\\": \\\"{{$json.timestamp}}\\\",\n  \\\"status\\\": \\\"ready_for_visual_generation\\\",\n  \\\"avatar_assets\\\": {{JSON.stringify($json.avatar_assets)}}\n}\"\n      },\n      \"id\": \"trigger-module-3\",\n      \"name\": \"Trigger Module 3\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [2440, 400],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetweenTries\": 2000\n    },\n    {\n      \"parameters\": {\n        \"respondWith\": \"allIncomingItems\",\n        \"options\": {}\n      },\n      \"id\": \"webhook-response-m2\",\n      \"name\": \"Module 2 Webhook Response\",\n      \"type\": \"n8n-nodes-base.respondToWebhook\",\n      \"typeVersion\": 1,\n      \"position\": [2660, 400]\n    }\n  ],\n  \"connections\": {\n    \"webhook-trigger-m2\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"tally-forms\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"tally-forms\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"snov-enrichment\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"apollo-enrichment\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"snov-enrichment\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"holographic-projector\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"apollo-enrichment\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"holographic-projector\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"holographic-projector\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"personality-cloner-script\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"leonardo-background\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"personality-cloner-script\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"heygen-avatar-generator\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"hume-evi3-personality\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"resemble-voice-morph\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"heygen-avatar-generator\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"reality-anchors\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"leonardo-background\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"sadtalker-motion\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"sadtalker-motion\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"reality-anchors\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"hume-evi3-personality\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"reality-anchors\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"resemble-voice-morph\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"reality-anchors\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"reality-anchors\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"hubspot-upsert\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"wassenger-media\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"hubspot-upsert\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"telegram-alert-m2\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"wassenger-media\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"telegram-alert-m2\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"telegram-alert-m2\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"trigger-module-3\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"trigger-module-3\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"webhook-response-m2\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    }\n  },\n  \"pinData\": {},\n  \"settings\": {\n    \"executionOrder\": \"v1\"\n  },\n  \"staticData\": null,\n  \"tags\": [\n    {\n      \"createdAt\": \"2025-08-13T20:39:42.000Z\",\n      \"updatedAt\": \"2025-08-13T20:39:42.000Z\",\n      \"id\": \"lr-social-media\",\n      \"name\": \"LR Social Media System\"\n    }\n  ],\n  \"triggerCount\": 1,\n  \"updatedAt\": \"2025-08-13T20:39:42.000Z\",\n  \"versionId\": \"2\"\n}\n

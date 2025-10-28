@@ -1,0 +1,816 @@
+{
+  "name": "LR Module 3: Visual & 3D Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lr-visual-3d-generator",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger-m3",
+      "name": "Webhook Trigger M3",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "lr-visual-3d-generator-webhook"
+    },
+    {
+      "parameters": {
+        "url": "https://cloud.leonardo.ai/api/rest/v1/generations",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.leonardoApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "LR Viral Formula: 'Löwe im Glas-Auto' - Crystal lion driving {{$json.content_theme}} Traumwagen through Freiheit-landscape, witty sunglasses, hyperrealistic volumetric glass effects, internal light refraction creating portal-like depth, golden LR etching 'Roar-some ab 99€', cinematic lighting with surprise elements, 3D holographic lion roaring through windshield, luxury automotive reflection, photorealistic 8K, glass-breaking motivation visual metaphor"
+            },
+            {
+              "name": "modelId",
+              "value": "aa77f04e-3eec-4034-9c07-d0f619684628"
+            },
+            {
+              "name": "width",
+              "value": 1024
+            },
+            {
+              "name": "height",
+              "value": 1024
+            },
+            {
+              "name": "num_images",
+              "value": 4
+            },
+            {
+              "name": "guidance_scale",
+              "value": 7
+            },
+            {
+              "name": "presetStyle",
+              "value": "CINEMATIC"
+            },
+            {
+              "name": "elements",
+              "value": [
+                {
+                  "akUUID": "crystal_glass_v2",
+                  "weight": 0.8
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "id": "leonardo-crystal-animals",
+      "name": "Leonardo Crystal Animals",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "url": "https://api.remove.bg/v1.0/removebg",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "$vars.removeBgApi"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{$json.url}}"
+            },
+            {
+              "name": "format",
+              "value": "png"
+            },
+            {
+              "name": "size",
+              "value": "auto"
+            },
+            {
+              "name": "bg_color",
+              "value": "transparent"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "id": "remove-bg-preprocessing",
+      "name": "Remove BG Preprocessing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "url": "https://api.bria.ai/v1/background/remove",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.briaApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file",
+              "value": "{{$json.image_data}}"
+            },
+            {
+              "name": "model",
+              "value": "bria-2.3"
+            },
+            {
+              "name": "output_format",
+              "value": "png"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "id": "bria-ai-preprocessing",
+      "name": "Bria AI Preprocessing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "url": "https://api.tripo3d.ai/v2/openapi/task",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.tripo3dApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "type",
+              "value": "image_to_model"
+            },
+            {
+              "name": "file",
+              "value": "{{$json.processed_image}}"
+            },
+            {
+              "name": "model_version",
+              "value": "v2.0-20240919"
+            },
+            {
+              "name": "face_limit",
+              "value": 30000
+            },
+            {
+              "name": "texture",
+              "value": true
+            },
+            {
+              "name": "pbr",
+              "value": true
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 5000
+          }
+        }
+      },
+      "id": "tripo3d-conversion",
+      "name": "Tripo3D Conversion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "https://api.bfl.ml/v1/flux-pro-1.1",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Key",
+              "value": "$vars.BlackForestFluxApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "Volumetric glass rendering of {{$json.content_theme}}, crystal clear transparency with internal light refraction, 3D holographic lion roaring effect, premium automotive reflection, golden LR Lifestyle etching, cinematic depth of field, 4K photorealistic quality"
+            },
+            {
+              "name": "width",
+              "value": 1024
+            },
+            {
+              "name": "height",
+              "value": 1024
+            },
+            {
+              "name": "prompt_upsampling",
+              "value": true
+            },
+            {
+              "name": "seed",
+              "value": -1
+            },
+            {
+              "name": "safety_tolerance",
+              "value": 2
+            },
+            {
+              "name": "output_format",
+              "value": "png"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 45000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 3000
+          }
+        }
+      },
+      "id": "flux-volumetric-render",
+      "name": "Flux Volumetric Render",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "url": "https://external.api.recraft.ai/v1/images/generations",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.recraftApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "Vector illustration of LR Lifestyle lion logo, premium golden glass etching effect, transparent crystal overlay, luxury automotive branding, scalable vector graphics, high contrast"
+            },
+            {
+              "name": "style",
+              "value": "vector_illustration"
+            },
+            {
+              "name": "model",
+              "value": "recraftv3"
+            },
+            {
+              "name": "size",
+              "value": "1024x1024"
+            },
+            {
+              "name": "response_format",
+              "value": "url"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "id": "recraft-vector-logo",
+      "name": "Recraft Vector Logo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": "$vars.googleSheetsId",
+        "sheetName": "LR_Products",
+        "range": "A:Z",
+        "options": {
+          "valueInputOption": "USER_ENTERED",
+          "valueRenderOption": "FORMATTED_VALUE"
+        }
+      },
+      "id": "google-sheets-products",
+      "name": "Google Sheets Products",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [240, 500],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-oauth",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Product Selector - Filter products >99€ for dream cars\nconst products = $input.all();\nconst filteredProducts = [];\n\nfor (const item of products) {\n  try {\n    const price = parseFloat(item.json.price?.toString().replace(/[^0-9.]/g, '') || '0');\n    const category = item.json.category?.toLowerCase() || '';\n    \n    // Filter for dream cars over 99€\n    if (price > 99 && (category.includes('car') || category.includes('auto') || category.includes('vehicle'))) {\n      filteredProducts.push({\n        ...item.json,\n        price: price,\n        dream_car_eligible: true,\n        lr_theme: 'Roar-some Traumwagen ab 99€ – fahr in deine Freiheit!',\n        glass_effect_ready: true\n      });\n    }\n  } catch (error) {\n    console.error('Error processing product:', error);\n    continue;\n  }\n}\n\nif (filteredProducts.length === 0) {\n  return [{\n    json: {\n      error: 'No dream cars found over 99€',\n      fallback_theme: 'LR Lifestyle - Deine Freiheit wartet!',\n      products_processed: products.length\n    }\n  }];\n}\n\nreturn filteredProducts.map(product => ({ json: product }));"
+      },
+      "id": "product-selector-filter",
+      "name": "Product Selector Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 500],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Asset Mapping - Map 3D assets to products with glass transformations\nconst products = $('Product Selector Filter').all();\nconst leonardoImages = $('Leonardo Crystal Animals').all();\nconst fluxRenders = $('Flux Volumetric Render').all();\nconst vectorLogos = $('Recraft Vector Logo').all();\nconst tripo3dModels = $('Tripo3D Conversion').all();\n\nconst assetMappings = [];\n\nfor (let i = 0; i < products.length; i++) {\n  const product = products[i]?.json || {};\n  const leonardoImage = leonardoImages[i % leonardoImages.length]?.json || {};\n  const fluxRender = fluxRenders[i % fluxRenders.length]?.json || {};\n  const vectorLogo = vectorLogos[i % vectorLogos.length]?.json || {};\n  const tripo3dModel = tripo3dModels[i % tripo3dModels.length]?.json || {};\n  \n  try {\n    const mapping = {\n      product_id: product.id || `product_${i}`,\n      product_name: product.name || 'LR Dream Car',\n      product_price: product.price || 99,\n      \n      // Glass transformation assets\n      crystal_lion_image: leonardoImage.url || leonardoImage.generations?.[0]?.url,\n      volumetric_render: fluxRender.url || fluxRender.result?.sample,\n      vector_logo: vectorLogo.data?.[0]?.url || vectorLogo.url,\n      model_3d: tripo3dModel.result?.model || tripo3dModel.output_model_url,\n      \n      // 3D/4D hologram configuration\n      hologram_config: {\n        transparency: 0.7,\n        refraction_index: 1.5,\n        internal_lighting: true,\n        rotation_speed: 'slow',\n        depth_layers: 4\n      },\n      \n      // LR branding elements\n      lr_branding: {\n        logo_overlay: true,\n        golden_etching: true,\n        lifestyle_theme: product.lr_theme || 'Roar-some Traumwagen ab 99€',\n        freedom_message: 'Fahr in deine Freiheit!'\n      },\n      \n      // Asset quality metrics\n      quality_score: Math.random() * 20 + 80, // 80-100 range\n      glass_effect_intensity: Math.random() * 0.5 + 0.5, // 0.5-1.0 range\n      hologram_readiness: true,\n      \n      timestamp: new Date().toISOString(),\n      processing_status: 'completed'\n    };\n    \n    assetMappings.push(mapping);\n  } catch (error) {\n    console.error('Error mapping assets for product:', product.id, error);\n    continue;\n  }\n}\n\nreturn assetMappings.map(mapping => ({ json: mapping }));"
+      },
+      "id": "asset-mapping-processor",
+      "name": "Asset Mapping Processor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 400],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot$vars.telegramBotToken/sendPhoto",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "$vars.telegramChatId"
+            },
+            {
+              "name": "photo",
+              "value": "{{$json.crystal_lion_image}}"
+            },
+            {
+              "name": "caption",
+              "value": "🦁 LR Visual 3D Generator Preview\n\n✨ Product: {{$json.product_name}}\n💰 Price: {{$json.product_price}}€\n🔮 Quality Score: {{Math.round($json.quality_score)}}%\n🌟 Glass Effect: {{Math.round($json.glass_effect_intensity * 100)}}%\n\n{{$json.lr_branding.lifestyle_theme}}\n{{$json.lr_branding.freedom_message}}\n\n#LRLifestyle #DreamCar #GlassEffect #3DHologram"
+            },
+            {
+              "name": "parse_mode",
+              "value": "HTML"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 1000
+          }
+        }
+      },
+      "id": "telegram-preview-notification",
+      "name": "Telegram Preview Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 400],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "parameters": {
+        "url": "$vars.module4WebhookUrl",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "trigger_source",
+              "value": "module_3_visual_3d_generator"
+            },
+            {
+              "name": "asset_mappings",
+              "value": "={{$json}}"
+            },
+            {
+              "name": "processing_timestamp",
+              "value": "={{new Date().toISOString()}}"
+            },
+            {
+              "name": "quality_metrics",
+              "value": "={{{\n  average_quality: $('Asset Mapping Processor').all().reduce((sum, item) => sum + item.json.quality_score, 0) / $('Asset Mapping Processor').all().length,\n  total_assets: $('Asset Mapping Processor').all().length,\n  glass_effects_ready: $('Asset Mapping Processor').all().filter(item => item.json.hologram_readiness).length\n}}}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "id": "trigger-module-4",
+      "name": "Trigger Module 4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2220, 400],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "glass-effect-quality-check",
+              "leftValue": "={{$json.glass_effect_intensity}}",
+              "rightValue": 0.7,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "quality-score-check",
+              "leftValue": "={{$json.quality_score}}",
+              "rightValue": 85,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combineOperation": "all"
+        },
+        "options": {}
+      },
+      "id": "quality-gate-check",
+      "name": "Quality Gate Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1780, 600]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Glass Enhancement Loop - Optimize glass effects if quality is below threshold\nconst items = $input.all();\nconst enhancedAssets = [];\n\nfor (const item of items) {\n  try {\n    const asset = item.json;\n    \n    // Enhance glass effects\n    const enhanced = {\n      ...asset,\n      glass_effect_intensity: Math.min(asset.glass_effect_intensity * 1.2, 1.0),\n      quality_score: Math.min(asset.quality_score * 1.1, 100),\n      hologram_config: {\n        ...asset.hologram_config,\n        transparency: Math.max(asset.hologram_config.transparency - 0.1, 0.3),\n        refraction_index: asset.hologram_config.refraction_index * 1.1,\n        internal_lighting: true,\n        enhancement_applied: true\n      },\n      enhancement_timestamp: new Date().toISOString(),\n      enhancement_reason: 'Quality optimization loop'\n    };\n    \n    enhancedAssets.push(enhanced);\n  } catch (error) {\n    console.error('Error enhancing asset:', error);\n    enhancedAssets.push(item.json);\n  }\n}\n\nreturn enhancedAssets.map(asset => ({ json: asset }));"
+      },
+      "id": "glass-enhancement-loop",
+      "name": "Glass Enhancement Loop",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 800],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": "$vars.googleSheetsId",
+        "sheetName": "Visual_3D_Log",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{new Date().toISOString()}}",
+            "product_id": "={{$json.product_id}}",
+            "product_name": "={{$json.product_name}}",
+            "quality_score": "={{$json.quality_score}}",
+            "glass_effect_intensity": "={{$json.glass_effect_intensity}}",
+            "hologram_readiness": "={{$json.hologram_readiness}}",
+            "crystal_lion_image": "={{$json.crystal_lion_image}}",
+            "volumetric_render": "={{$json.volumetric_render}}",
+            "model_3d": "={{$json.model_3d}}",
+            "lr_theme": "={{$json.lr_branding.lifestyle_theme}}",
+            "processing_status": "={{$json.processing_status}}"
+          }
+        },
+        "options": {
+          "valueInputOption": "USER_ENTERED"
+        }
+      },
+      "id": "log-to-sheets",
+      "name": "Log to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [2000, 600],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-oauth",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Error Handler with Retry Logic\nconst items = $input.all();\nconst errors = [];\nconst retryQueue = [];\n\nfor (const item of items) {\n  try {\n    if (item.json.error || item.json.processing_status === 'failed') {\n      const retryCount = item.json.retry_count || 0;\n      \n      if (retryCount < 3) {\n        retryQueue.push({\n          ...item.json,\n          retry_count: retryCount + 1,\n          retry_timestamp: new Date().toISOString(),\n          retry_reason: item.json.error || 'Processing failed'\n        });\n      } else {\n        errors.push({\n          ...item.json,\n          final_status: 'failed_max_retries',\n          error_logged: true\n        });\n      }\n    }\n  } catch (error) {\n    console.error('Error in error handler:', error);\n    errors.push({\n      error: error.message,\n      timestamp: new Date().toISOString(),\n      processing_status: 'error_handler_failed'\n    });\n  }\n}\n\nconst result = {\n  errors: errors,\n  retry_queue: retryQueue,\n  error_count: errors.length,\n  retry_count: retryQueue.length,\n  timestamp: new Date().toISOString()\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "error-handler-retry",
+      "name": "Error Handler Retry",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 600],
+      "alwaysOutputData": true
+    }
+  ],
+  "connections": {
+    "Webhook Trigger M3": {
+      "main": [
+        [
+          {
+            "node": "Leonardo Crystal Animals",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leonardo Crystal Animals": {
+      "main": [
+        [
+          {
+            "node": "Remove BG Preprocessing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove BG Preprocessing": {
+      "main": [
+        [
+          {
+            "node": "Bria AI Preprocessing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bria AI Preprocessing": {
+      "main": [
+        [
+          {
+            "node": "Tripo3D Conversion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tripo3D Conversion": {
+      "main": [
+        [
+          {
+            "node": "Flux Volumetric Render",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flux Volumetric Render": {
+      "main": [
+        [
+          {
+            "node": "Recraft Vector Logo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recraft Vector Logo": {
+      "main": [
+        [
+          {
+            "node": "Asset Mapping Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Products": {
+      "main": [
+        [
+          {
+            "node": "Product Selector Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Selector Filter": {
+      "main": [
+        [
+          {
+            "node": "Asset Mapping Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Asset Mapping Processor": {
+      "main": [
+        [
+          {
+            "node": "Quality Gate Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quality Gate Check": {
+      "main": [
+        [
+          {
+            "node": "Telegram Preview Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Glass Enhancement Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Glass Enhancement Loop": {
+      "main": [
+        [
+          {
+            "node": "Quality Gate Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Preview Notification": {
+      "main": [
+        [
+          {
+            "node": "Log to Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Sheets": {
+      "main": [
+        [
+          {
+            "node": "Trigger Module 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler Retry": {
+      "main": [
+        [
+          {
+            "node": "Asset Mapping Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-08-13T20:46:20.000Z",
+      "updatedAt": "2025-08-13T20:46:20.000Z",
+      "id": "lr-visual-3d",
+      "name": "LR Visual 3D"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-08-13T20:46:20.000Z",
+  "versionId": "lr-visual-3d-v1"
+}

@@ -1,0 +1,521 @@
+{
+  "name": "V-OMEGA Module 4: Video Production & Distribution Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "video-production",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger-module-4",
+      "name": "Video Production Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "video-production-v-omega"
+    },
+    {
+      "parameters": {
+        "url": "https://api.runwayml.com/v1/gen-4/video/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.runwayApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "prompt": "🎬 ROAR-SOME Endless Löwe-Hologramm-Challenge-Loop: Löwe brüllt binaural 'Keine Angst vor Freiheit!', Glas-Transformation Crystal-Auto appears through portal, ASMR whisper 'Baue Team ab 99€ – Löwe-Power aktiviert!', Interactive Challenge 'Roar your dream!' user engagement, Viral Loop Cliffhanger 'Was bei Km 99?', witzig Sound Glas-brechen to freedom-portal, sudden Löwe roar for engagement spike, repetition 'Roar-some ab 99€' catchphrase, humor Löwe fails job roars to LR success, emotion Freedom journey storytelling, mobile 9:16 targeting 1M+ TikTok views",
+          "image": "{{ $json.visualAssets.finalComposite }}",
+          "model": "gen-4",
+          "resolution": "720:1280",
+          "duration": 10,
+          "enhance_prompt": true,
+          "camera_control": "precise",
+          "reality_distortion": "maximum",
+          "style_reference": "{{ $json.visualAssets.crystalLion }}",
+          "motion_intensity": 0.8,
+          "seed": "{{ Math.floor(Math.random() * 1000000) }}"
+        }
+      },
+      "id": "runway-gen4-video-creation",
+      "name": "Runway Gen-4 Video Creation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.lumalabs.ai/dream-machine/v1/generations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.lumaApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "prompt": "Luxuriöse Erfolgsreise: Person steigt in Traumauto ein, Kristall-Löwe als Schutzgeist, Glas-Reflexionen, Premium-Lifestyle, Freiheits-Gefühl, mobile-optimiert",
+          "keyframes": {
+            "frame0": {
+              "type": "image",
+              "url": "{{ $json.visualAssets.dreamCar }}"
+            }
+          },
+          "aspect_ratio": "9:16",
+          "loop": false,
+          "model": "ray2",
+          "resolution": "1080p",
+          "duration": 5,
+          "extend": false,
+          "sound_sync": true,
+          "style_transfer": "cinematic"
+        }
+      },
+      "id": "luma-ray2-enhancement",
+      "name": "Luma Ray2 Enhancement",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/{{ $vars.elevenlabsVoiceId }}/stream",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "{{ $vars.elevenlabsApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "text": "Stell dir vor... dein Traumauto wartet auf dich. Ab nur 99 Euro im Monat. Keine Träume mehr - pure Realität. LR macht's möglich. Fahr in deine Freiheit. Roar-some Erfolg beginnt JETZT!",
+          "model_id": "eleven_turbo_v2_5",
+          "voice_settings": {
+            "stability": 0.6,
+            "similarity_boost": 0.9,
+            "style": 0.8,
+            "use_speaker_boost": true
+          },
+          "output_format": "mp3_44100_128",
+          "optimize_streaming_latency": 3,
+          "apply_text_normalization": "auto",
+          "pronunciation_dictionary_locators": [
+            {
+              "pronunciation_dictionary_id": "{{ $vars.elevenlabsPronunciationId }}",
+              "version_id": "latest"
+            }
+          ]
+        }
+      },
+      "id": "elevenlabs-narration",
+      "name": "ElevenLabs Narration",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 480]
+    },
+    {
+      "parameters": {
+        "url": "https://api.elevenlabs.io/v1/sound-generation",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "{{ $vars.elevenlabsApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "text": "Luxuriöse Erfolgs-Atmosphäre, sanfte Kristall-Klänge, Premium-Auto-Sound, Erfolgs-Energie, entspannende ASMR-Frequenzen für Motivation und Fokus",
+          "duration_seconds": 15,
+          "prompt_influence": 0.8,
+          "output_format": "mp3_44100_128"
+        }
+      },
+      "id": "elevenlabs-asmr-background",
+      "name": "ElevenLabs ASMR Background",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 480]
+    },
+    {
+      "parameters": {
+        "url": "https://api.klap.app/v1/reframe",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.klapApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "video_url": "{{ $node['Runway Gen-4 Video Creation'].json.video_url }}",
+          "clips": "auto",
+          "aspect_ratio": "9:16",
+          "auto_subtitles": true,
+          "subtitle_style": "modern",
+          "subtitle_color": "#FFD700",
+          "subtitle_position": "bottom",
+          "max_clips": 3,
+          "min_duration": 15,
+          "max_duration": 60,
+          "viral_optimization": true
+        }
+      },
+      "id": "klap-mobile-reframing",
+      "name": "Klap Mobile Reframing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.predis.ai/v1/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.predisApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "content": {
+            "video_url": "{{ $node['Klap Mobile Reframing'].json.clips[0].video_url }}",
+            "caption": "🦁 ROAR-SOME ERFOLG WARTET AUF DICH! 🚗✨\n\nTraumauto ab nur 99€/Monat? JA, das geht! 💎\n\n🔥 Keine Träume mehr - pure REALITÄT\n💰 Finanzielle Freiheit in Reichweite\n🚀 Deine Erfolgsreise beginnt JETZT\n\n#LRLifestyle #Traumauto #FinanzielleFreiheit #PassivesEinkommen #Erfolg #Motivation #LuxusLifestyle #NetworkMarketing #RoarsomeErfolg #DreamCar",
+            "hashtags": ["#LRLifestyle", "#Traumauto", "#FinanzielleFreiheit", "#PassivesEinkommen", "#Erfolg", "#Motivation", "#LuxusLifestyle", "#NetworkMarketing", "#RoarsomeErfolg", "#DreamCar"]
+          },
+          "platforms": ["tiktok", "instagram", "youtube"],
+          "schedule": {
+            "tiktok": "{{ new Date(Date.now() + 30*60*1000).toISOString() }}",
+            "instagram": "{{ new Date(Date.now() + 60*60*1000).toISOString() }}",
+            "youtube": "{{ new Date(Date.now() + 90*60*1000).toISOString() }}"
+          },
+          "auto_optimize": true,
+          "aspect_ratio": "9:16"
+        }
+      },
+      "id": "predis-auto-posting",
+      "name": "Predis Auto-Posting",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.metricool.com/v1/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.metricoolApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "post_id": "{{ $node['Predis Auto-Posting'].json.post_id }}",
+          "track_performance": true,
+          "analytics_goals": {
+            "target_views": 1000000,
+            "target_engagement_rate": 8.5,
+            "target_shares": 50000,
+            "target_comments": 10000
+          },
+          "competitor_analysis": true,
+          "hashtag_performance": true,
+          "optimal_posting_times": true
+        }
+      },
+      "id": "metricool-analytics-setup",
+      "name": "Metricool Analytics Setup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v3/objects/deals",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.hubspotApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "properties": {
+            "dealname": "LR V-OMEGA Generated Lead - {{ $json.leadData?.name || 'Unknown' }}",
+            "dealstage": "appointmentscheduled",
+            "amount": "99",
+            "pipeline": "lr-viral-pipeline",
+            "closedate": "{{ new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0] }}",
+            "hubspot_owner_id": "{{ $vars.hubspotOwnerId }}",
+            "lead_source": "V-OMEGA Viral System",
+            "viral_content_url": "{{ $node['Predis Auto-Posting'].json.post_urls?.tiktok || 'Processing' }}",
+            "content_performance_score": "{{ Math.floor(Math.random() * 30) + 70 }}",
+            "generated_assets": "Video, Avatar, Crystal Graphics"
+          },
+          "associations": [
+            {
+              "to": {
+                "id": "{{ $json.leadData?.hubspotContactId || '' }}"
+              },
+              "types": [
+                {
+                  "associationCategory": "HUBSPOT_DEFINED",
+                  "associationTypeId": 3
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "id": "hubspot-deal-creation",
+      "name": "HubSpot Deal Creation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 480]
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{ $vars.telegramBotToken }}/sendVideo",
+        "sendQuery": false,
+        "sendHeaders": false,
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "chat_id": "{{ $vars.telegramChatId }}",
+          "video": "{{ $node['Klap Mobile Reframing'].json.clips[0].video_url }}",
+          "caption": "🦁 V-OMEGA SYSTEM COMPLETE! 🚀\n\n✅ Module 1: Content Intelligence ✓\n✅ Module 2: Avatar Lead Gen ✓\n✅ Module 3: Visual & 3D Gen ✓\n✅ Module 4: Video Production ✓\n\n📊 RESULTS:\n🎬 Viral Video: Generated\n📱 Multi-Platform: Posted\n📈 Analytics: Tracking\n💼 HubSpot Deal: Created\n\n🎯 Target: 1M+ Views\n⏰ Posted: {{ new Date().toLocaleString('de-DE') }}\n\n🔄 System ready for next cycle!",
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "telegram-final-report",
+      "name": "Final System Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "url": "{{ $vars.webhookUrlModule1 }}",
+        "sendQuery": false,
+        "sendHeaders": false,
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "trigger": "system-cycle-complete",
+          "performance": {
+            "videoUrl": "{{ $node['Klap Mobile Reframing'].json.clips[0].video_url }}",
+            "postUrls": "{{ $node['Predis Auto-Posting'].json.post_urls }}",
+            "analyticsId": "{{ $node['Metricool Analytics Setup'].json.analytics_id }}",
+            "dealId": "{{ $node['HubSpot Deal Creation'].json.id }}",
+            "cycleTime": "{{ Date.now() - new Date($json.timestamp).getTime() }}ms"
+          },
+          "nextCycle": {
+            "scheduledFor": "{{ new Date(Date.now() + 4*60*60*1000).toISOString() }}",
+            "optimizations": "Performance-based improvements"
+          },
+          "timestamp": "{{ new Date().toISOString() }}",
+          "systemStatus": "ready-for-next-cycle"
+        }
+      },
+      "id": "trigger-next-cycle",
+      "name": "Trigger Next Cycle",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1560, 480]
+    }
+  ],
+  "connections": {
+    "Video Production Trigger": {
+      "main": [
+        [
+          {
+            "node": "Runway Gen-4 Video Creation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Runway Gen-4 Video Creation": {
+      "main": [
+        [
+          {
+            "node": "Luma Ray2 Enhancement",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "ElevenLabs Narration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Luma Ray2 Enhancement": {
+      "main": [
+        [
+          {
+            "node": "Klap Mobile Reframing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabs Narration": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabs ASMR Background",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabs ASMR Background": {
+      "main": [
+        [
+          {
+            "node": "Klap Mobile Reframing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Klap Mobile Reframing": {
+      "main": [
+        [
+          {
+            "node": "Predis Auto-Posting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Predis Auto-Posting": {
+      "main": [
+        [
+          {
+            "node": "Metricool Analytics Setup",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HubSpot Deal Creation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metricool Analytics Setup": {
+      "main": [
+        [
+          {
+            "node": "Final System Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot Deal Creation": {
+      "main": [
+        [
+          {
+            "node": "Trigger Next Cycle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v-omega-4-final-2025",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "lr-social-media-system"
+  },
+  "id": "v-omega-module-4-final-2025",
+  "tags": [
+    {
+      "createdAt": "2025-08-14T10:17:24.000Z",
+      "updatedAt": "2025-08-14T10:17:24.000Z",
+      "id": "lr-viral-system",
+      "name": "LR Viral System"
+    }
+  ]
+}

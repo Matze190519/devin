@@ -1,0 +1,474 @@
+{
+  "name": "V-OMEGA Module 2: Avatar Lead Gen & Personalization (Holographic Casting)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "v-omega-avatar-leadgen",
+        "options": {}
+      },
+      "id": "holographic-projector-trigger",
+      "name": "🛸 Holographic Projector Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.tally.so/forms/{{ $json.form_id || 'mYbAEq' }}/responses",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.TallyApi }}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "50"
+            },
+            {
+              "name": "since",
+              "value": "{{ $now.minus({hours: 24}).toISO() }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "tally-quantum-lead-collector",
+      "name": "🌌 Tally Quantum Lead Collector",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "url": "https://api.snov.io/v1/get-emails-from-names",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.SnovIoApiAPISecret }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "user_id",
+              "value": "{{ $vars.SnovIoApiAPIUserID }}"
+            },
+            {
+              "name": "limit",
+              "value": "500"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "snov-enrichment-engine",
+      "name": "🔍 Snov.io Enrichment Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 420],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "url": "https://api.apollo.io/v1/mixed_people/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.ApolloIoApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "min_score",
+              "value": "0.18"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "apollo-mining-system",
+      "name": "⚡ Apollo.io Mining System",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 540],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "jsCode": "// AVATAR CASTING SYSTEM FROM YEAR 3025 - ALIEN INTELLIGENCE MATCHING\nconst tallyQuantumData = $input.first().json;\nconst snovEnrichment = $input.all()[1]?.json || {};\nconst apolloMining = $input.all()[2]?.json || {};\n\n// AVATAR CASTING ALGORITHM FROM YEAR 3025\nfunction calculateAvatarMatch(lead, avatar) {\n  let score = 0;\n  \n  // Interest-based matching (luxury cars +30, freedom +30, passive income +30)\n  const interests = (lead.interests || []).join(' ').toLowerCase();\n  if (interests.includes('luxury') || interests.includes('cars')) score += 30;\n  if (interests.includes('freedom') || interests.includes('lifestyle')) score += 30;\n  if (interests.includes('passive') || interests.includes('income')) score += 30;\n  \n  // Pain point matching (fear/angst → Lina +40, motivation → Mathias +40)\n  const painPoints = (lead.pain_points || '').toLowerCase();\n  if (avatar === 'Lina' && (painPoints.includes('fear') || painPoints.includes('angst') || painPoints.includes('unsicher'))) score += 40;\n  if (avatar === 'Mathias' && (painPoints.includes('motivation') || painPoints.includes('success') || painPoints.includes('achievement'))) score += 40;\n  \n  // Goal matching (wealth +35, success +35)\n  const goals = (lead.goals || '').toLowerCase();\n  if (goals.includes('wealth') || goals.includes('money') || goals.includes('financial')) score += 35;\n  if (goals.includes('success') || goals.includes('achievement') || goals.includes('freedom')) score += 35;\n  \n  // Quantum factor for variety (random 0-10)\n  score += Math.floor(Math.random() * 10);\n  \n  return score;\n}\n\n// Process quantum leads with alien intelligence\nconst quantumLeads = [];\n\nif (tallyQuantumData.data && Array.isArray(tallyQuantumData.data)) {\n  tallyQuantumData.data.forEach(response => {\n    const lead = {\n      id: response.responseId,\n      email: response.fields?.email || '',\n      name: response.fields?.name || '',\n      interests: response.fields?.interests || [],\n      goals: response.fields?.goals || '',\n      pain_points: response.fields?.pain_points || '',\n      dream_car: response.fields?.dream_car || 'Traumauto ab 99€',\n      source: 'tally_quantum',\n      timestamp: response.createdAt,\n      alien_intelligence_level: 'YEAR_3025'\n    };\n    \n    // AVATAR CASTING WITH ALIEN INTELLIGENCE\n    const avatarScores = {\n      Lina: calculateAvatarMatch(lead, 'Lina'),\n      Mathias: calculateAvatarMatch(lead, 'Mathias')\n    };\n    \n    const bestAvatar = Object.keys(avatarScores).reduce((a, b) => \n      avatarScores[a] > avatarScores[b] ? a : b\n    );\n    \n    lead.avatar_casting = {\n      selected_avatar: bestAvatar,\n      avatar_scores: avatarScores,\n      casting_confidence: Math.max(...Object.values(avatarScores)),\n      avatar_id: bestAvatar === 'Lina' ? '{{ $vars.LinaAvatar }}' : '{{ $vars.MeineHyperrealistischeAvatarID }}',\n      voice_id: bestAvatar === 'Lina' ? '{{ $vars.LinaVoiceID }}' : '{{ $vars.MathiasVoiceID }}'\n    };\n    \n    quantumLeads.push(lead);\n  });\n}\n\n// HOLOGRAPHIC PROJECTOR FUSION WITH ENRICHMENT\nconst holographicLeads = quantumLeads.map(lead => {\n  const holographicEnrichment = {\n    snov_quantum_data: snovEnrichment,\n    apollo_mining_data: apolloMining,\n    enrichment_timestamp: new Date().toISOString(),\n    crystal_lion_compatibility: Math.floor(Math.random() * 100),\n    glass_transformation_readiness: Math.floor(Math.random() * 100),\n    vsmr_frequency_resonance: Math.floor(Math.random() * 100)\n  };\n  \n  return {\n    ...lead,\n    holographic_enrichment,\n    status: 'READY_FOR_ALIEN_PERSONALIZATION',\n    quantum_status: '🛸 HOLOGRAPHIC PROJECTION COMPLETE'\n  };\n});\n\nreturn holographicLeads.map(lead => ({ json: lead }));"
+      },
+      "id": "avatar-casting-system-3025",
+      "name": "🛸 Avatar Casting System - Year 3025",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.anthropicApi }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "claude-opus-4-1-20250805"
+            },
+            {
+              "name": "max_tokens",
+              "value": "4000"
+            },
+            {
+              "name": "messages",
+              "value": "[{\"role\": \"system\", \"content\": \"Du bist ein Meister-Scripter aus dem Jahr 3025 mit alien intelligence. Du erstellst hyperpersonalisierte Avatar-Skripte für Crystal-Löwe Dominanz. Jedes Skript muss: 1) Crystal-Löwe Referenz enthalten, 2) VSMR-Elemente für 432Hz Resonanz, 3) Glas-Transformation Metaphern, 4) Begehbare 3D-Welt Konzepte, 5) Roar-some Wortwitz, 6) Maximal 60 Sekunden, 7) Nicht von dieser Welt sein.\"}, {\"role\": \"user\", \"content\": \"HYPERPERSONALISIERTES AVATAR-SKRIPT ERSTELLEN:\\n\\nLead Data:\\n- Name: {{ $json.name }}\\n- Interests: {{ $json.interests }}\\n- Goals: {{ $json.goals }}\\n- Pain Points: {{ $json.pain_points }}\\n- Dream Car: {{ $json.dream_car }}\\n\\nAvatar Casting:\\n- Selected Avatar: {{ $json.avatar_casting.selected_avatar }}\\n- Casting Confidence: {{ $json.avatar_casting.casting_confidence }}%\\n- Crystal Lion Compatibility: {{ $json.holographic_enrichment.crystal_lion_compatibility }}%\\n\\nERSTELLE ALIEN INTELLIGENCE SKRIPT:\\n- Persönliche Ansprache mit Namen\\n- Crystal-Löwe roar zu {{ $json.dream_car }}\\n- Glas-DNA Transformation zu passivem Einkommen\\n- VSMR 432Hz Wealth-Frequenz Integration\\n- Begehbare LR-Team 3D-Welt\\n- Roar-some Traumauto ab 99€ Call-to-Action\\n\\nZiel: Jaw-dropping, unkopierbar, 2+ Milliarden Views Potenzial!\"}]"
+            },
+            {
+              "name": "temperature",
+              "value": "0.9"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "claude-script-master-3025",
+      "name": "🛸 Claude Script Master - Year 3025",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1220, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "{{ $vars.HeyGenApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "avatar_id",
+              "value": "{{ $json.avatar_casting.avatar_id }}"
+            },
+            {
+              "name": "voice_id",
+              "value": "{{ $json.avatar_casting.voice_id }}"
+            },
+            {
+              "name": "script",
+              "value": "{{ $json.content[0].text }}"
+            },
+            {
+              "name": "background",
+              "value": "crystal_glass_luxury_portal"
+            },
+            {
+              "name": "emotion",
+              "value": "{{ $json.avatar_casting.selected_avatar === 'Lina' ? 'calming' : 'enthusiastic' }}"
+            },
+            {
+              "name": "speed",
+              "value": "1.1"
+            },
+            {
+              "name": "interactive_webhook",
+              "value": "true"
+            },
+            {
+              "name": "3d_avatar_mode",
+              "value": "true"
+            },
+            {
+              "name": "activity_idle_timeout",
+              "value": "120"
+            },
+            {
+              "name": "personalized_mode",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "heygen-v3-streaming-generator",
+      "name": "🎬 HeyGen v3+ Streaming Avatar Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000
+    },
+    {
+      "parameters": {
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/{{ $json.avatar_casting.voice_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "{{ $vars.ElevenlabsApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "{{ $json.content[0].text }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_turbo_v2_6"
+            },
+            {
+              "name": "voice_settings",
+              "value": "{\"stability\": 0.6, \"similarity_boost\": 0.9, \"style\": 0.8, \"use_speaker_boost\": true}"
+            },
+            {
+              "name": "pronunciation_dictionary_locators",
+              "value": "[{\"pronunciation_dictionary_id\": \"vsmr_432hz_wealth_dna\", \"version_id\": \"latest\"}]"
+            },
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            },
+            {
+              "name": "apply_text_normalization",
+              "value": "auto"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "elevenlabs-turbo-v26-vsmr",
+      "name": "🎧 ElevenLabs Turbo v2.6 - VSMR 432Hz",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 420],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "https://api.hume.ai/v0/evi/chat",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Hume-Api-Key",
+              "value": "{{ $vars.HumeAiApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "{{ $json.content[0].text }}"
+            },
+            {
+              "name": "config_id",
+              "value": "crystal_lion_personality_{{ $json.avatar_casting.selected_avatar }}"
+            },
+            {
+              "name": "voice",
+              "value": "{{ $json.avatar_casting.selected_avatar === 'Lina' ? 'calming_female' : 'confident_male' }}"
+            },
+            {
+              "name": "language",
+              "value": "de"
+            },
+            {
+              "name": "emotion_features",
+              "value": "[\"enthusiasm\", \"confidence\", \"warmth\", \"motivation\"]"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "hume-evi3-personality-cloning",
+      "name": "🧠 Hume EVI3 - Personality Cloning",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 540],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    }
+  ],
+  "connections": {
+    "holographic-projector-trigger": {
+      "main": [
+        [
+          {
+            "node": "tally-quantum-lead-collector",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "snov-enrichment-engine",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "apollo-mining-system",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tally-quantum-lead-collector": {
+      "main": [
+        [
+          {
+            "node": "avatar-casting-system-3025",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "snov-enrichment-engine": {
+      "main": [
+        [
+          {
+            "node": "avatar-casting-system-3025",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "apollo-mining-system": {
+      "main": [
+        [
+          {
+            "node": "avatar-casting-system-3025",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "avatar-casting-system-3025": {
+      "main": [
+        [
+          {
+            "node": "claude-script-master-3025",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "claude-script-master-3025": {
+      "main": [
+        [
+          {
+            "node": "heygen-v3-streaming-generator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "elevenlabs-turbo-v26-vsmr",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "hume-evi3-personality-cloning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

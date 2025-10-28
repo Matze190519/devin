@@ -1,0 +1,473 @@
+{
+  "name": "V-OMEGA Module 3: Visual & 3D Generator (Glass Transformation Pipeline)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "v-omega-visual-3d-glass",
+        "options": {}
+      },
+      "id": "crystal-portal-trigger",
+      "name": "🌌 Crystal Portal Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://cloud.leonardo.ai/api/rest/v1/generations",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.LeonardoAiApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "{{ $json.dynamic_prompts?.[0] || 'Crystal-Löwe explodiert aus 4D-Hologramm - Traumauto ab 99€ materialisiert sich durch Quantum-Glas-Portal, hyperrealistic volumetric lighting, luxury aesthetic, nicht von dieser Welt, roar-some crystal glass transformation, begehbare 3D-Freiheits-Welt' }}"
+            },
+            {
+              "name": "modelId",
+              "value": "lucid-origin-v1"
+            },
+            {
+              "name": "width",
+              "value": "1024"
+            },
+            {
+              "name": "height",
+              "value": "1024"
+            },
+            {
+              "name": "num_images",
+              "value": "6"
+            },
+            {
+              "name": "photoReal",
+              "value": "true"
+            },
+            {
+              "name": "photoRealVersion",
+              "value": "v3"
+            },
+            {
+              "name": "promptMagic",
+              "value": "true"
+            },
+            {
+              "name": "promptMagicVersion",
+              "value": "v3"
+            },
+            {
+              "name": "alchemy",
+              "value": "true"
+            },
+            {
+              "name": "presetStyle",
+              "value": "CINEMATIC"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "leonardo-lucid-origin-crystal-explosion",
+      "name": "🎨 Leonardo Lucid Origin - Crystal Explosion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000
+    },
+    {
+      "parameters": {
+        "url": "https://fal.run/fal-ai/flux-pro-v1-1-ultra",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.FalAiApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "{{ $json.dynamic_prompts?.[1] || 'Glas-DNA verwandelt Realität - Passives Einkommen fließt wie flüssiger Diamant, Crystal-Löwe roars through quantum glass portal, luxury Traumauto ab 99€ materializes, volumetric lighting, hyperrealistic glass transformation, nicht von dieser Welt' }}"
+            },
+            {
+              "name": "image_size",
+              "value": "landscape_16_9"
+            },
+            {
+              "name": "num_inference_steps",
+              "value": "100"
+            },
+            {
+              "name": "guidance_scale",
+              "value": "8.5"
+            },
+            {
+              "name": "enable_safety_checker",
+              "value": "false"
+            },
+            {
+              "name": "output_format",
+              "value": "png"
+            },
+            {
+              "name": "lora_path",
+              "value": "crystal_glass_v2"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "flux-11-pro-ultra-glass-dna",
+      "name": "💎 Flux 1.1 Pro Ultra - Glass DNA Transformation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000
+    },
+    {
+      "parameters": {
+        "url": "https://fal.run/fal-ai/kling-video-v1-5/image-to-video",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.FalAiApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.images[0].url }}"
+            },
+            {
+              "name": "prompt",
+              "value": "Crystal-Löwe explodes from glass portal, luxury car materializes with roar-some effect, 4D hologram transformation, cinema quality motion"
+            },
+            {
+              "name": "duration",
+              "value": "10"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "16:9"
+            },
+            {
+              "name": "camera_control",
+              "value": "precise"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "kling-21-master-cinema-transformation",
+      "name": "🎬 Kling 2.1 Master - Cinema Transformation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 420],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 20000
+    },
+    {
+      "parameters": {
+        "url": "https://fal.run/fal-ai/tripo3d-v2-5",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.FalAiApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.images[0].url }}"
+            },
+            {
+              "name": "multiview_to_3d",
+              "value": "true"
+            },
+            {
+              "name": "stylized_inputs",
+              "value": "true"
+            },
+            {
+              "name": "output_format",
+              "value": "glb"
+            },
+            {
+              "name": "texture_resolution",
+              "value": "2048"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 240000
+        }
+      },
+      "id": "tripo3d-begehbare-welten",
+      "name": "🌌 Tripo3D v2.5 - Begehbare 3D-Welten",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 540],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 30000
+    },
+    {
+      "parameters": {
+        "url": "https://fal.run/fal-ai/echomimic-v3",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Key {{ $vars.FalAiApi }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.images[0].url }}"
+            },
+            {
+              "name": "audio_url",
+              "value": "{{ $json.vsmr_audio_url || 'https://example.com/crystal-lion-roar-432hz.mp3' }}"
+            },
+            {
+              "name": "pose_control",
+              "value": "true"
+            },
+            {
+              "name": "expression_control",
+              "value": "true"
+            },
+            {
+              "name": "output_format",
+              "value": "mp4"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "echomimic-v3-talking-crystal-lion",
+      "name": "🦁 EchoMimic v3 - Talking Crystal Lion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 660],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 20000
+    },
+    {
+      "parameters": {
+        "url": "https://api.remove.bg/v1.0/removebg",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "{{ $vars.RemoveAPI }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json.images[0].url }}"
+            },
+            {
+              "name": "size",
+              "value": "auto"
+            },
+            {
+              "name": "format",
+              "value": "png"
+            },
+            {
+              "name": "bg_color",
+              "value": "transparent"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "remove-bg-preprocessing",
+      "name": "🎭 Remove.bg - Background Preprocessing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "https://api.bannerbear.com/v2/images",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.CompositorApiKey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "template",
+              "value": "crystal_lion_watermark_template"
+            },
+            {
+              "name": "modifications",
+              "value": "[{\"name\": \"crystal_lion_logo\", \"image_url\": \"{{ $json.lr_logo_url }}\", \"opacity\": 0.3}]"
+            },
+            {
+              "name": "format",
+              "value": "png"
+            },
+            {
+              "name": "alpha",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "bannerbear-glass-etching-watermark",
+      "name": "🏷️ Bannerbear - Glass Etching Watermark",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 420],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    }
+  ],
+  "connections": {
+    "crystal-portal-trigger": {
+      "main": [
+        [
+          {
+            "node": "leonardo-lucid-origin-crystal-explosion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "leonardo-lucid-origin-crystal-explosion": {
+      "main": [
+        [
+          {
+            "node": "flux-11-pro-ultra-glass-dna",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "kling-21-master-cinema-transformation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "tripo3d-begehbare-welten",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "echomimic-v3-talking-crystal-lion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "flux-11-pro-ultra-glass-dna": {
+      "main": [
+        [
+          {
+            "node": "remove-bg-preprocessing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remove-bg-preprocessing": {
+      "main": [
+        [
+          {
+            "node": "bannerbear-glass-etching-watermark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

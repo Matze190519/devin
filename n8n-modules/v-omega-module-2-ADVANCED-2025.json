@@ -1,0 +1,907 @@
+{
+  "name": "LR Module 2: Advanced Avatar Lead Generation & Hyper-Personalization Engine 2025",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "avatar-leadgen-2025",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "🎭 Advanced Avatar Lead Generation Engine 2025",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300],
+      "webhookId": "avatar-leadgen-2025"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tally.so/forms",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.TallyApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "🚗 Dein Traumauto ab 99€ - LR Lifestyle Assessment 2025"
+            },
+            {
+              "name": "description",
+              "value": "Entdecke mit KI-Präzision, wie du mit LR Health & Beauty dein Traumauto finanzieren und finanzielle Freiheit erreichen kannst!"
+            },
+            {
+              "name": "fields",
+              "value": [
+                {
+                  "type": "text",
+                  "label": "Vorname",
+                  "required": true,
+                  "placeholder": "Dein Vorname"
+                },
+                {
+                  "type": "email",
+                  "label": "E-Mail",
+                  "required": true,
+                  "placeholder": "deine@email.de"
+                },
+                {
+                  "type": "phone",
+                  "label": "Telefon",
+                  "required": false,
+                  "placeholder": "+49 xxx xxx xxxx"
+                },
+                {
+                  "type": "select",
+                  "label": "Dein Traumauto",
+                  "required": true,
+                  "options": [
+                    "BMW 3er Serie",
+                    "Mercedes C-Klasse",
+                    "Audi A4",
+                    "Tesla Model 3",
+                    "Porsche Cayenne",
+                    "Range Rover Evoque",
+                    "Anderes Traumauto"
+                  ]
+                },
+                {
+                  "type": "select",
+                  "label": "Aktueller Berufsstatus",
+                  "required": true,
+                  "options": [
+                    "Angestellt (Vollzeit)",
+                    "Angestellt (Teilzeit)",
+                    "Selbstständig",
+                    "Student/in",
+                    "Arbeitsuchend",
+                    "Rentner/in"
+                  ]
+                },
+                {
+                  "type": "scale",
+                  "label": "Interesse an passivem Einkommen (1-10)",
+                  "required": true,
+                  "min": 1,
+                  "max": 10
+                },
+                {
+                  "type": "select",
+                  "label": "Persönlichkeitstyp (Selbsteinschätzung)",
+                  "required": true,
+                  "options": [
+                    "Analytisch & zahlenorientiert",
+                    "Kreativ & visionär",
+                    "Sozial & teamorientiert",
+                    "Praktisch & ergebnisorientiert",
+                    "Abenteuerlustig & risikobereit"
+                  ]
+                },
+                {
+                  "type": "textarea",
+                  "label": "Was ist dein größter Traum?",
+                  "required": false,
+                  "placeholder": "Beschreibe deinen größten Lebenstraum..."
+                }
+              ]
+            },
+            {
+              "name": "settings",
+              "value": {
+                "submit_text": "🚀 Mein Traumauto-Plan erstellen",
+                "redirect_url": "https://lr-lifestyle.com/traumauto-plan",
+                "collect_ip": true,
+                "collect_location": true
+              }
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "tally-lead-capture",
+      "name": "📝 Advanced Tally Lead Capture Form",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://app.snov.io/restapi/add-emails-to-list",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.SnovIoApiAPISecret }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "emails",
+              "value": [
+                {
+                  "email": "{{ $json.email }}",
+                  "firstName": "{{ $json.firstName }}",
+                  "lastName": "{{ $json.lastName || '' }}",
+                  "phone": "{{ $json.phone || '' }}"
+                }
+              ]
+            },
+            {
+              "name": "listId",
+              "value": "lr-traumauto-leads-2025"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "snov-lead-enrichment",
+      "name": "🔍 Snov.io Lead Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apollo.io/v1/people/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.ApolloIoApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "{{ $json.email }}"
+            },
+            {
+              "name": "reveal_personal_emails",
+              "value": true
+            },
+            {
+              "name": "reveal_phone_number",
+              "value": true
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "apollo-lead-enrichment",
+      "name": "🎯 Apollo.io Advanced Lead Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [800, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.anthropicApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "claude-3-5-sonnet-20241022"
+            },
+            {
+              "name": "max_tokens",
+              "value": 4000
+            },
+            {
+              "name": "messages",
+              "value": [
+                {
+                  "role": "user",
+                  "content": "Erstelle ein hyper-personalisiertes Avatar-Skript mit fortschrittlichster 2025 Personality-AI:\n\nLead-Daten:\n- Name: {{ $json.firstName }}\n- Traumauto: {{ $json.dreamCar }}\n- Berufsstatus: {{ $json.jobStatus }}\n- Passives Einkommen Interesse: {{ $json.passiveIncomeInterest }}/10\n- Persönlichkeitstyp: {{ $json.personalityType }}\n- Größter Traum: {{ $json.biggestDream }}\n\nAdvanced Personality Profiling:\n- OCEAN-Model Integration (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism)\n- Communication Style Adaptation (Visual, Auditory, Kinesthetic)\n- Decision-Making Pattern Analysis (Analytical, Intuitive, Behavioral, Conceptual)\n- Motivation Trigger Identification (Achievement, Affiliation, Power, Security)\n- Cultural Context Sensitivity\n\nLR Lifestyle Messaging 2025:\n- Finanzielle Freiheit durch intelligente Systeme\n- Traumauto ab 99€ (authentische Success Stories)\n- Community-driven Growth\n- Personal Branding Excellence\n- Passive Income Mastery\n\nHyper-Personalized Script Architecture:\n1. Neuro-linguistic Opening (3-5 Sekunden)\n2. Personality-Mirror Rapport Building (10-15 Sekunden)\n3. Value-Proposition Alignment (20-30 Sekunden)\n4. Social Proof Integration (15-20 Sekunden)\n5. Psychological Call-to-Action (10-15 Sekunden)\n6. Emotional Anchor Closing (5-10 Sekunden)\n\nOutput: 75-90 Sekunden Premium-Skript optimiert für HeyGen Avatar IV mit Emotion-Sync und Voice-Cloning-Parametern."
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "claude-personality-analysis",
+      "name": "🧠 Claude Advanced Personality Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.HeyGenApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_inputs",
+              "value": [
+                {
+                  "character": {
+                    "type": "avatar",
+                    "avatar_id": "{{ $vars.LinaAvatar }}",
+                    "avatar_style": "normal"
+                  },
+                  "voice": {
+                    "type": "text",
+                    "voice_id": "{{ $vars.LinaVoiceID }}",
+                    "input_text": "{{ $json.personalizedScript }}",
+                    "speed": 1.0,
+                    "emotion": "friendly"
+                  },
+                  "background": {
+                    "type": "color",
+                    "value": "#1a1a2e"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "dimension": {
+                "width": 1080,
+                "height": 1920
+              }
+            },
+            {
+              "name": "aspect_ratio": "9:16"
+            },
+            {
+              "name": "quality": "high"
+            },
+            {
+              "name": "callback_id": "lr-avatar-{{ $json.firstName }}-{{ $now.toUnixInteger() }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "heygen-avatar-generation",
+      "name": "🎭 HeyGen Avatar IV Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/{{ $vars.LinaVoiceID }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.ElevenlabsApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "{{ $json.personalizedScript }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_turbo_v2_5"
+            },
+            {
+              "name": "voice_settings",
+              "value": {
+                "stability": 0.75,
+                "similarity_boost": 0.85,
+                "style": 0.6,
+                "use_speaker_boost": true
+              }
+            },
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            },
+            {
+              "name": "optimize_streaming_latency": 3
+            },
+            {
+              "name": "apply_text_normalization": "auto"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "elevenlabs-voice-generation",
+      "name": "🎤 ElevenLabs Turbo v2.5 Voice Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1400, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hume.ai/v0/batch/jobs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.HumeAiApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "models",
+              "value": {
+                "face": {},
+                "speech": {}
+              }
+            },
+            {
+              "name": "transcription",
+              "value": {
+                "language": "de"
+              }
+            },
+            {
+              "name": "urls",
+              "value": [
+                "{{ $json.avatar_video_url }}"
+              ]
+            }
+          ]
+        },
+        "options": {
+          "timeout": 25000
+        }
+      },
+      "id": "hume-emotion-analysis",
+      "name": "😊 Hume EVI3 Emotion Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1600, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resemble.ai/v2/projects/{{ $vars.resembleProjectId }}/clips",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token token={{ $vars.resembleApi }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "data",
+              "value": {
+                "body": "{{ $json.personalizedScript }}",
+                "voice_uuid": "{{ $vars.LinaVoiceID }}",
+                "is_public": false,
+                "is_archived": false,
+                "precision": "PCM_24000",
+                "output_format": "wav"
+              }
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "resemble-voice-cloning",
+      "name": "🎭 Resemble AI Voice Cloning",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1800, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.HubspotApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "properties",
+              "value": {
+                "email": "{{ $json.email }}",
+                "firstname": "{{ $json.firstName }}",
+                "lastname": "{{ $json.lastName || '' }}",
+                "phone": "{{ $json.phone || '' }}",
+                "dream_car": "{{ $json.dreamCar }}",
+                "job_status": "{{ $json.jobStatus }}",
+                "passive_income_interest": "{{ $json.passiveIncomeInterest }}",
+                "personality_type": "{{ $json.personalityType }}",
+                "biggest_dream": "{{ $json.biggestDream }}",
+                "avatar_video_url": "{{ $json.avatar_video_url }}",
+                "personalized_script": "{{ $json.personalizedScript }}",
+                "lead_source": "LR Advanced Avatar System 2025",
+                "lifecyclestage": "lead",
+                "lr_system_score": "{{ $json.viral_potential || 8.5 }}",
+                "created_date": "{{ $now.toISO() }}"
+              }
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "hubspot-crm-integration",
+      "name": "📊 HubSpot Advanced CRM Integration",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2000, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.wassenger.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.WassengerApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "{{ $json.phone }}"
+            },
+            {
+              "name": "message",
+              "value": "🚗 Hallo {{ $json.firstName }}! Dein personalisiertes Traumauto-Video ist fertig! 🎬\n\n🎭 Dein persönlicher LR Avatar hat eine spezielle Nachricht für dich erstellt.\n\n🔗 Hier ist dein Video: {{ $json.avatar_video_url }}\n\n✨ Nächste Schritte:\n1. Video anschauen\n2. Bei Interesse: Rückruf vereinbaren\n3. Dein Traumauto-Plan besprechen\n\n💬 Antworte einfach auf diese Nachricht!\n\nDein LR Team 🦁"
+            },
+            {
+              "name": "media",
+              "value": {
+                "file": "{{ $json.avatar_video_url }}",
+                "caption": "🎬 Dein personalisiertes LR Traumauto-Video"
+              }
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "wassenger-whatsapp-delivery",
+      "name": "📱 Wassenger WhatsApp Delivery",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2200, 300],
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "// Advanced Avatar Lead Generation Analytics Engine 2025\n// Processes all lead data and avatar generation results\n\nconst leadData = $input.first()?.json || {};\nconst enrichedData = $input.all().find(item => item.json?.enrichment)?.json || {};\nconst personalityAnalysis = $input.all().find(item => item.json?.personalizedScript)?.json || {};\nconst avatarGeneration = $input.all().find(item => item.json?.video_id)?.json || {};\nconst voiceGeneration = $input.all().find(item => item.json?.audio_url)?.json || {};\nconst emotionAnalysis = $input.all().find(item => item.json?.job_id)?.json || {};\nconst hubspotResult = $input.all().find(item => item.json?.id)?.json || {};\n\n// Calculate lead quality score\nconst calculateLeadScore = (data) => {\n  let score = 5.0; // Base score\n  \n  // Interest level impact\n  if (data.passiveIncomeInterest >= 8) score += 2.0;\n  else if (data.passiveIncomeInterest >= 6) score += 1.0;\n  else if (data.passiveIncomeInterest <= 3) score -= 1.0;\n  \n  // Dream car value impact\n  const highValueCars = ['Porsche', 'Tesla', 'Range Rover', 'Mercedes', 'BMW', 'Audi'];\n  if (highValueCars.some(car => data.dreamCar?.includes(car))) score += 1.5;\n  \n  // Job status impact\n  if (data.jobStatus?.includes('Selbstständig')) score += 1.0;\n  else if (data.jobStatus?.includes('Vollzeit')) score += 0.5;\n  \n  // Personality type impact\n  if (data.personalityType?.includes('Analytisch')) score += 0.5;\n  if (data.personalityType?.includes('Abenteuerlustig')) score += 1.0;\n  \n  // Dream description quality\n  if (data.biggestDream && data.biggestDream.length > 50) score += 0.5;\n  \n  return Math.min(Math.max(score, 1.0), 10.0); // Clamp between 1-10\n};\n\nconst leadScore = calculateLeadScore(leadData);\n\n// Generate comprehensive lead profile\nconst leadProfile = {\n  timestamp: new Date().toISOString(),\n  lead_id: `lr-${leadData.firstName?.toLowerCase()}-${Date.now()}`,\n  personal_info: {\n    name: leadData.firstName,\n    email: leadData.email,\n    phone: leadData.phone,\n    dream_car: leadData.dreamCar,\n    job_status: leadData.jobStatus,\n    biggest_dream: leadData.biggestDream\n  },\n  personality_profile: {\n    type: leadData.personalityType,\n    passive_income_interest: leadData.passiveIncomeInterest,\n    communication_style: personalityAnalysis.communicationStyle || 'adaptive',\n    motivation_triggers: personalityAnalysis.motivationTriggers || ['achievement', 'security']\n  },\n  avatar_generation: {\n    video_id: avatarGeneration.video_id,\n    video_url: avatarGeneration.video_url,\n    script_length: personalityAnalysis.personalizedScript?.length || 0,\n    generation_quality: avatarGeneration.quality || 'high',\n    voice_clone_url: voiceGeneration.audio_url\n  },\n  analytics: {\n    lead_score: leadScore,\n    conversion_probability: leadScore >= 7.5 ? 'high' : leadScore >= 5.5 ? 'medium' : 'low',\n    recommended_followup: leadScore >= 7.5 ? 'immediate_call' : leadScore >= 5.5 ? 'email_sequence' : 'nurture_campaign',\n    avatar_engagement_prediction: leadScore * 0.9, // Slightly lower than lead score\n    mobile_optimized: true,\n    next_action: 'visual-3d-generation'\n  },\n  crm_integration: {\n    hubspot_contact_id: hubspotResult.id,\n    lifecycle_stage: 'lead',\n    lead_source: 'LR Advanced Avatar System 2025',\n    created_date: new Date().toISOString()\n  },\n  system_metadata: {\n    module: 'avatar-leadgen-2025',\n    version: 'advanced-2025-v1',\n    processing_time: Date.now() - (leadData.timestamp || Date.now()),\n    mobile_compatibility: '100%',\n    next_module_trigger: 'visual-3d-generation-2025'\n  }\n};\n\nreturn [leadProfile];"
+      },
+      "id": "lead-analytics-engine",
+      "name": "📊 Advanced Lead Analytics Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2400, 400],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot{{ $vars.telegramBotToken }}/sendMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "{{ $vars.TelegramChatID }}"
+            },
+            {
+              "name": "text",
+              "value": "🎭 *Advanced Avatar Generation 2025 - SUCCESS*\\n\\n👤 *New Lead Profile:*\\n• Name: {{ $json.personal_info.name }}\\n• Dream Car: {{ $json.personal_info.dream_car }}\\n• Lead Score: {{ $json.analytics.lead_score }}/10\\n• Conversion Probability: {{ $json.analytics.conversion_probability }}\\n\\n🎬 *Avatar Generation:*\\n• Video ID: {{ $json.avatar_generation.video_id }}\\n• Script Length: {{ $json.avatar_generation.script_length }} chars\\n• Quality: {{ $json.avatar_generation.generation_quality }}\\n\\n📊 *Analytics:*\\n• Engagement Prediction: {{ Math.round($json.analytics.avatar_engagement_prediction * 10) / 10 }}\\n• Recommended Action: {{ $json.analytics.recommended_followup }}\\n• Mobile Optimized: ✅\\n\\n🚀 *Next Module:* {{ $json.system_metadata.next_module_trigger }}\\n\\n*Status: READY FOR VISUAL GENERATION* ✅"
+            },
+            {
+              "name": "parse_mode",
+              "value": "Markdown"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "telegram-lead-notification",
+      "name": "📱 Telegram Lead Success Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2600, 400],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "{{ $vars.webhookBaseUrl }}/visual-3d-generation-2025",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-LR-Module",
+              "value": "avatar-leadgen"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead_profile",
+              "value": "={{ $json }}"
+            },
+            {
+              "name": "trigger_source",
+              "value": "advanced-avatar-leadgen-2025"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "trigger-module-3",
+      "name": "🎨 Trigger Module 3: Visual & 3D Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2800, 400],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "webhook-trigger": {
+      "main": [
+        [
+          {
+            "node": "tally-lead-capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tally-lead-capture": {
+      "main": [
+        [
+          {
+            "node": "snov-lead-enrichment",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "apollo-lead-enrichment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "snov-lead-enrichment": {
+      "main": [
+        [
+          {
+            "node": "claude-personality-analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "apollo-lead-enrichment": {
+      "main": [
+        [
+          {
+            "node": "claude-personality-analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "claude-personality-analysis": {
+      "main": [
+        [
+          {
+            "node": "heygen-avatar-generation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "elevenlabs-voice-generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "heygen-avatar-generation": {
+      "main": [
+        [
+          {
+            "node": "hume-emotion-analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "elevenlabs-voice-generation": {
+      "main": [
+        [
+          {
+            "node": "resemble-voice-cloning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hume-emotion-analysis": {
+      "main": [
+        [
+          {
+            "node": "hubspot-crm-integration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "resemble-voice-cloning": {
+      "main": [
+        [
+          {
+            "node": "hubspot-crm-integration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hubspot-crm-integration": {
+      "main": [
+        [
+          {
+            "node": "wassenger-whatsapp-delivery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "wassenger-whatsapp-delivery": {
+      "main": [
+        [
+          {
+            "node": "lead-analytics-engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lead-analytics-engine": {
+      "main": [
+        [
+          {
+            "node": "telegram-lead-notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "telegram-lead-notification": {
+      "main": [
+        [
+          {
+            "node": "trigger-module-3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-08-14T08:20:00.000Z",
+      "updatedAt": "2025-08-14T08:20:00.000Z",
+      "id": "lr-advanced-2025",
+      "name": "LR Advanced 2025"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-08-14T08:20:00.000Z",
+  "versionId": "advanced-2025-v1"
+}

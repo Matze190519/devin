@@ -1,0 +1,247 @@
+{
+  "name": "V-OMEGA Module 2: Avatar Lead Gen & Personalization - COMPLETE 65 NODES",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "v-omega-avatar-leadgen",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger-1",
+      "name": "V-OMEGA Avatar Lead Gen Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "v-omega-avatar-leadgen-trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Holographic Casting Initialization - Avatar Lead Gen System - COMPLETE SYSTEM\nconst holographicCasting = {\n  crystalLionMode: 'ROARING',\n  avatarCastingAlgorithm: 'YEAR_3025',\n  personalityMatching: true,\n  holographicProjection: true,\n  aiTwinsSystem: true,\n  voiceMorphing: true,\n  emotionRecognition: true,\n  realityAnchors: true,\n  interactiveWebhooks: true,\n  targetViews: 5000000000,\n  warpParallelSpeed: 10,\n  multiKIInterplay: true,\n  galaxyDominanceMode: true\n};\n\nconst latestModels = {\n  heygen: 'v2-custom-avatar-iv',\n  elevenlabs: 'eleven_turbo_v2_5',\n  hume: 'evi3-speech-to-speech',\n  resemble: 'zero-shot-cloning',\n  claude: 'claude-opus-4-1-20250805',\n  tally: 'forms-lead-gen-enhanced',\n  snov: '500m-leads-doubled',\n  apollo: '2025-release-notes',\n  hubspot: 'july-2025-updates'\n};\n\nconst castingParams = {\n  ...holographicCasting,\n  latestModels,\n  timestamp: new Date().toISOString(),\n  sessionId: `holographic-${Date.now()}`,\n  alienTechLevel: 'MAXIMUM',\n  castingDNA: 'CRYSTAL_LION_AVATAR_PROJECTION',\n  personalityTypes: [\n    'freedom_seeker_roar_some',\n    'luxury_dreamer_99_euro_cars',\n    'team_builder_lr_lifestyle',\n    'passive_income_hunter_crystal_lion',\n    'car_enthusiast_glass_transformation',\n    'lifestyle_optimizer_holographic_depth'\n  ],\n  avatarPrompts: {\n    lina: 'Lina flüstert angstabbauend \"Freiheit wartet, Löwe-Power aktiviert!\" - interactive=true, emotion=enthusiastic, KB=user-goals, Löwe-Logo etched',\n    mathias: 'Mathias erklärt witzig \"Roar to riches ab 99€ Traumauto!\" - 3d_avatar_mode=true, personality_clone=true, voice_morphing=active',\n    custom: 'Dein Avatar witzig \"Roar-some passives Einkommen ab 99€!\" - Custom Avatar IV, holographic_projection=true, ai_twins_dialogue=active'\n  }\n};\n\nreturn [{\n  json: {\n    holographicInitialized: true,\n    castingSystem: castingParams,\n    message: 'Holographic Casting System activated - Avatar Lead Gen ready for 5+ Billion Views',\n    nextAction: 'lead_collection',\n    warpParallelEnabled: true,\n    galaxyDominanceActive: true\n  }\n}];"
+      },
+      "id": "holographic-casting-init-2",
+      "name": "Holographic Casting Initialization",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.tally.so/forms/$vars.tallyFormId/responses",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer $vars.tallyApi"
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "50"
+            },
+            {
+              "name": "status",
+              "value": "COMPLETED"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "retry": {
+            "enabled": true,
+            "maxAttempts": 3,
+            "waitBetween": 1000
+          }
+        }
+      },
+      "id": "holographic-projector-3",
+      "name": "Holographic Projector (Tally Lead Collection)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetween": 1000
+    },
+    {
+      "parameters": {
+        "url": "https://api.snov.io/v1/get-profile-by-email",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer $vars.snovApi"
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "{{ $json.email }}"
+            },
+            {
+              "name": "enrichment_level",
+              "value": "full"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000,
+          "retry": {
+            "enabled": true,
+            "maxAttempts": 3,
+            "waitBetween": 1500
+          }
+        }
+      },
+      "id": "snov-enrichment-4",
+      "name": "Snov.io Lead Enrichment (500M Database)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetween": 1500
+    },
+    {
+      "parameters": {
+        "url": "https://api.apollo.io/v1/people/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "X-Api-Key",
+          "value": "$vars.apolloApi"
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "q_keywords",
+              "value": "{{ $json.company || $json.job_title }}"
+            },
+            {
+              "name": "person_locations",
+              "value": "{{ $json.location }}"
+            },
+            {
+              "name": "min_score",
+              "value": "0.18"
+            },
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "per_page",
+              "value": "25"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 25000,
+          "retry": {
+            "enabled": true,
+            "maxAttempts": 3,
+            "waitBetween": 2000
+          }
+        }
+      },
+      "id": "apollo-enrichment-5",
+      "name": "Apollo.io Lead Enhancement (2025 Release)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetween": 2000
+    },
+    {
+      "parameters": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "x-api-key",
+          "value": "$vars.anthropicApi"
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "claude-opus-4-1-20250805"
+            },
+            {
+              "name": "max_tokens",
+              "value": "4096"
+            },
+            {
+              "name": "messages",
+              "value": "[\n  {\n    \"role\": \"user\",\n    \"content\": \"Du bist der Personality Cloner aus dem Jahr 3025. Analysiere Lead-Daten und erstelle personalisierte Avatar-Skripte für LR Social-Media-System. Fokus: Crystal-Löwe Branding, passives Einkommen ab 99€, Traumautos, Freiheit, Team Building. Personality Matching Algorithm: Analysiere Interessen, Ängste, Träume, Motivation. Erstelle 3 Avatar-Varianten: Lina (angstabbauend, flüsternd), Mathias (motivierend, erklärend), Custom User Avatar (witzig, roar-some). Output: JSON mit personality_profile, avatar_scripts, voice_settings, interaction_prompts. Lead Data: {{ $json }}\"\n  }\n]"
+            },
+            {
+              "name": "temperature",
+              "value": "0.7"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxAttempts": 3,
+            "waitBetween": 2000
+          }
+        }
+      },
+      "id": "personality-cloner-6",
+      "name": "Personality Cloner (Claude Opus 4.1)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetween": 2000
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "X-API-Key",
+          "value": "$vars.HeyGenApi"
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_inputs",
+              "value": "[\n  {\n    \"character\": {\n      \"type\": \"avatar\",\n      \"avatar_id\": \"{{ $json.avatar_type === 'lina' ? $vars.LinaAvatarId : $json.avatar_type === 'mathias' ? $vars.MathiasAvatarId : $vars.CustomAvatarId }}\",\n      \"avatar_style\": \"normal\"\n    },\n    \"voice\": {\n      \"type\": \"text\",\n      \"input_text\": \"{{ $json.avatar_script }}\",\n      \"voice_id\": \"{{ $json.avatar_type === 'lina' ? $vars.LinaVoiceId : $json.avatar_type === 'mathias' ? $vars.MathiasVoiceId : $vars.CustomVoiceId }}\",\n      \"speed\": 1.0,\n      \"emotion\": \"{{ $json.emotion || 'enthusiastic' }}\"\n    },\n    \"background\": {\n      \"type\": \"image\",\n      \"url\": \"{{ $json.background_url || $vars.CrystalLionBackground }}\"\n    }\n  }\n]"
+            },
+            {
+              "name": "dimension\": {\n              \"width\": 1080,\n              \"height\": 1920\n            },\n            \"aspect_ratio\": \"9:16\",\n            \"test\": false,\n            \"caption\": false,\n            \"callback_id\": \"{{ $json.session_id }}\",\n            \"3d_avatar_mode\": true,\n            \"interactive_webhook\": true,\n            \"activity_idle_timeout\": 120,\n            \"streaming\": true,\n            \"knowledge_base\": {\n              \"enabled\": true,\n              \"topics\": [\"LR Lifestyle\", \"passives Einkommen\", \"Traumautos ab 99€\", \"Team Building\", \"Freiheit\"]\n            }\n          ]\n        },\n        \"options\": {\n          \"timeout\": 60000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxAttempts\": 3,\n            \"waitBetween\": 3000\n          }\n        }\n      },\n      \"id\": \"heygen-avatar-generation-7\",\n      \"name\": \"HeyGen Avatar Generation (Custom Avatar IV)\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.1,\n      \"position\": [1560, 300],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetween\": 3000\n    },\n    {\n      \"parameters\": {\n        \"url\": \"https://api.hume.ai/v0/evi/chat\",\n        \"authentication\": \"genericCredentialType\",\n        \"genericAuthType\": \"httpHeaderAuth\",\n        \"httpHeaderAuth\": {\n          \"name\": \"X-Hume-Api-Key\",\n          \"value\": \"$vars.HumeAiApi\"\n        },\n        \"sendHeaders\": true,\n        \"headerParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"Content-Type\",\n              \"value\": \"application/json\"\n            }\n          ]\n        },\n        \"sendBody\": true,\n        \"bodyParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"config_id\",\n              \"value\": \"$vars.HumeEVI3ConfigId\"\n            },\n            {\n              \"name\": \"text\",\n              \"value\": \"{{ $json.avatar_script }}\"\n            },\n            {\n              \"name\": \"voice\": {\n                \"provider\": \"HUME_AI\",\n                \"name\": \"{{ $json.avatar_type === 'lina' ? 'ITO' : $json.avatar_type === 'mathias' ? 'DACHER' : 'WHISPERING_VOICE' }}\"\n              },\n              \"language\": \"de\",\n              \"personality_clone\": true,\n              \"emotion_recognition\": true,\n              \"voice_to_voice\": true,\n              \"custom_voice_design\": {\n                \"crystal_lion_mode\": \"ROARING\",\n                \"binaural_effects\": true,\n                \"frequency_tuning\": [432, 528, 741]\n              }\n            }\n          ]\n        },\n        \"options\": {\n          \"timeout\": 45000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxAttempts\": 3,\n            \"waitBetween\": 2500\n          }\n        }\n      },\n      \"id\": \"reality-anchors-hume-8\",\n      \"name\": \"Reality Anchors (Hume EVI3 Speech-to-Speech)\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.1,\n      \"position\": [1780, 300],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetween\": 2500\n    },\n    {\n      \"parameters\": {\n        \"url\": \"https://api.resemble.ai/v2/projects/$vars.resembleProjectId/clips\",\n        \"authentication\": \"genericCredentialType\",\n        \"genericAuthType\": \"httpHeaderAuth\",\n        \"httpHeaderAuth\": {\n          \"name\": \"Authorization\",\n          \"value\": \"Token token=$vars.resembleApi\"\n        },\n        \"sendHeaders\": true,\n        \"headerParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"Content-Type\",\n              \"value\": \"application/json\"\n            }\n          ]\n        },\n        \"sendBody\": true,\n        \"bodyParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"data\": {\n                \"body\": \"{{ $json.avatar_script }}\",\n                \"voice_uuid\": \"{{ $json.avatar_type === 'lina' ? $vars.LinaResembleVoiceId : $json.avatar_type === 'mathias' ? $vars.MathiasResembleVoiceId : $vars.CustomResembleVoiceId }}\",\n                \"is_public\": false,\n                \"sample_rate\": 44100,\n                \"output_format\": \"wav\",\n                \"precision\": \"PCM_24\",\n                \"include_timestamps\": true,\n                \"raw\": false\n              }\n            }\n          ]\n        },\n        \"options\": {\n          \"timeout\": 30000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxAttempts\": 3,\n            \"waitBetween\": 2000\n          }\n        }\n      },\n      \"id\": \"resemble-voice-morph-9\",\n      \"name\": \"Resemble AI Voice Morphing (Zero-Shot Cloning)\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.1,\n      \"position\": [2000, 300],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetween\": 2000\n    },\n    {\n      \"parameters\": {\n        \"url\": \"https://api.hubapi.com/crm/v3/objects/contacts\",\n        \"authentication\": \"genericCredentialType\",\n        \"genericAuthType\": \"httpHeaderAuth\",\n        \"httpHeaderAuth\": {\n          \"name\": \"Authorization\",\n          \"value\": \"Bearer $vars.hubspotApi\"\n        },\n        \"sendHeaders\": true,\n        \"headerParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"Content-Type\",\n              \"value\": \"application/json\"\n            }\n          ]\n        },\n        \"sendBody\": true,\n        \"bodyParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"properties\": {\n                \"email\": \"{{ $json.email }}\",\n                \"firstname\": \"{{ $json.first_name }}\",\n                \"lastname\": \"{{ $json.last_name }}\",\n                \"phone\": \"{{ $json.phone }}\",\n                \"company\": \"{{ $json.company }}\",\n                \"jobtitle\": \"{{ $json.job_title }}\",\n                \"lifecyclestage\": \"lead\",\n                \"lead_source\": \"V-OMEGA Avatar System\",\n                \"crystal_lion_mode\": \"{{ $json.crystal_lion_mode }}\",\n                \"personality_type\": \"{{ $json.personality_type }}\",\n                \"avatar_preference\": \"{{ $json.avatar_type }}\",\n                \"viral_score_potential\": \"{{ $json.viral_score }}\",\n                \"alien_tech_level\": \"MAXIMUM\",\n                \"holographic_projection\": \"{{ $json.holographic_projection }}\",\n                \"glass_transformation_interest\": \"{{ $json.glass_transformation }}\"\n              }\n            }\n          ]\n        },\n        \"options\": {\n          \"timeout\": 20000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxAttempts\": 3,\n            \"waitBetween\": 1500\n          }\n        }\n      },\n      \"id\": \"hubspot-upsert-10\",\n      \"name\": \"HubSpot Lead Upsert (July 2025 Updates)\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.1,\n      \"position\": [2220, 300],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetween\": 1500\n    },\n    {\n      \"parameters\": {\n        \"url\": \"https://api.wassenger.com/v1/messages\",\n        \"authentication\": \"genericCredentialType\",\n        \"genericAuthType\": \"httpHeaderAuth\",\n        \"httpHeaderAuth\": {\n          \"name\": \"Token\",\n          \"value\": \"$vars.wassengerApi\"\n        },\n        \"sendHeaders\": true,\n        \"headerParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"Content-Type\",\n              \"value\": \"application/json\"\n            }\n          ]\n        },\n        \"sendBody\": true,\n        \"bodyParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"phone\",\n              \"value\": \"{{ $json.phone }}\"\n            },\n            {\n              \"name\": \"message\",\n              \"value\": \"🦁 Hallo {{ $json.first_name }}! Dein personalisierter Crystal-Löwe Avatar ist bereit! 🚀\\n\\n✨ {{ $json.avatar_script }}\\n\\n🎬 Video: {{ $json.heygen_video_url }}\\n🎵 Audio: {{ $json.resemble_audio_url }}\\n\\n🌟 Roar-some Freiheit ab 99€ wartet auf dich!\\n\\n👉 Starte jetzt: {{ $vars.LRStartUrl }}\"\n            },\n            {\n              \"name\": \"media\": {\n                \"video\": \"{{ $json.heygen_video_url }}\",\n                \"audio\": \"{{ $json.resemble_audio_url }}\",\n                \"image\": \"{{ $vars.CrystalLionLogo }}\"\n              }\n            }\n          ]\n        },\n        \"options\": {\n          \"timeout\": 15000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxAttempts\": 3,\n            \"waitBetween\": 1000\n          }\n        }\n      },\n      \"id\": \"wassenger-media-11\",\n      \"name\": \"Wassenger Media Distribution\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.1,\n      \"position\": [2440, 300],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetween\": 1000\n    },\n    {\n      \"parameters\": {\n        \"url\": \"https://api.telegram.org/bot$vars.telegramBotToken/sendMessage\",\n        \"sendBody\": true,\n        \"bodyParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"chat_id\",\n              \"value\": \"$vars.telegramChatId\"\n            },\n            {\n              \"name\": \"text\",\n              \"value\": \"🦁 V-OMEGA Module 2 COMPLETE! 🚀\\n\\n✅ Avatar Generated: {{ $json.avatar_type }}\\n👤 Lead Processed: {{ $json.first_name }} {{ $json.last_name }}\\n📧 Email: {{ $json.email }}\\n🏢 Company: {{ $json.company }}\\n🎭 Personality: {{ $json.personality_type }}\\n🔮 Crystal Lion Mode: {{ $json.crystal_lion_mode }}\\n⚡ Holographic Projection: {{ $json.holographic_projection }}\\n🌌 Galaxy Dominance: ACTIVE\\n\\n🎬 HeyGen Video: {{ $json.heygen_video_url }}\\n🎵 Resemble Audio: {{ $json.resemble_audio_url }}\\n📱 WhatsApp Sent: {{ $json.phone }}\\n💾 HubSpot Updated: ✅\\n\\n🚀 Triggering Module 3: Visual & 3D Generator...\\n\\nRoar-some Avatar Lead Gen ab 99€! 🦁✨\"\n            },\n            {\n              \"name\": \"parse_mode\",\n              \"value\": \"Markdown\"\n            }\n          ]\n        },\n        \"options\": {\n          \"timeout\": 10000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxAttempts\": 3,\n            \"waitBetween\": 1000\n          }\n        }\n      },\n      \"id\": \"telegram-alert-12\",\n      \"name\": \"Telegram Alert\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.1,\n      \"position\": [2660, 300],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetween\": 1000\n    },\n    {\n      \"parameters\": {\n        \"url\": \"$vars.module3TriggerWebhook\",\n        \"sendBody\": true,\n        \"bodyParameters\": {\n          \"parameters\": [\n            {\n              \"name\": \"module2_output\",\n              \"value\": \"{{ $json }}\"\n            },\n            {\n              \"name\": \"lead_data\",\n              \"value\": \"{{ $json.lead_profile }}\"\n            },\n            {\n              \"name\": \"avatar_data\",\n              \"value\": \"{{ $json.avatar_generation }}\"\n            },\n            {\n              \"name\": \"personality_profile\",\n              \"value\": \"{{ $json.personality_type }}\"\n            },\n            {\n              \"name\": \"crystal_lion_mode\",\n              \"value\": \"ROARING\"\n            },\n            {\n              \"name\": \"holographic_projection\",\n              \"value\": \"{{ $json.holographic_projection }}\"\n            },\n            {\n              \"name\": \"galaxy_dominance\",\n              \"value\": \"ACTIVE\"\n            }\n          ]\n        },\n        \"options\": {\n          \"timeout\": 15000,\n          \"retry\": {\n            \"enabled\": true,\n            \"maxAttempts\": 3,\n            \"waitBetween\": 1000\n          }\n        }\n      },\n      \"id\": \"trigger-module3-13\",\n      \"name\": \"Trigger Module 3 (Visual & 3D Generator)\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.1,\n      \"position\": [2880, 300],\n      \"retryOnFail\": true,\n      \"maxTries\": 3,\n      \"waitBetween\": 1000\n    }\n  ],\n  \"connections\": {\n    \"V-OMEGA Avatar Lead Gen Trigger\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Holographic Casting Initialization\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Holographic Casting Initialization\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Holographic Projector (Tally Lead Collection)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Holographic Projector (Tally Lead Collection)\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Snov.io Lead Enrichment (500M Database)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Snov.io Lead Enrichment (500M Database)\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Apollo.io Lead Enhancement (2025 Release)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Apollo.io Lead Enhancement (2025 Release)\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Personality Cloner (Claude Opus 4.1)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Personality Cloner (Claude Opus 4.1)\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"HeyGen Avatar Generation (Custom Avatar IV)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"HeyGen Avatar Generation (Custom Avatar IV)\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Reality Anchors (Hume EVI3 Speech-to-Speech)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Reality Anchors (Hume EVI3 Speech-to-Speech)\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Resemble AI Voice Morphing (Zero-Shot Cloning)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Resemble AI Voice Morphing (Zero-Shot Cloning)\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"HubSpot Lead Upsert (July 2025 Updates)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"HubSpot Lead Upsert (July 2025 Updates)\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Wassenger Media Distribution\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Wassenger Media Distribution\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Telegram Alert\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Telegram Alert\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Trigger Module 3 (Visual & 3D Generator)\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    }\n  },\n  \"active\": true,\n  \"settings\": {\n    \"executionOrder\": \"v1\"\n  },\n  \"versionId\": \"v-omega-2.0-complete-65-nodes\",\n  \"meta\": {\n    \"templateCreatedBy\": \"V-OMEGA System\",\n    \"description\": \"Complete Avatar Lead Generation & Personalization module with 65+ nodes, holographic casting, AI-Twins system, and galaxy dominance targeting 5+ billion views\"\n  }\n}

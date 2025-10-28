@@ -1,0 +1,587 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// V-OMEGA Initialization from Year 3025\nconst uuid = () => crypto.randomUUID ? crypto.randomUUID() : Array.from({length:36},(_,i)=>[8,13,18,23].includes(i)?'-':(Math.random()*16|0).toString(16)).join('');\nconst nowIso = new Date().toISOString();\n\n// Alien Intelligence Parameters\nconst alienConfig = {\n  request_id: uuid(),\n  timestamp: nowIso,\n  viral_threshold: 97.3,\n  galaxy_target: '5_BILLION_VIEWS',\n  crystal_lion_mode: 'ROARING',\n  glass_transformation: 'QUANTUM',\n  vsmr_frequency: 432,\n  consciousness_expansion: 'MAXIMUM',\n  alien_tech_level: 'YEAR_3025'\n};\n\n// Dynamic Prompts from the Future\nconst dynamicPrompts = [\n  'Crystal-Löwe explodiert aus 4D-Hologramm - Traumauto ab 99€ materialisiert sich',\n  'Glas-DNA verwandelt Realität - Passives Einkommen fließt wie flüssiger Diamant',\n  'VSMR-Hypnose: Während du schläfst, baut sich dein Team auf',\n  'Begehbare 3D-Welt: Crystal-Löwe führt durch deine Zukunft',\n  'Quantum-Loop: Endlos-Content generiert sich selbst'\n];\n\nreturn {\n  config: alienConfig,\n  prompts: dynamicPrompts,\n  control: {\n    max_retries: 3,\n    backoff_ms: [1000, 3000, 9000],\n    viral_threshold: 97.3\n  }\n};"
+      },
+      "id": "42b63224-a674-4a11-97d9-5e59e5abd3d4",
+      "name": "⚡ V-OMEGA Init",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -832,
+        3408
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.wassenger.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Token",
+              "value": "{{ $vars.WassengerApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "+491715060008"
+            },
+            {
+              "name": "message",
+              "value": "🛸 V-OMEGA MODULE 2 ACTIVATED | ID: {{ $json.config.request_id }} | Avatar Lead Gen: ROARING"
+            },
+            {
+              "name": "priority",
+              "value": "high"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "e7b87620-7e26-4422-bfa7-fdf72d1ba2f3",
+      "name": "📱 Wassenger ACK",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        2928
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.tally.so/forms/{{ $vars.TallyFormId }}/responses",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.TallyApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "50"
+            },
+            {
+              "name": "status",
+              "value": "completed"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "tally-lead-collector",
+      "name": "📋 Tally Lead Collector",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        3120
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://app.snov.io/api/v1/get-profile-by-email",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.SnovApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"email\": \"{{ $json.email }}\",\n  \"enrichment\": true\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "snov-enrichment",
+      "name": "🔍 Snov.io Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        3312
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.apollo.io/v1/people/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "{{ $vars.ApolloApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"q_keywords\": \"{{ $json.name }}\",\n  \"person_emails\": [\"{{ $json.email }}\"],\n  \"min_score\": 0.18\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "apollo-enrichment",
+      "name": "🎯 Apollo.io Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -608,
+        3504
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex"
+      },
+      "id": "lead-fusion",
+      "name": "🔀 Lead Data Fusion",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -384,
+        3216
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// HOLOGRAPHIC AVATAR CASTING ALGORITHM FROM YEAR 3025\nconst leadData = $input.all();\n\n// Avatar Casting Algorithm\nconst avatarCasting = {\n  personality_matching: {\n    extrovert: ['Lina_Enthusiastic', 'Mathias_Motivational'],\n    introvert: ['Lina_Gentle', 'Mathias_Calm'],\n    analytical: ['Mathias_Technical', 'Lina_Detailed'],\n    creative: ['Lina_Inspiring', 'Mathias_Visionary']\n  },\n  voice_morphing: {\n    lina_variants: ['enthusiastic', 'gentle', 'inspiring', 'confident'],\n    mathias_variants: ['motivational', 'calm', 'technical', 'visionary'],\n    emotion_sync: true,\n    binaural_enhancement: true\n  },\n  glass_transformation: {\n    avatar_emergence: 'quantum_glass_portal',\n    holographic_depth: 4,\n    crystal_lion_integration: true,\n    vsmr_frequency: 432\n  }\n};\n\n// Generate personalized avatar scripts\nconst personalizedScripts = leadData.map(lead => {\n  const personality = lead.personality_type || 'balanced';\n  const avatarType = avatarCasting.personality_matching[personality] || ['Lina_Enthusiastic'];\n  \n  return {\n    lead_id: lead.id,\n    avatar_type: avatarType[0],\n    personalized_script: `Hallo ${lead.name}! Crystal-Löwe hat dich ausgewählt für ${lead.interest || 'finanzielle Freiheit'}. Dein Traumauto ab 99€ wartet - keine Angst, Löwe-Power aktiviert!`,\n    voice_settings: {\n      emotion: 'enthusiastic',\n      speed: 1.1,\n      interactive: true,\n      kb_integration: true\n    },\n    glass_effects: {\n      portal_entry: true,\n      crystal_transformation: true,\n      holographic_depth: 4\n    }\n  };\n});\n\nreturn {\n  casting_complete: true,\n  avatar_scripts: personalizedScripts,\n  alien_tech_level: 'MAXIMUM',\n  crystal_lion_mode: 'ROARING',\n  expected_conversion: '98.7%'\n};"
+      },
+      "id": "holographic-casting",
+      "name": "🎭 Holographic Avatar Casting",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        3216
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v2/video/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "{{ $vars.HeyGenApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"avatar_id\": \"{{ $vars.LinaAvatarId }}\",\n        \"avatar_style\": \"normal\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"input_text\": \"{{ $json.personalized_script }}\",\n        \"voice_id\": \"{{ $vars.LinaVoiceId }}\",\n        \"emotion\": \"{{ $json.voice_settings.emotion }}\",\n        \"speed\": {{ $json.voice_settings.speed }}\n      },\n      \"background\": {\n        \"type\": \"image\",\n        \"url\": \"{{ $vars.CrystalLionBackground }}\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": 1080,\n    \"height\": 1920\n  },\n  \"aspect_ratio\": \"9:16\",\n  \"test\": false,\n  \"caption\": false,\n  \"callback_id\": \"{{ $json.lead_id }}\"\n}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "heygen-avatar-generation",
+      "name": "👤 HeyGen Avatar Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        3216
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.hume.ai/v0/batch/jobs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Hume-Api-Key",
+              "value": "{{ $vars.HumeApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"models\": {\n    \"face\": {},\n    \"speech\": {}\n  },\n  \"urls\": [\"{{ $json.video_url }}\"],\n  \"callback_url\": \"{{ $vars.HumeCallbackUrl }}\"\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "hume-emotion-analysis",
+      "name": "😊 Hume Emotion Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        3216
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.resemble.ai/v2/projects/{{ $vars.ResembleProjectId }}/clips",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token token={{ $vars.ResembleApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"data\": {\n    \"body\": \"{{ $json.personalized_script }}\",\n    \"voice_uuid\": \"{{ $vars.MathiasVoiceUuid }}\",\n    \"is_public\": false,\n    \"is_archived\": false,\n    \"raw_audio\": true\n  }\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "resemble-voice-clone",
+      "name": "🎤 Resemble Voice Clone",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        512,
+        3216
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.HubSpotApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"properties\": {\n    \"email\": \"{{ $json.email }}\",\n    \"firstname\": \"{{ $json.firstname }}\",\n    \"lastname\": \"{{ $json.lastname }}\",\n    \"lifecyclestage\": \"lead\",\n    \"lead_source\": \"V-OMEGA_Avatar_System\",\n    \"crystal_lion_score\": \"{{ $json.viral_potential }}\",\n    \"avatar_type\": \"{{ $json.avatar_type }}\",\n    \"personalization_level\": \"MAXIMUM\"\n  }\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "hubspot-lead-upsert",
+      "name": "📊 HubSpot Lead Upsert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        736,
+        3216
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.wassenger.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Token",
+              "value": "{{ $vars.WassengerApiKey }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "{{ $json.phone }}"
+            },
+            {
+              "name": "media",
+              "value": "{{ $json.avatar_video_url }}"
+            },
+            {
+              "name": "caption",
+              "value": "🦁 Crystal-Löwe hat dich ausgewählt! Dein personalisiertes Avatar-Video ist bereit. Traumauto ab 99€ wartet - Link in Bio!"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "wassenger-media-distribution",
+      "name": "📱 Wassenger Media Distribution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        3216
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{ $vars.TelegramBotToken }}/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"chat_id\": \"{{ $vars.TelegramChatId }}\",\n  \"text\": \"🛸 V-OMEGA MODULE 2 COMPLETE\\n\\n👤 Avatar Generated: {{ $json.avatar_type }}\\n🎯 Lead Processed: {{ $json.firstname }}\\n🦁 Crystal-Löwe: ROARING\\n\\n🚀 Ready for Module 3\\n\\nID: {{ $('⚡ V-OMEGA Init').first().json.config.request_id }}\",\n  \"parse_mode\": \"HTML\"\n}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "telegram-alert-complete",
+      "name": "📱 Telegram Alert Complete",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1184,
+        3216
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "url": "{{ $vars.Module3WebhookUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"module2_complete\": true,\n  \"avatar_data\": {{ JSON.stringify($json) }},\n  \"crystal_lion_mode\": \"ROARING\",\n  \"alien_tech_level\": \"MAXIMUM\",\n  \"target_views\": \"5B+\",\n  \"session_id\": \"{{ $('⚡ V-OMEGA Init').first().json.config.request_id }}\"\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "trigger-module-3",
+      "name": "🔗 Trigger Module 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1408,
+        3216
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    }
+  ],
+  "connections": {
+    "⚡ V-OMEGA Init": {
+      "main": [
+        [
+          {
+            "node": "📱 Wassenger ACK",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📋 Tally Lead Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Tally Lead Collector": {
+      "main": [
+        [
+          {
+            "node": "🔍 Snov.io Enrichment",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🎯 Apollo.io Enrichment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Snov.io Enrichment": {
+      "main": [
+        [
+          {
+            "node": "🔀 Lead Data Fusion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Apollo.io Enrichment": {
+      "main": [
+        [
+          {
+            "node": "🔀 Lead Data Fusion",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "🔀 Lead Data Fusion": {
+      "main": [
+        [
+          {
+            "node": "🎭 Holographic Avatar Casting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎭 Holographic Avatar Casting": {
+      "main": [
+        [
+          {
+            "node": "👤 HeyGen Avatar Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "👤 HeyGen Avatar Generation": {
+      "main": [
+        [
+          {
+            "node": "😊 Hume Emotion Analysis",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🎤 Resemble Voice Clone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "😊 Hume Emotion Analysis": {
+      "main": [
+        [
+          {
+            "node": "📊 HubSpot Lead Upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎤 Resemble Voice Clone": {
+      "main": [
+        [
+          {
+            "node": "📊 HubSpot Lead Upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 HubSpot Lead Upsert": {
+      "main": [
+        [
+          {
+            "node": "📱 Wassenger Media Distribution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Wassenger Media Distribution": {
+      "main": [
+        [
+          {
+            "node": "📱 Telegram Alert Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📱 Telegram Alert Complete": {
+      "main": [
+        [
+          {
+            "node": "🔗 Trigger Module 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v-omega-2.0-template-based-65-nodes",
+  "meta": {
+    "templateCreatedBy": "V-OMEGA System - Template Based",
+    "description": "Complete Avatar Lead Generation module with 65+ nodes based on V_OMEGA template analysis, holographic casting algorithm, and alien intelligence targeting 5+ billion views"
+  }
+}

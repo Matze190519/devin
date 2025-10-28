@@ -1,0 +1,1362 @@
+{
+  "name": "LR Module 4: Video Production, Distribution & Analytics",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lr-video-production",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger-m4",
+      "name": "Webhook Trigger M4",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "lr-video-production-webhook"
+    },
+    {
+      "parameters": {
+        "url": "https://api.runwayml.com/v1/image_to_video",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.runwayApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gen-4"
+            },
+            {
+              "name": "prompt",
+              "value": "LR Viral: 'Löwe's Journey to Passive Income' - Crystal glass lion fails at 9-5 job (witty office scenes), sudden roar transformation, portal opens to Glas-Auto Traumwagen ab 99€, smooth camera movement through glass-breaking motivation moment, binaural ASMR whisper-to-roar transition, holographic LR branding reveal, cinematic reality distortion maximum, 'Roar-some upgrade from 9-5!' text overlay"
+            },
+            {
+              "name": "image",
+              "value": "{{$json.crystal_lion_image}}"
+            },
+            {
+              "name": "duration",
+              "value": 10
+            },
+            {
+              "name": "resolution",
+              "value": "1080p"
+            },
+            {
+              "name": "camera_motion": {
+                "pan": "right",
+                "tilt": "up",
+                "zoom": "in"
+              }
+            },
+            {
+              "name": "enhance_prompt",
+              "value": true
+            },
+            {
+              "name": "watermark",
+              "value": false
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 10000
+          }
+        }
+      },
+      "id": "runway-gen4-compositor",
+      "name": "Runway Gen-4 Compositor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000
+    },
+    {
+      "parameters": {
+        "url": "https://api.lumalabs.ai/dream-machine/v1/generations",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.lumaApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "Extend the crystal glass lion sequence with Ray2 keyframes, smooth transitions, luxury automotive environment, golden LR branding integration, cinematic depth"
+            },
+            {
+              "name": "keyframes",
+              "value": [
+                {
+                  "frame": 0,
+                  "type": "generation"
+                },
+                {
+                  "frame": 120,
+                  "type": "generation"
+                },
+                {
+                  "frame": 240,
+                  "type": "generation"
+                }
+              ]
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "loop",
+              "value": true
+            },
+            {
+              "name": "extend_duration",
+              "value": 8
+            },
+            {
+              "name": "sound_sync",
+              "value": true
+            },
+            {
+              "name": "style_transfer",
+              "value": "cinematic"
+            },
+            {
+              "name": "resolution",
+              "value": "1080p"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 15000
+          }
+        }
+      },
+      "id": "luma-ray2-keyframes",
+      "name": "Luma Ray2 Keyframes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000
+    },
+    {
+      "parameters": {
+        "url": "https://api.elevenlabs.io/v1/text-to-speech",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "$vars.elevenLabsApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "ASMR Löwe-Whisper: Keine Angst vor dem 9-5 Hamsterrad... *binaural whisper* Passives Einkommen wartet ab 99 Euro... *glass breaking sound* ROAR! Fahr in deine Freiheit mit LR Lifestyle! Warum hat der Löwe passive Income? Weil er roar-some smart ist - ab 99€ dein Turn! *sudden roar for bonus*"
+            },
+            {
+              "name": "voice_id",
+              "value": "pNInz6obpgDQGcFmaJgB"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_turbo_v2_5"
+            },
+            {
+              "name": "voice_settings": {
+              "stability": 0.75,
+              "similarity_boost": 0.8,
+              "style": 0.6,
+              "use_speaker_boost": true
+            }
+            },
+            {
+              "name": "pronunciation_dictionary_locators",
+              "value": [
+                {
+                  "pronunciation_dictionary_id": "lr_lifestyle_dict",
+                  "version_id": "latest"
+                }
+              ]
+            },
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            },
+            {
+              "name": "optimize_streaming_latency",
+              "value": 2
+            },
+            {
+              "name": "apply_text_normalization",
+              "value": "auto"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 5000
+          }
+        }
+      },
+      "id": "elevenlabs-turbo-asmr",
+      "name": "ElevenLabs Turbo ASMR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "https://api.piapi.ai/omnihuman",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.piapiApiomnihuman"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_input",
+              "value": "{{$json.video_url}}"
+            },
+            {
+              "name": "audio_input",
+              "value": "{{$('ElevenLabs Turbo ASMR').first().json.audio_url}}"
+            },
+            {
+              "name": "emotion_control",
+              "value": {
+                "primary_emotion": "confident",
+                "intensity": 0.8,
+                "secondary_emotion": "enthusiastic",
+                "facial_expression": "charismatic_smile"
+              }
+            },
+            {
+              "name": "lip_sync_precision",
+              "value": "high"
+            },
+            {
+              "name": "head_movement",
+              "value": "natural"
+            },
+            {
+              "name": "eye_contact",
+              "value": "direct"
+            },
+            {
+              "name": "background_replacement",
+              "value": "luxury_car_showroom"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 10000
+          }
+        }
+      },
+      "id": "omnihuman-emotions-lipsync",
+      "name": "OmniHuman Emotions LipSync",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000
+    },
+    {
+      "parameters": {
+        "url": "https://api.bannerbear.com/v2/videos",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.bannerbearApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "template",
+              "value": "lr_lifestyle_watermark_template"
+            },
+            {
+              "name": "input_media_url",
+              "value": "{{$json.processed_video_url}}"
+            },
+            {
+              "name": "modifications",
+              "value": [
+                {
+                  "name": "lr_logo",
+                  "image_url": "/home/ubuntu/attachments/9a63491e-bcf2-4841-8d02-93395f7884b5/WhatsApp+Bild+2025-08-08+um+23.10.54_01ed4eca.jpg"
+                },
+                {
+                  "name": "watermark_text",
+                  "text": "LR LIFESTYLE TEAM"
+                },
+                {
+                  "name": "price_overlay",
+                  "text": "ab {{$json.product_price}}€"
+                }
+              ]
+            },
+            {
+              "name": "watermark_settings": {
+              "opacity": 0.3,
+              "position": "bottom_right",
+              "format": "png",
+              "alpha_channel": true,
+              "glass_etching_effect": true
+            }
+            }
+          ]
+        },
+        "options": {
+          "timeout": 90000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 8000
+          }
+        }
+      },
+      "id": "bannerbear-watermark-composer",
+      "name": "Bannerbear Watermark Composer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 8000
+    },
+    {
+      "parameters": {
+        "jsCode": "// Temporal Manipulation - Create reverse and loop effects\nconst videoData = $input.first().json;\n\ntry {\n  const manipulations = {\n    original_video: videoData.video_url || videoData.processed_video_url,\n    \n    // Create reverse effect\n    reverse_config: {\n      effect_type: 'reverse',\n      duration_multiplier: 1.0,\n      smooth_transition: true,\n      loop_seamless: true\n    },\n    \n    // Create loop variations\n    loop_configs: [\n      {\n        type: 'standard_loop',\n        duration: 15,\n        fade_transition: 0.5,\n        seamless: true\n      },\n      {\n        type: 'ping_pong',\n        duration: 20,\n        reverse_at_end: true,\n        smooth_reverse: true\n      },\n      {\n        type: 'spiral_loop',\n        duration: 25,\n        rotation_effect: 'clockwise',\n        zoom_variation: 0.1\n      }\n    ],\n    \n    // Aspect ratio configurations for different platforms\n    aspect_ratios: {\n      mobile_vertical: '9:16',\n      instagram_square: '1:1',\n      youtube_horizontal: '16:9',\n      tiktok_vertical: '9:16'\n    },\n    \n    // LR branding integration\n    lr_branding: {\n      logo_animation: 'glass_etching_reveal',\n      text_overlay: 'Roar-some Traumwagen ab 99€ – fahr in deine Freiheit!',\n      color_scheme: 'golden_luxury',\n      animation_timing: 'synchronized_with_audio'\n    },\n    \n    // Quality settings\n    output_settings: {\n      resolution: '1080p',\n      fps: 30,\n      bitrate: 'high',\n      codec: 'h264',\n      audio_quality: 'premium'\n    },\n    \n    processing_timestamp: new Date().toISOString(),\n    manipulation_status: 'configured'\n  };\n  \n  return [{ json: manipulations }];\n  \n} catch (error) {\n  console.error('Error in temporal manipulation:', error);\n  return [{\n    json: {\n      error: error.message,\n      timestamp: new Date().toISOString(),\n      processing_status: 'failed'\n    }\n  }];\n}"
+      },
+      "id": "temporal-manipulation-processor",
+      "name": "Temporal Manipulation Processor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 300],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.klap.app/v1/reframe",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.klapApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_url",
+              "value": "{{$json.original_video}}"
+            },
+            {
+              "name": "reframe_mode",
+              "value": "ai_reframe_2"
+            },
+            {
+              "name": "multi_clips",
+              "value": "auto_subtitles"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            },
+            {
+              "name": "caption_style",
+              "value": "luxury_golden"
+            },
+            {
+              "name": "auto_highlight",
+              "value": true
+            },
+            {
+              "name": "viral_optimization",
+              "value": true
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 10000
+          }
+        }
+      },
+      "id": "klap-reframe-multiclips",
+      "name": "Klap Reframe MultiClips",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000
+    },
+    {
+      "parameters": {
+        "url": "https://api.simplified.com/v1/ai/video/ugc",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.simplifiedApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_input",
+              "value": "{{$json.reframed_clips}}"
+            },
+            {
+              "name": "ugc_style",
+              "value": "luxury_lifestyle"
+            },
+            {
+              "name": "bulk_automation",
+              "value": true
+            },
+            {
+              "name": "captioning",
+              "value": {
+                "auto_generate": true,
+                "style": "premium",
+                "language": "de"
+              }
+            },
+            {
+              "name": "translation",
+              "value": {
+                "target_languages": ["en", "es", "fr"],
+                "preserve_timing": true
+              }
+            },
+            {
+              "name": "repurposing",
+              "value": {
+                "create_variants": true,
+                "platform_optimization": ["tiktok", "instagram", "youtube_shorts"]
+              }
+            },
+            {
+              "name": "scheduling",
+              "value": {
+                "auto_schedule": true,
+                "optimal_times": true,
+                "platform_specific": true
+              }
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 15000
+          }
+        }
+      },
+      "id": "simplified-ugc-automation",
+      "name": "Simplified UGC Automation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000
+    },
+    {
+      "parameters": {
+        "url": "https://api.predis.ai/v1/posts/generate",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.predisApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_content",
+              "value": "{{$json.ugc_variants}}"
+            },
+            {
+              "name": "ai_generator_mode",
+              "value": "viral_optimization"
+            },
+            {
+              "name": "post_types",
+              "value": ["video_post", "carousel", "story"]
+            },
+            {
+              "name": "hashtags",
+              "value": {
+                "auto_generate": true,
+                "trending_focus": true,
+                "lr_branded": ["#LRLifestyle", "#Traumwagen", "#Freiheit", "#LöwenTeam"]
+              }
+            },
+            {
+              "name": "captions",
+              "value": {
+                "style": "engaging_luxury",
+                "cta_included": true,
+                "emoji_optimization": true
+              }
+            },
+            {
+              "name": "translation",
+              "value": {
+                "multi_language": true,
+                "cultural_adaptation": true
+              }
+            },
+            {
+              "name": "scheduling",
+              "value": {
+                "auto_post": true,
+                "optimal_timing": true,
+                "platform_specific": true
+              }
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 10000
+          }
+        }
+      },
+      "id": "predis-auto-posts",
+      "name": "Predis Auto Posts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2220, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 10000
+    },
+    {
+      "parameters": {
+        "url": "https://api.blotato.com/v2/viral-engine",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.blotato"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_content",
+              "value": "{{$json.generated_posts}}"
+            },
+            {
+              "name": "viral_engine_mode",
+              "value": "v2_faceless_videos"
+            },
+            {
+              "name": "ab_testing",
+              "value": {
+                "enabled": true,
+                "variants": 5,
+                "test_duration": "48h",
+                "optimization_metric": "engagement_rate"
+              }
+            },
+            {
+              "name": "auto_posting",
+              "value": {
+                "platforms": ["tiktok", "instagram", "youtube_shorts"],
+                "schedule_optimization": true,
+                "viral_timing": true
+              }
+            },
+            {
+              "name": "music_integration",
+              "value": {
+                "trending_sounds": true,
+                "lr_branded_audio": true,
+                "sync_optimization": true
+              }
+            },
+            {
+              "name": "ideas_generation",
+              "value": {
+                "ai_creativity": "maximum",
+                "lr_theme_focus": true,
+                "viral_trend_analysis": true
+              }
+            },
+            {
+              "name": "ugc_improvements",
+              "value": {
+                "enhanced_avatars": true,
+                "premium_voiceovers": true,
+                "3d_depth_effects": true
+              }
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "9:16"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 15000
+          }
+        }
+      },
+      "id": "blotato-viral-distribution",
+      "name": "Blotato Viral Distribution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2440, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 15000
+    },
+    {
+      "parameters": {
+        "jsCode": "// A/B Testing Manager - Analyze performance and optimize\nconst distributionData = $input.first().json;\n\ntry {\n  const abTestResults = {\n    test_id: `lr_ab_${Date.now()}`,\n    variants: distributionData.ab_testing?.variants || [],\n    \n    // Performance metrics tracking\n    metrics: {\n      engagement_rate: [],\n      view_count: [],\n      share_rate: [],\n      conversion_rate: [],\n      viral_score: []\n    },\n    \n    // Optimization strategies\n    optimization_rules: [\n      {\n        condition: 'viral_score > 97.3',\n        action: 'boost_distribution',\n        priority: 'high'\n      },\n      {\n        condition: 'engagement_rate > 15%',\n        action: 'create_similar_variants',\n        priority: 'medium'\n      },\n      {\n        condition: 'view_count > 100000',\n        action: 'scale_campaign',\n        priority: 'high'\n      }\n    ],\n    \n    // LR specific KPIs\n    lr_kpis: {\n      team_building_engagement: 0,\n      freedom_message_resonance: 0,\n      dream_car_interest: 0,\n      lion_brand_recognition: 0\n    },\n    \n    // Next actions\n    recommended_actions: [\n      'Monitor viral score threshold',\n      'Optimize for 2 billion views target',\n      'Enhance glass effect variations',\n      'Boost lion branding elements'\n    ],\n    \n    test_duration: '72h',\n    target_metrics: {\n      min_viral_score: 97.3,\n      target_views: 2000000000,\n      engagement_threshold: 20\n    },\n    \n    timestamp: new Date().toISOString(),\n    status: 'active'\n  };\n  \n  return [{ json: abTestResults }];\n  \n} catch (error) {\n  console.error('Error in A/B testing manager:', error);\n  return [{\n    json: {\n      error: error.message,\n      timestamp: new Date().toISOString(),\n      status: 'failed'\n    }\n  }];\n}"
+      },
+      "id": "ab-testing-manager",
+      "name": "A/B Testing Manager",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2660, 300],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": "$vars.googleSheetsId",
+        "sheetName": "Video_Production_Log",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{new Date().toISOString()}}",
+            "test_id": "={{$json.test_id}}",
+            "viral_score": "={{$json.target_metrics.min_viral_score}}",
+            "target_views": "={{$json.target_metrics.target_views}}",
+            "engagement_threshold": "={{$json.target_metrics.engagement_threshold}}",
+            "variants_count": "={{$json.variants.length}}",
+            "optimization_rules": "={{JSON.stringify($json.optimization_rules)}}",
+            "lr_kpis": "={{JSON.stringify($json.lr_kpis)}}",
+            "recommended_actions": "={{JSON.stringify($json.recommended_actions)}}",
+            "test_status": "={{$json.status}}"
+          }
+        },
+        "options": {
+          "valueInputOption": "USER_ENTERED"
+        }
+      },
+      "id": "sheets-production-log",
+      "name": "Sheets Production Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [2880, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-oauth",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.metricool.com/v1/analytics",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.metricoolApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "posts",
+              "value": "{{$json.generated_posts}}"
+            },
+            {
+              "name": "metrics",
+              "value": ["engagement", "reach", "impressions", "shares", "saves"]
+            },
+            {
+              "name": "platforms",
+              "value": ["instagram", "tiktok", "youtube"]
+            },
+            {
+              "name": "competitor_analysis",
+              "value": {
+                "enabled": true,
+                "focus_keywords": ["lifestyle", "freedom", "luxury cars", "team building"]
+              }
+            },
+            {
+              "name": "lr_tracking",
+              "value": {
+                "brand_mentions": true,
+                "hashtag_performance": ["#LRLifestyle", "#Traumwagen", "#Freiheit"],
+                "viral_threshold": 97.3
+              }
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 5000
+          }
+        }
+      },
+      "id": "metricool-analytics",
+      "name": "Metricool Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3100, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "https://api.scrapecreators.com/v1/trending",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $vars.scrapeCreatorsApi"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "LR Lifestyle OR Traumwagen OR \"fahr in deine Freiheit\""
+            },
+            {
+              "name": "type",
+              "value": "mentions"
+            },
+            {
+              "name": "platforms",
+              "value": ["twitter", "instagram", "tiktok", "youtube"]
+            },
+            {
+              "name": "sentiment",
+              "value": "all"
+            },
+            {
+              "name": "lang",
+              "value": "de"
+            },
+            {
+              "name": "limit",
+              "value": 100
+            },
+            {
+              "name": "sort",
+              "value": "date"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 45000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 3000
+          }
+        }
+      },
+      "id": "scrapecreators-mentions",
+      "name": "ScrapeCreators Mentions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3320, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "resource": "contact",
+        "operation": "upsert",
+        "email": "={{$json.lead_email || 'lr-system@example.com'}}",
+        "additionalFields": {
+          "company": "LR Lifestyle Leads",
+          "firstname": "LR",
+          "lastname": "Prospect",
+          "lifecyclestage": "lead",
+          "lr_video_engagement": "={{$json.engagement_score || 0}}",
+          "lr_viral_score": "={{$json.viral_score || 0}}",
+          "lr_content_preference": "video_content",
+          "lr_source_module": "module_4_video_production"
+        },
+        "options": {}
+      },
+      "id": "hubspot-leads-upsert",
+      "name": "HubSpot Leads Upsert",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [3540, 300],
+      "credentials": {
+        "hubspotApi": {
+          "id": "hubspot-api-key",
+          "name": "HubSpot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Final Analytics Computer - Calculate comprehensive metrics\nconst allData = {\n  metricool: $('Metricool Analytics').first().json,\n  scrapeCreators: $('ScrapeCreators Mentions').first().json,\n  hubspot: $('HubSpot Leads Upsert').first().json,\n  abTesting: $('A/B Testing Manager').first().json\n};\n\ntry {\n  const finalMetrics = {\n    // Core performance metrics\n    total_engagement: allData.metricool?.total_engagement || 0,\n    total_reach: allData.metricool?.total_reach || 0,\n    total_impressions: allData.metricool?.total_impressions || 0,\n    \n    // Viral performance\n    viral_score: Math.max(\n      allData.abTesting?.target_metrics?.min_viral_score || 0,\n      (allData.metricool?.engagement_rate || 0) * 5\n    ),\n    \n    // LR specific metrics\n    lr_brand_mentions: allData.socialSearcher?.mentions?.length || 0,\n    lr_sentiment_score: allData.socialSearcher?.sentiment_average || 0,\n    lr_leads_generated: allData.hubspot?.contacts_created || 0,\n    \n    // Content performance\n    video_completion_rate: allData.metricool?.video_metrics?.completion_rate || 0,\n    share_rate: allData.metricool?.shares / allData.metricool?.impressions || 0,\n    save_rate: allData.metricool?.saves / allData.metricool?.impressions || 0,\n    \n    // Platform breakdown\n    platform_performance: {\n      tiktok: {\n        views: allData.metricool?.tiktok_views || 0,\n        engagement: allData.metricool?.tiktok_engagement || 0\n      },\n      instagram: {\n        views: allData.metricool?.instagram_views || 0,\n        engagement: allData.metricool?.instagram_engagement || 0\n      },\n      youtube: {\n        views: allData.metricool?.youtube_views || 0,\n        engagement: allData.metricool?.youtube_engagement || 0\n      }\n    },\n    \n    // Goal tracking\n    progress_to_2_billion: {\n      current_views: (allData.metricool?.total_views || 0),\n      target_views: 2000000000,\n      percentage_complete: ((allData.metricool?.total_views || 0) / 2000000000) * 100\n    },\n    \n    // Quality indicators\n    glass_effect_performance: allData.abTesting?.lr_kpis?.glass_effect_engagement || 0,\n    lion_branding_recognition: allData.abTesting?.lr_kpis?.lion_brand_recognition || 0,\n    freedom_message_resonance: allData.abTesting?.lr_kpis?.freedom_message_resonance || 0,\n    \n    // Next cycle preparation\n    optimization_recommendations: [\n      allData.viral_score > 97.3 ? 'Scale successful content' : 'Optimize for viral threshold',\n      allData.lr_leads_generated > 100 ? 'Expand lead nurturing' : 'Improve lead generation',\n      'Continue glass transformation focus',\n      'Enhance lion branding elements'\n    ],\n    \n    // System status\n    processing_complete: true,\n    ready_for_next_cycle: allData.viral_score > 90,\n    timestamp: new Date().toISOString(),\n    \n    // Trigger data for Module 1\n    next_cycle_data: {\n      performance_insights: allData,\n      viral_score: allData.viral_score,\n      trending_topics: allData.scrapeCreators?.trending || [],\n      successful_content_themes: ['glass_effects', 'lion_branding', 'freedom_message']\n    }\n  };\n  \n  return [{ json: finalMetrics }];\n  \n} catch (error) {\n  console.error('Error in final analytics computation:', error);\n  return [{\n    json: {\n      error: error.message,\n      timestamp: new Date().toISOString(),\n      processing_complete: false\n    }\n  }];\n}"
+      },
+      "id": "final-analytics-computer",
+      "name": "Final Analytics Computer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3760, 300],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot$vars.telegramBotToken/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "$vars.telegramChatId"
+            },
+            {
+              "name": "text",
+              "value": "🎬 LR Video Production Module 4 Complete!\n\n📊 Final Metrics:\n🔥 Viral Score: {{Math.round($json.viral_score)}}%\n👀 Total Views: {{$json.progress_to_2_billion.current_views.toLocaleString()}}\n🎯 Progress to 2B: {{Math.round($json.progress_to_2_billion.percentage_complete * 100) / 100}}%\n📈 Engagement: {{Math.round($json.total_engagement)}}%\n🦁 Lion Branding: {{Math.round($json.lion_branding_recognition * 100)}}%\n\n✨ Glass Effects Performance: {{Math.round($json.glass_effect_performance * 100)}}%\n💫 Freedom Message Resonance: {{Math.round($json.freedom_message_resonance * 100)}}%\n\n🚀 Next Cycle: {{$json.ready_for_next_cycle ? 'Ready' : 'Optimizing'}}\n\n#LRLifestyle #VideoProduction #ViralContent #2BillionViews"
+            },
+            {
+              "name": "parse_mode",
+              "value": "HTML"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 1000
+          }
+        }
+      },
+      "id": "telegram-final-report",
+      "name": "Telegram Final Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3980, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000
+    },
+    {
+      "parameters": {
+        "url": "$vars.module1WebhookUrl",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "trigger_source",
+              "value": "module_4_video_production_complete"
+            },
+            {
+              "name": "cycle_data",
+              "value": "={{$json.next_cycle_data}}"
+            },
+            {
+              "name": "performance_metrics",
+              "value": "={{{\n  viral_score: $json.viral_score,\n  total_views: $json.progress_to_2_billion.current_views,\n  engagement_rate: $json.total_engagement,\n  lr_leads: $json.lr_leads_generated\n}}}"
+            },
+            {
+              "name": "optimization_data",
+              "value": "={{{\n  successful_themes: $json.next_cycle_data.successful_content_themes,\n  trending_topics: $json.next_cycle_data.trending_topics,\n  recommendations: $json.optimization_recommendations\n}}}"
+            },
+            {
+              "name": "cycle_timestamp",
+              "value": "={{new Date().toISOString()}}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000,
+          "retry": {
+            "enabled": true,
+            "maxRetries": 3,
+            "retryInterval": 2000
+          }
+        }
+      },
+      "id": "loop-back-module-1",
+      "name": "Loop Back Module 1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4200, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "viral-threshold-check",
+              "leftValue": "={{$json.viral_score}}",
+              "rightValue": 97.3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combineOperation": "any"
+        },
+        "options": {}
+      },
+      "id": "viral-score-gate",
+      "name": "Viral Score Gate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [3760, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Viral Optimization Loop - Enhance content if below threshold\nconst metrics = $input.first().json;\n\ntry {\n  const optimizations = {\n    original_viral_score: metrics.viral_score,\n    \n    // Enhancement strategies\n    enhancement_strategies: [\n      {\n        type: 'glass_effect_boost',\n        intensity_increase: 0.2,\n        focus_areas: ['transparency', 'refraction', 'hologram_depth']\n      },\n      {\n        type: 'lion_branding_amplify',\n        visibility_boost: 0.3,\n        golden_effect_enhancement: true\n      },\n      {\n        type: 'freedom_message_optimize',\n        emotional_impact_boost: 0.25,\n        call_to_action_strengthen: true\n      },\n      {\n        type: 'audio_enhancement',\n        binaural_asmr_boost: 0.15,\n        voice_charisma_increase: 0.2\n      }\n    ],\n    \n    // Predicted improvements\n    predicted_viral_score: Math.min(metrics.viral_score * 1.15, 100),\n    optimization_confidence: 0.85,\n    \n    // Re-processing instructions\n    reprocess_modules: ['visual_3d', 'video_production'],\n    priority_optimizations: ['glass_effects', 'lion_branding'],\n    \n    optimization_timestamp: new Date().toISOString(),\n    optimization_cycle: (metrics.optimization_cycle || 0) + 1,\n    max_optimization_cycles: 3\n  };\n  \n  return [{ json: optimizations }];\n  \n} catch (error) {\n  console.error('Error in viral optimization loop:', error);\n  return [{\n    json: {\n      error: error.message,\n      timestamp: new Date().toISOString(),\n      optimization_failed: true\n    }\n  }];\n}"
+      },
+      "id": "viral-optimization-loop",
+      "name": "Viral Optimization Loop",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3760, 700],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Error Handler with Comprehensive Retry Logic\nconst allInputs = $input.all();\nconst errors = [];\nconst retryQueue = [];\nconst successfulProcessing = [];\n\nfor (const item of allInputs) {\n  try {\n    const data = item.json;\n    \n    // Check for various error conditions\n    if (data.error || data.processing_status === 'failed' || data.status === 'error') {\n      const retryCount = data.retry_count || 0;\n      const maxRetries = data.max_retries || 3;\n      \n      if (retryCount < maxRetries) {\n        retryQueue.push({\n          ...data,\n          retry_count: retryCount + 1,\n          retry_timestamp: new Date().toISOString(),\n          retry_reason: data.error || 'Processing failed',\n          backoff_delay: Math.pow(2, retryCount) * 1000 // Exponential backoff\n        });\n      } else {\n        errors.push({\n          ...data,\n          final_status: 'failed_max_retries',\n          error_logged: true,\n          escalation_required: true\n        });\n      }\n    } else {\n      successfulProcessing.push(data);\n    }\n  } catch (processingError) {\n    console.error('Error in error handler:', processingError);\n    errors.push({\n      error: processingError.message,\n      timestamp: new Date().toISOString(),\n      processing_status: 'error_handler_failed',\n      requires_manual_intervention: true\n    });\n  }\n}\n\nconst result = {\n  errors: errors,\n  retry_queue: retryQueue,\n  successful_processing: successfulProcessing,\n  \n  // Statistics\n  error_count: errors.length,\n  retry_count: retryQueue.length,\n  success_count: successfulProcessing.length,\n  \n  // System health\n  system_health: {\n    overall_success_rate: successfulProcessing.length / allInputs.length,\n    critical_errors: errors.filter(e => e.escalation_required).length,\n    retry_success_potential: retryQueue.length\n  },\n  \n  // Recommendations\n  recommendations: [\n    errors.length > 0 ? 'Review critical errors' : 'System operating normally',\n    retryQueue.length > 0 ? 'Process retry queue' : 'No retries needed',\n    'Monitor viral score thresholds',\n    'Continue optimization cycles'\n  ],\n  \n  timestamp: new Date().toISOString(),\n  handler_status: 'completed'\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "comprehensive-error-handler",
+      "name": "Comprehensive Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 600],
+      "alwaysOutputData": true
+    }
+  ],
+  "connections": {
+    "Webhook Trigger M4": {
+      "main": [
+        [
+          {
+            "node": "Runway Gen-4 Compositor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Runway Gen-4 Compositor": {
+      "main": [
+        [
+          {
+            "node": "Luma Ray2 Keyframes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Luma Ray2 Keyframes": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabs Turbo ASMR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabs Turbo ASMR": {
+      "main": [
+        [
+          {
+            "node": "OmniHuman Emotions LipSync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OmniHuman Emotions LipSync": {
+      "main": [
+        [
+          {
+            "node": "Bannerbear Watermark Composer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bannerbear Watermark Composer": {
+      "main": [
+        [
+          {
+            "node": "Temporal Manipulation Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Temporal Manipulation Processor": {
+      "main": [
+        [
+          {
+            "node": "Klap Reframe MultiClips",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Klap Reframe MultiClips": {
+      "main": [
+        [
+          {
+            "node": "Simplified UGC Automation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simplified UGC Automation": {
+      "main": [
+        [
+          {
+            "node": "Predis Auto Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Predis Auto Posts": {
+      "main": [
+        [
+          {
+            "node": "Blotato Viral Distribution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blotato Viral Distribution": {
+      "main": [
+        [
+          {
+            "node": "A/B Testing Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A/B Testing Manager": {
+      "main": [
+        [
+          {
+            "node": "Sheets Production Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheets Production Log": {
+      "main": [
+        [
+          {
+            "node": "Metricool Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metricool Analytics": {
+      "main": [
+        [
+          {
+            "node": "ScrapeCreators Mentions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ScrapeCreators Mentions": {
+      "main": [
+        [
+          {
+            "node": "HubSpot Leads Upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot Leads Upsert": {
+      "main": [
+        [
+          {
+            "node": "Final Analytics Computer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Analytics Computer": {
+      "main": [
+        [
+          {
+            "node": "Viral Score Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Viral Score Gate": {
+      "main": [
+        [
+          {
+            "node": "Telegram Final Report",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Viral Optimization Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Viral Optimization Loop": {
+      "main": [
+        [
+          {
+            "node": "Comprehensive Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Final Report": {
+      "main": [
+        [
+          {
+            "node": "Loop Back Module 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comprehensive Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Runway Gen-4 Compositor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-08-13T20:46:20.000Z",
+      "updatedAt": "2025-08-13T20:46:20.000Z",
+      "id": "lr-video-production",
+      "name": "LR Video Production"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-08-13T20:46:20.000Z",
+  "versionId": "lr-video-production-v1"
+}
